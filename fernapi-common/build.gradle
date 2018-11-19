@@ -3,6 +3,7 @@ plugins {
     id 'net.nemerosa.versioning' version '2.6.1'
 }
 
+
 repositories {
     maven {
         name = 'spigotmc-repo'
@@ -13,6 +14,8 @@ repositories {
         url = 'https://oss.sonatype.org/content/groups/public/'
     }
 }
+
+archivesBaseName = "FernAPI"
 
 dependencies {
     compileOnly 'com.google.code.gson:gson:2.6.2'
@@ -27,6 +30,14 @@ processResources {
 }
 
 apply plugin: "maven-publish"
+
+/*
+reobf {
+    //noinspection GroovyMissingReturnStatement
+    shadowJar {
+        // Reobfuscate the shadowed JAR
+    }
+}*/
 
 publishing {
     publications {

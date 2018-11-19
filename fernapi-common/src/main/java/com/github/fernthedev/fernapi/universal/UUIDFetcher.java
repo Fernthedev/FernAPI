@@ -272,13 +272,9 @@ public class UUIDFetcher {
         hourRan = false;
         didHourCheck = false;
 
-        if (Universal.getMethods().getServeType() == ServerType.BUNGEE) {
-            fetchManager.runHourTask();
-        }
+        fetchManager.runHourTask();
 
-        if(Universal.getMethods().getServeType() == ServerType.BUKKIT) {
-            fetchManager.runHourTask();
-        }
+
     }
 
     private static void print(Object log) {

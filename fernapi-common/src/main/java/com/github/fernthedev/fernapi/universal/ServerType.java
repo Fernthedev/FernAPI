@@ -2,5 +2,11 @@ package com.github.fernthedev.fernapi.universal;
 
 public enum ServerType {
     BUNGEE,
-    BUKKIT
+    BUKKIT,
+    FORGE;
+
+    @Override
+    public String toString() {
+        return this.name();
+    }
 }
