@@ -283,10 +283,14 @@ public class UUIDFetcher {
 
     public static void addRequestTimer() {
         try {
-                fetchManager.runTimerRequest();
+            fetchManager.runTimerRequest();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static UUIDFetchManager getFetchManager() {
+        return fetchManager;
     }
 
     public static void stopRequestTimer() {

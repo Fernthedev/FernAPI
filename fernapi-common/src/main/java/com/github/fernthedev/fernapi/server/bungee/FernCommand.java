@@ -27,7 +27,7 @@ public abstract class FernCommand extends Command {
         super(name, permission, aliases);
     }
 
-    private BaseComponent message(String text) {
+    protected BaseComponent message(String text) {
         return new TextComponent(ChatColor.translateAlternateColorCodes('&',text));
     }
 }

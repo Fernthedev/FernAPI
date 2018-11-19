@@ -15,7 +15,7 @@ public class UUIDSpigot implements UUIDFetchManager {
 
     private BukkitTask requestBukkitRunnable;
 
-    private static BukkitTask banBukkitRunnable;
+    private BukkitTask banBukkitRunnable;
 
 
 
