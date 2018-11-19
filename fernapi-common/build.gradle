@@ -1,0 +1,58 @@
+plugins {
+    id 'java'
+    id 'net.nemerosa.versioning' version '2.6.1'
+}
+
+repositories {
+    maven {
+        name = 'spigotmc-repo'
+        url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
+    }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+}
+
+dependencies {
+    compileOnly 'com.google.code.gson:gson:2.6.2'
+    compileOnly 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT'
+    compileOnly 'net.md-5:bungeecord-api:1.8-SNAPSHOT'
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        expand 'version': project.version
+    }
+}
+
+apply plugin: "maven-publish"
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            groupId = 'com.github.fernthedev'
+            artifactId = 'fernapi'
+            version = '1.1'
+
+            artifact sourceJar {
+                classifier "sources"
+            }
+        }
+    }
+}
+
+configurations {
+    shade
+    compile.extendsFrom shade
+}
+
+jar.dependsOn(shadowJar)
+
+shadowJar {
+    dependencies {
+        include(dependency(':fernapi-common'))
+    }
+}

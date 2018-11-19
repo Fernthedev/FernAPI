@@ -1,0 +1,2 @@
+rootProject.name = 'fernapi'
+include 'fernapi-common'
