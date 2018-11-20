@@ -1,6 +1,6 @@
 package com.github.fernthedev.fernapi.server.forge;
 
-import com.github.fernthedev.fernapi.universal.UUIDFetchManager;
+import com.github.fernthedev.fernapi.universal.handlers.UUIDFetchManager;
 import com.github.fernthedev.fernapi.universal.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
 

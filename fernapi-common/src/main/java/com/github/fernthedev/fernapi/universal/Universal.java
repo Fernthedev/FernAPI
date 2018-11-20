@@ -1,6 +1,10 @@
 package com.github.fernthedev.fernapi.universal;
 
+import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
+
 public class Universal {
+
+    private Universal() {}
 
     private static Universal instance = null;
     private static MethodInterface mi;

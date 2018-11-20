@@ -1,4 +1,4 @@
-package com.github.fernthedev.fernapi.universal;
+package com.github.fernthedev.fernapi.universal.handlers;
 
 import java.util.TimerTask;
 

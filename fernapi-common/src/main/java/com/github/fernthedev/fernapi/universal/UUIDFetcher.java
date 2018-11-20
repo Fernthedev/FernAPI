@@ -1,5 +1,6 @@
 package com.github.fernthedev.fernapi.universal;
 
+import com.github.fernthedev.fernapi.universal.handlers.UUIDFetchManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -36,8 +37,7 @@ public class UUIDFetcher {
     public static boolean hourRan = true;
     public static boolean didHourCheck = false;
 
-    private UUIDFetcher() {
-    }
+    private UUIDFetcher() { }
 
     public static String getUUID(String name) {
         // Get Gson object

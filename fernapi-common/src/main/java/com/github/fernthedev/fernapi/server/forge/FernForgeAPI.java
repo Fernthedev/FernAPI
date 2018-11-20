@@ -1,6 +1,6 @@
 package com.github.fernthedev.fernapi.server.forge;
 
-import com.github.fernthedev.fernapi.universal.FernAPIPlugin;
+import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
 import net.minecraft.client.Minecraft;
@@ -10,7 +10,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
@@ -22,10 +21,6 @@ public class FernForgeAPI implements FernAPIPlugin {
 
     public static File configfile;
 
-    private Logger logger;
-
-
-
     @SuppressWarnings("unused")
     public static double ver() {
         return Double.parseDouble(Minecraft.getMinecraft().getVersion());
@@ -34,9 +29,8 @@ public class FernForgeAPI implements FernAPIPlugin {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        logger = event.getModLog();
         configfile = event.getSuggestedConfigurationFile();
-        new Universal().setup(new ForgeInterface(this));
+        Universal.getInstance().setup(new ForgeInterface(this));
         UUIDFetcher.setFetchManager(new UUIDForge());
     }
 

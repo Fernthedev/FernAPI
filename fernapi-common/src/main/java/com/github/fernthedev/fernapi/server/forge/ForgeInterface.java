@@ -1,8 +1,8 @@
 package com.github.fernthedev.fernapi.server.forge;
 
-import com.github.fernthedev.fernapi.universal.FernAPIPlugin;
-import com.github.fernthedev.fernapi.universal.MethodInterface;
-import com.github.fernthedev.fernapi.universal.ServerType;
+import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
+import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
+import com.github.fernthedev.fernapi.universal.handlers.ServerType;
 
 import java.util.logging.Logger;
 
