@@ -1,16 +1,62 @@
 package com.github.fernthedev.fernapi.server.forge;
 
-import com.github.fernthedev.fernapi.server.spigot.UUIDSpigot;
 import com.github.fernthedev.fernapi.universal.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+
+@Mod(modid = FernForgeAPI.MODID, name = FernForgeAPI.NAME, version = FernForgeAPI.VERSION, acceptedMinecraftVersions = "[1.8,)")
 public class FernForgeAPI implements FernAPIPlugin {
+    public static final String MODID = "fernapi";
+    public static final String NAME = "FernAPI";
+    public static final String VERSION = "1.0";
+
+    public static File configfile;
+
+    private Logger logger;
 
 
-    public FernForgeAPI() {
+
+    @SuppressWarnings("unused")
+    public static double ver() {
+        return Double.parseDouble(Minecraft.getMinecraft().getVersion());
+    }
+    //private static IPCClient client;
+
+    @Mod.EventHandler
+    public void preInit(FMLPreInitializationEvent event) {
+        logger = event.getModLog();
+        configfile = event.getSuggestedConfigurationFile();
         new Universal().setup(new ForgeInterface(this));
-        UUIDFetcher.setFetchManager(new UUIDSpigot());
+        UUIDFetcher.setFetchManager(new UUIDForge());
+    }
+
+
+
+
+    @SideOnly(Side.CLIENT)
+    @Mod.EventHandler
+    public void init(FMLInitializationEvent event) {
+
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Mod.EventHandler
+    public void loaded(FMLPostInitializationEvent e) {
+
+    }
+
+    public static void print(Object someclass, Object text) {
+        System.out.println("[DiscordMod] ["+someclass +"] " + text);
     }
 
     @Override
