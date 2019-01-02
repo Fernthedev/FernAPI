@@ -1,5 +1,5 @@
 # FernAPI
-This is meant to be an api for my forge mods (or other's) and plugins.
+This is meant to be an api for my forge mods (or other's) and plugins. This plugin is compiled in 1.8.9, but should work regaurdless of your mod/plugin's version unless it uses outdated libraries or other means of change.
 
 [f] = Forge
 
