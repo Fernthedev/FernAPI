@@ -14,6 +14,7 @@ public class Universal {
     }
 
     public void setup(MethodInterface methodInterface) {
+        methodInterface.getLogger().info("Registered interface");
         mi = methodInterface;
     }
 
