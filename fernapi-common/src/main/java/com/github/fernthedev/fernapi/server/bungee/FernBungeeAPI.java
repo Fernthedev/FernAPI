@@ -13,6 +13,7 @@ public class FernBungeeAPI extends Plugin implements FernAPIPlugin {
         UUIDFetcher.setFetchManager(new UUIDBungee());
     }
 
+
     @Override
     public void cancelTask(int id) {
         getProxy().getScheduler().cancel(id);
