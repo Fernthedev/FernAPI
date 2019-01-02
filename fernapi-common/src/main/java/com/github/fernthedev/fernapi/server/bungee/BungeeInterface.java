@@ -19,7 +19,7 @@ public class BungeeInterface implements MethodInterface {
     }
 
     @Override
-    public ServerType getServeType() {
+    public ServerType getServerType() {
         return ServerType.BUNGEE;
     }
 

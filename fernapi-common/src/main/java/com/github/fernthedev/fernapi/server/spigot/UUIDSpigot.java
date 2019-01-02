@@ -56,12 +56,12 @@ public class UUIDSpigot implements UUIDFetchManager {
     }
 
     public void stopHourTask() {
-        Universal.getMethods().getInstance().cancelTask(banBukkitRunnable.getTaskId());
+        if(banBukkitRunnable != null) Universal.getMethods().getInstance().cancelTask(banBukkitRunnable.getTaskId());
     }
 
 
 
     private static void print(Object log) {
-        Universal.getMethods().getLogger().info("[" + Universal.getMethods().getServeType() + "] [UUIDFetcher] " + log);
+        Universal.getMethods().getLogger().info("[" + Universal.getMethods().getServerType() + "] [UUIDFetcher] " + log);
     }
 }

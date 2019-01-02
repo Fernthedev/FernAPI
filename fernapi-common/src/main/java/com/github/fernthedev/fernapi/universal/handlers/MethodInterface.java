@@ -6,7 +6,7 @@ public interface MethodInterface {
 
     Logger getLogger();
 
-    ServerType getServeType();
+    ServerType getServerType();
 
     FernAPIPlugin getInstance();
 

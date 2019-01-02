@@ -66,6 +66,6 @@ public class UUIDForge implements UUIDFetchManager {
 
 
     private static void print(Object log) {
-        Universal.getMethods().getLogger().info("[" + Universal.getMethods().getServeType() + "] [UUIDFetcher] " + log);
+        Universal.getMethods().getLogger().info("[" + Universal.getMethods().getServerType() + "] [UUIDFetcher] " + log);
     }
 }

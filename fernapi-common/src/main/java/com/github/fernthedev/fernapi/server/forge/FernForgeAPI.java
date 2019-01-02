@@ -1,15 +1,13 @@
 package com.github.fernthedev.fernapi.server.forge;
 
-import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
+import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.File;
 
@@ -37,13 +35,13 @@ public class FernForgeAPI implements FernAPIPlugin {
 
 
 
-    @SideOnly(Side.CLIENT)
+
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
 
     }
 
-    @SideOnly(Side.CLIENT)
+
     @Mod.EventHandler
     public void loaded(FMLPostInitializationEvent e) {
 

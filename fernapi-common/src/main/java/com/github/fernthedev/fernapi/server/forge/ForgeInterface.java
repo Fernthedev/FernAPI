@@ -18,7 +18,7 @@ public class ForgeInterface implements MethodInterface {
     }
 
     @Override
-    public ServerType getServeType() {
+    public ServerType getServerType() {
         return ServerType.FORGE;
     }
 
