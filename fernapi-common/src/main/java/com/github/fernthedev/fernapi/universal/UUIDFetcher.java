@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.*;
 
+@SuppressWarnings("unused")
 public class UUIDFetcher {
     private static final String UUID_URL = "https://api.mojang.com/users/profiles/minecraft/%name%";
     private static final String NAME_URL = "https://api.mojang.com/user/profiles/%uuid%/names";
@@ -239,7 +240,7 @@ public class UUIDFetcher {
         }
     }
 @SuppressWarnings("unused")
- public   class PlayerName {
+ public class PlayerName {
         private String name;
         private long changedToAt;
 
@@ -253,7 +254,7 @@ public class UUIDFetcher {
     }
 
 @SuppressWarnings("unused")
- public   class PlayerUUID {
+ public class PlayerUUID {
         private String name;
         private String id;
 
