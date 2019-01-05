@@ -33,3 +33,19 @@ String uuid = UUIDFetcher.getUUID(Name);
 String name = UUIDFetcher.getName(UUID);
 List<UUIDFetcher.PlayerHistory> names = UUIDFetcher.getNameHistory(uuidPlayer);
 ```
+
+ChatAPI
+```java
+//This will vary depending on the server.
+//SPIGOT
+SpigotFPlayer spigotFPlayer = new SpigotFPlayer(player);
+//FORGE
+ForgeFPlayer forgeFPlayer = new ForgeFPlayer(player);
+//BUNGEE
+BungeeFPlayer bungeeFPlayer = new ForgeFPlayer(player);
+
+
+ChatMessage chatMessage = new ChatMessage("Message with color code");
+chatMessage.setClickData(new ChatMessage.ClickData(ClickAction.SUGGEST_COMMAND,"/example"));
+chatMessage.setHoverData(new ChatMessage.HoverData(HoverAction.SHOW_TEXT,"hover text with color code"));
+fPlayer.sendChatMessage(chatMessage);
