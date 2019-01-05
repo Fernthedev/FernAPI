@@ -49,3 +49,4 @@ ChatMessage chatMessage = new ChatMessage("Message with color code");
 chatMessage.setClickData(new ChatMessage.ClickData(ClickAction.SUGGEST_COMMAND,"/example"));
 chatMessage.setHoverData(new ChatMessage.HoverData(HoverAction.SHOW_TEXT,"hover text with color code"));
 fPlayer.sendChatMessage(chatMessage);
+```
