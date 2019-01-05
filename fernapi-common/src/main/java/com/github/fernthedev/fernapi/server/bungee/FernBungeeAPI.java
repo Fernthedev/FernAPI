@@ -9,7 +9,7 @@ public class FernBungeeAPI extends Plugin implements FernAPIPlugin {
 
     @Override
     public void onEnable() {
-        Universal.getInstance().setup(new BungeeInterface(this));
+        Universal.getInstance().setup(new BungeeInterface(this),new BungeeChatHandler());
         UUIDFetcher.setFetchManager(new UUIDBungee());
     }
 

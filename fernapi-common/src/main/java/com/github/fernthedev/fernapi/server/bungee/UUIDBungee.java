@@ -19,7 +19,7 @@ public class UUIDBungee implements UUIDFetchManager {
 
 
     public void runTimerRequest() {
-        print("Server is com.github.fernthedev.fernapi.server.bungee");
+        //print("Server is com.github.fernthedev.fernapi.server.bungee");
         requestTask = ProxyServer.getInstance().getScheduler().schedule((Plugin) Universal.getMethods().getInstance(), () -> {
             UUIDFetcher.setRequests(0);
             playerNameCache.clear();
@@ -41,10 +41,12 @@ public class UUIDBungee implements UUIDFetchManager {
     }
 
     public void stopTimerRequest() {
+        if(banHourTask != null)
         ProxyServer.getInstance().getScheduler().cancel(banHourTask);
     }
 
     public void stopHourTask() {
+        if(requestTask != null)
         ProxyServer.getInstance().getScheduler().cancel(requestTask);
 
     }

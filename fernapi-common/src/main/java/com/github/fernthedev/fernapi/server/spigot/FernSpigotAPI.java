@@ -10,8 +10,11 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
     @Override
     public void onEnable() {
         getLogger().info("Registered FernAPI Spigot");
-        Universal.getInstance().setup(new SpigotInterface(this));
+        Universal.getInstance().setup(new SpigotInterface(this),new SpigotChatHandler());
         UUIDFetcher.setFetchManager(new UUIDSpigot());
+
+
+
     }
 
     @Override

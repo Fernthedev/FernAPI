@@ -28,7 +28,7 @@ public class FernForgeAPI implements FernAPIPlugin {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         configfile = event.getSuggestedConfigurationFile();
-        Universal.getInstance().setup(new ForgeInterface(this));
+        Universal.getInstance().setup(new ForgeInterface(this),null);
         UUIDFetcher.setFetchManager(new UUIDForge());
     }
 
