@@ -1,6 +1,26 @@
 # FernAPI
 This is meant to be an api for my forge mods (or other's) and plugins. This plugin is compiled in 1.8.9, but should work regaurdless of your mod/plugin's version unless it uses outdated libraries or other means of change.
 
+[Installation](https://github.com/Fernthedev/FernAPI#installation)
+
+[Features](https://github.com/Fernthedev/FernAPI#features)
+
+[Usage](https://github.com/Fernthedev/FernAPI#usage)
+
+## Installation
+To install this, you may either clone this repository and run 
+`clean publishToMavenLocal` to add it to your local maven repository. You can also add it as a jar through 
+```xml
+<dependency>
+    <groupId>com.github.fernthedev</groupId>
+    <artifactId>fernapi</artifactId>
+    <version>LATEST</version>
+    <scope>system</scope>
+    <systemPath>${project.basedir}/path</systemPath>
+</dependency>
+```
+
+## Features:
 [f] = Forge
 
 [b] = Bungee
@@ -9,8 +29,11 @@ This is meant to be an api for my forge mods (or other's) and plugins. This plug
 
 [u] = All of the above, in other words universal
 
-# Features:
 - UUID Fetch [u]
+- ChatAPI [u]
+  - Clickable text
+  - Hover message
+  - Color code support
 
 ## Usage:
 Main class should extend one of these classes respectively.
