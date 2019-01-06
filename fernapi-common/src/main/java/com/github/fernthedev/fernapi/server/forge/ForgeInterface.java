@@ -1,8 +1,10 @@
 package com.github.fernthedev.fernapi.server.forge;
 
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
+import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
 import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
 import com.github.fernthedev.fernapi.universal.handlers.ServerType;
+import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.logging.Logger;
 
@@ -25,5 +27,10 @@ public class ForgeInterface implements MethodInterface {
     @Override
     public FernAPIPlugin getInstance() {
         return fernForgeAPI;
+    }
+
+    @Override
+    public IFPlayer convertPlayerObjectToFPlayer(Object player) {
+        return new ForgeFPlayer((EntityPlayer) player);
     }
 }

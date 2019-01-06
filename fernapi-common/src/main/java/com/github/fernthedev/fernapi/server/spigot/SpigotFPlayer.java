@@ -24,7 +24,6 @@ public class SpigotFPlayer implements IFPlayer{
                 chatMessage.getClickData().getClickValue()));
         
         if(chatMessage.getHoverData() != null) {
-
             prefix.setHoverEvent(new HoverEvent(
                     HoverEvent.Action.valueOf(chatMessage.getHoverData().getHoverAction().toString()),
                     message(chatMessage.getHoverData().getHoverValue())));

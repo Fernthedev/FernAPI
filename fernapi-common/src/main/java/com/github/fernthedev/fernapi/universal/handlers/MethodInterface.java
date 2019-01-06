@@ -10,5 +10,7 @@ public interface MethodInterface {
 
     FernAPIPlugin getInstance();
 
+    IFPlayer convertPlayerObjectToFPlayer(Object player);
+
 }
 

@@ -1,8 +1,10 @@
 package com.github.fernthedev.fernapi.server.spigot;
 
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
+import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
 import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
 import com.github.fernthedev.fernapi.universal.handlers.ServerType;
+import org.bukkit.entity.Player;
 
 import java.util.logging.Logger;
 
@@ -25,5 +27,10 @@ public class SpigotInterface implements MethodInterface {
     @Override
     public FernAPIPlugin getInstance() {
         return fernSpigotAPI;
+    }
+
+    @Override
+    public IFPlayer convertPlayerObjectToFPlayer(Object player) {
+        return new SpigotFPlayer((Player) player);
     }
 }

@@ -1,6 +1,7 @@
 package com.github.fernthedev.fernapi.universal;
 
 import com.github.fernthedev.fernapi.universal.handlers.IChatHandler;
+import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
 import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
 
 public class Universal {
@@ -28,5 +29,9 @@ public class Universal {
 
     public static IChatHandler getChatHandler() {
         return ch;
+    }
+
+    public static IFPlayer convertPlayerObjectToFPlayer(Object player) {
+        return mi.convertPlayerObjectToFPlayer(player);
     }
 }
