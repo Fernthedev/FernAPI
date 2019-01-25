@@ -59,14 +59,8 @@ List<UUIDFetcher.PlayerHistory> names = UUIDFetcher.getNameHistory(uuidPlayer);
 
 ChatAPI
 ```java
-//This will vary depending on the server.
-//SPIGOT
-SpigotFPlayer spigotFPlayer = new SpigotFPlayer(player);
-//FORGE
-ForgeFPlayer forgeFPlayer = new ForgeFPlayer(player);
-//BUNGEE
-BungeeFPlayer bungeeFPlayer = new ForgeFPlayer(player);
-
+// Can only convert ProxiedPlayer, org.bukkit.entity.Player and/or EntityPlayer
+IFPlayer fPlayer = Universal.convertPlayerObjectToFPlayer(player);
 
 ChatMessage textMessage = new ChatMessage("Message with color code");
 textMessage.setClickData(new ChatMessage.ClickData(ClickAction.SUGGEST_COMMAND,"/example"));
