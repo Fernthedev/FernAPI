@@ -9,6 +9,9 @@ public class Universal {
     private Universal() {}
 
     private static Universal instance = null;
+
+    private static boolean debug = false;
+
     private static MethodInterface mi;
     private static IChatHandler ch;
 
@@ -22,6 +25,15 @@ public class Universal {
         mi = methodInterface;
         ch = chatHandler;
     }
+
+    public static void setDebug(boolean debug) {
+        Universal.debug = debug;
+    }
+
+    public static void debug(Object message) {
+        mi.getLogger().info("[DEBUG] " + message);
+    }
+
 
     public static MethodInterface getMethods() {
         return mi;

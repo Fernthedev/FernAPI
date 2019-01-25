@@ -19,12 +19,13 @@ public class UUIDBungee implements UUIDFetchManager {
 
 
     public void runTimerRequest() {
-        //print("Server is com.github.fernthedev.fernapi.server.bungee");
+        debug("Server is bungee");
         requestTask = ProxyServer.getInstance().getScheduler().schedule((Plugin) Universal.getMethods().getInstance(), () -> {
             UUIDFetcher.setRequests(0);
             playerNameCache.clear();
             playerUUIDCache.clear();
             playerHistoryCache.clear();
+            debug("Refreshed uuid cache.");
         }, 1, 10, TimeUnit.MINUTES);
     }
 
@@ -55,5 +56,9 @@ public class UUIDBungee implements UUIDFetchManager {
 
     private static void print(Object log) {
         Universal.getMethods().getLogger().info("[" + Universal.getMethods().getServerType() + "] [UUIDFetcher] " + log);
+    }
+
+    private static void debug(Object log) {
+        Universal.debug("[" + Universal.getMethods().getServerType() + "] [UUIDFetcher] " + log);
     }
 }

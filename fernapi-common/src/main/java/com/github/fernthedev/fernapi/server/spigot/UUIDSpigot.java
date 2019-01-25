@@ -20,7 +20,7 @@ public class UUIDSpigot implements UUIDFetchManager {
 
 
     public void runTimerRequest() {
-        print("Server is bukkit");
+        debug("Server is bukkit");
         this.requestBukkitRunnable = new BukkitRunnable() {
             @Override
             public void run() {
@@ -40,7 +40,7 @@ public class UUIDSpigot implements UUIDFetchManager {
             public void run() {
                 if (!hourRan && didHourCheck) {
                     hourRan = true;
-                    print("Hour is finished, continuing uuid checking");
+                    debug("Hour is finished, continuing uuid checking");
                     runTimerRequest();
                     stopHourTask();
                 } else if (!didHourCheck) didHourCheck = true;
@@ -63,5 +63,9 @@ public class UUIDSpigot implements UUIDFetchManager {
 
     private static void print(Object log) {
         Universal.getMethods().getLogger().info("[" + Universal.getMethods().getServerType() + "] [UUIDFetcher] " + log);
+    }
+
+    private static void debug(Object log) {
+        Universal.debug("[" + Universal.getMethods().getServerType() + "] [UUIDFetcher] " + log);
     }
 }

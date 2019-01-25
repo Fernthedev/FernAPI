@@ -1,6 +1,6 @@
 package com.github.fernthedev.fernapi.server.bungee;
 
-import com.github.fernthedev.fernapi.universal.data.chat.ChatMessage;
+import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
@@ -13,24 +13,28 @@ public class BungeeFPlayer implements IFPlayer{
     }
 
     @Override
-    public void sendChatMessage(ChatMessage chatMessage) {
-        TextComponent prefix = new TextComponent(
-                ChatColor.translateAlternateColorCodes('&',chatMessage.getMessage())
-        );
+    public void sendChatMessage(BaseMessage baseMessage) {
+        TextComponent fullMessage = new TextComponent(baseMessage.getParentText());
 
-        if(chatMessage.getClickData() != null)
-            prefix.setClickEvent(new net.md_5.bungee.api.chat.ClickEvent(
-                    ClickEvent.Action.valueOf(chatMessage.getClickData().getClickAction().toString()),
-                    chatMessage.getClickData().getClickValue()));
+        for(BaseMessage be : baseMessage.getExtra()) {
+            TextComponent te = new TextComponent(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
 
-        if(chatMessage.getHoverData() != null) {
+            if (be.getClickData() != null) {
+                te.setClickEvent(new ClickEvent(
+                        ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
+                        be.getClickData().getClickValue()));
+            }
 
-            prefix.setHoverEvent(new net.md_5.bungee.api.chat.HoverEvent(
-                    HoverEvent.Action.valueOf(chatMessage.getHoverData().getHoverAction().toString()),
-                    message(chatMessage.getHoverData().getHoverValue())));
+            if (be.getHoverData() != null) {
+                te.setHoverEvent(new HoverEvent(
+                        HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
+                        message(be.getHoverData().getHoverValue())));
+            }
+
+            fullMessage.addExtra(te);
         }
 
-        player.sendMessage(prefix);
+        player.sendMessage(fullMessage);
     }
 
     private BaseComponent[] message(String text) {

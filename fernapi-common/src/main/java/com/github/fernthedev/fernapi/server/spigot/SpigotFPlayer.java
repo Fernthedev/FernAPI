@@ -1,6 +1,6 @@
 package com.github.fernthedev.fernapi.server.spigot;
 
-import com.github.fernthedev.fernapi.universal.data.chat.ChatMessage;
+import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.ChatColor;
@@ -13,23 +13,30 @@ public class SpigotFPlayer implements IFPlayer{
     }
 
     @Override
-    public void sendChatMessage(ChatMessage chatMessage) {
-        TextComponent prefix = new TextComponent(
-                ChatColor.translateAlternateColorCodes('&',chatMessage.getMessage())
-        );
-        
-        if(chatMessage.getClickData() != null)
-        prefix.setClickEvent(new ClickEvent(
-                ClickEvent.Action.valueOf(chatMessage.getClickData().getClickAction().toString()),
-                chatMessage.getClickData().getClickValue()));
-        
-        if(chatMessage.getHoverData() != null) {
-            prefix.setHoverEvent(new HoverEvent(
-                    HoverEvent.Action.valueOf(chatMessage.getHoverData().getHoverAction().toString()),
-                    message(chatMessage.getHoverData().getHoverValue())));
+    public void sendChatMessage(BaseMessage baseMessage) {
+
+        TextComponent fullMessage = new TextComponent(ChatColor.translateAlternateColorCodes('&',baseMessage.getParentText()));
+
+        for(BaseMessage be : baseMessage.getExtra()) {
+            TextComponent te = new TextComponent(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
+
+            if (be.getClickData() != null) {
+                te.setClickEvent(new ClickEvent(
+                        ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
+                        be.getClickData().getClickValue()));
+            }
+
+            if (be.getHoverData() != null) {
+                te.setHoverEvent(new HoverEvent(
+                        HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
+                        message(be.getHoverData().getHoverValue())));
+            }
+
+            fullMessage.addExtra(te);
         }
         
-        player.spigot().sendMessage(prefix);
+        player.spigot().sendMessage(fullMessage);
+
     }
 
     private BaseComponent[] message(String text) {

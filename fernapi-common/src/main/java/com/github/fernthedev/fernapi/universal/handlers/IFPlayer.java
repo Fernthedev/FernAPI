@@ -1,7 +1,7 @@
 package com.github.fernthedev.fernapi.universal.handlers;
 
-import com.github.fernthedev.fernapi.universal.data.chat.ChatMessage;
+import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 
 public interface IFPlayer {
-    void sendChatMessage(ChatMessage chatMessage);
+    void sendChatMessage(BaseMessage textMessage);
 }
