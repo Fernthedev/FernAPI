@@ -14,7 +14,7 @@ public class BungeeFPlayer implements IFPlayer{
 
     @Override
     public void sendChatMessage(BaseMessage baseMessage) {
-        TextComponent fullMessage = new TextComponent(baseMessage.getParentText());
+        TextComponent fullMessage = new TextComponent(ChatColor.translateAlternateColorCodes('&',baseMessage.getParentText()));
 
         for(BaseMessage be : baseMessage.getExtra()) {
             TextComponent te = new TextComponent(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
