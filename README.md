@@ -115,7 +115,8 @@ public class Test extends PluginMessageHandler {
     public void onMessageReceived(PluginMessageData data, Channel channel) {
         //Whatever you want
     }
-}```
+}
+```
 To register the listener, run 
 ```java
 Universal.getMessageHandler().registerMessageHandler(new Test());
