@@ -62,8 +62,8 @@ ChatAPI
 // Can only convert ProxiedPlayer, org.bukkit.entity.Player and/or EntityPlayer
 IFPlayer fPlayer = Universal.convertPlayerObjectToFPlayer(player);
 
-ChatMessage textMessage = new ChatMessage("Message with color code");
-textMessage.setClickData(new ChatMessage.ClickData(ClickAction.SUGGEST_COMMAND,"/example"));
-textMessage.setHoverData(new ChatMessage.HoverData(HoverAction.SHOW_TEXT,"hover text with color code"));
+TextMessage textMessage = new TextMessage("Message with color code");
+textMessage.setClickData(new ClickData(ClickData.Action.SUGGEST_COMMAND,"/example"));
+textMessage.setHoverData(new HoverData(HoverData.Action.SHOW_TEXT,"hover text with color code"));
 fPlayer.sendChatMessage(textMessage);
 ```
