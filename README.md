@@ -34,6 +34,8 @@ To install this, you may either clone this repository and run
   - Clickable text
   - Hover message
   - Color code support
+- List sorter (Sorter Class, check methods)
+- Bungee/Spigot plugin messaging
 
 ## Usage:
 Main class should extend one of these classes respectively.
@@ -76,7 +78,45 @@ askPlaceHolder.setRunnable(new MessageRunnable() {
     @Override
     public void run() {
         super.run();
+        //Whatever you want.
         sender.sendMessage("The player's placeholder value of " + args[1] + " is " + askPlaceHolder.getPlaceHolderResult());
     }
 });
+```
+
+Bungee/Spigot Plugin Messaging (Must implement PluginMessageHandler)
+```java
+public class Test extends PluginMessageHandler {
+
+    /**
+     * This is the channel name that will be registered incoming and outcoming
+     * This is where you specify the channels you want to listen to
+     * Just make a new List<Channel> instance and add an instance of the channel accordingly.
+     *
+     * @return The channels that will be incoming and outgoing
+     * @see AskPlaceHolder as an example
+     */
+    @Override
+    public List<Channel> getChannels() {
+        List<Channel> channels = new ArrayList<>();
+
+        channels.add(new Channel("pluginName:channel",Channel.ChannelAction.BOTH));
+
+        return channels;
+    }
+
+    /**
+     * The event called when message is received from the channels registered
+     *
+     * @param data The data received for use of the event.
+     * @param channel The channel it was received from, for use of multiple channels in one listener
+     */
+    @Override
+    public void onMessageReceived(PluginMessageData data, Channel channel) {
+        //Whatever you want
+    }
+}```
+To register the listener, run 
+```java
+Universal.getMessageHandler().registerMessageHandler(new Test());
 ```
