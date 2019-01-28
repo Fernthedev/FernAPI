@@ -38,6 +38,11 @@ repositories {
         name = 'sonatype'
         url = 'https://oss.sonatype.org/content/groups/public/'
     }
+    
+    maven {
+        name = 'placeholderapi'
+        url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
 }
 
 archivesBaseName = "FernAPI"
@@ -46,7 +51,7 @@ dependencies {
     compileOnly 'com.google.code.gson:gson:2.6.2'
     compileOnly 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT'
     compileOnly 'net.md-5:bungeecord-api:1.8-SNAPSHOT'
-
+   compileOnly 'me.clip:placeholderapi:+'
     compileOnly 'org.projectlombok:lombok:+'
 }
 
@@ -105,7 +110,6 @@ processResources {
 shadowJar {
     minimize()
     dependencies {
-
         include(dependency(':fernapi-common'))
     }
 }
