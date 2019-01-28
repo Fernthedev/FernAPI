@@ -34,8 +34,8 @@ To install this, you may either clone this repository and run
   - Clickable text
   - Hover message
   - Color code support
-- List sorter (Sorter Class, check methods)
-- Bungee/Spigot plugin messaging
+- List sorter (Sorter Class, check methods) [u]
+- Bungee/Spigot plugin messaging [b/s]
 
 ## Usage:
 Main class should extend one of these classes respectively.
