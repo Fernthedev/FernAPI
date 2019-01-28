@@ -114,10 +114,28 @@ public class Test extends PluginMessageHandler {
     @Override
     public void onMessageReceived(PluginMessageData data, Channel channel) {
         //Whatever you want
+        //Handling extra data is so:
+        String data1 = in.readUTF(); //DATA1
+        String data2 = in.readUTF(); //DATA2
+        //You read the data in the order you add it, so if you add DATA1 first, you read it first, then second DATA2 etc.
+        //This works for both adding to output stream or using data.addData();
     }
 }
 ```
 To register the listener, run 
 ```java
 Universal.getMessageHandler().registerMessageHandler(new Test());
+```
+To receive messages, the sender also has to use the API. This is an example how:
+```java
+ByteArrayOutputStream stream = new ByteArrayOutputStream();
+DataOutputStream out = new DataOutputStream(stream);
+
+data = new PluginMessageData(stream,"Forward",player.getServer().getInfo().getName(),Subchannel such as "pluginName:channel");
+
+data.addData("Data1");
+
+data.addData("Data2"); //MESSAGE 2 (UUID)
+
+Universal.getMessageHandler().sendPluginData(fplayer,data);
 ```
