@@ -1,4 +1,4 @@
-package com.github.fernthedev.fernapi.server.bungee;
+package com.github.fernthedev.fernapi.server.bungee.chat;
 
 import com.github.fernthedev.fernapi.universal.handlers.IChatHandler;
 

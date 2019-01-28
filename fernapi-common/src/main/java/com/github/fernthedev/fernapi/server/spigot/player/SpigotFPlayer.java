@@ -1,14 +1,18 @@
-package com.github.fernthedev.fernapi.server.spigot;
+package com.github.fernthedev.fernapi.server.spigot.player;
 
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
+import lombok.Getter;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class SpigotFPlayer implements IFPlayer{
+public class SpigotFPlayer extends IFPlayer {
+    @Getter
     private Player player;
+
     public SpigotFPlayer(Player player) {
+        super(player.getName(),player.getUniqueId());
         this.player = player;
     }
 

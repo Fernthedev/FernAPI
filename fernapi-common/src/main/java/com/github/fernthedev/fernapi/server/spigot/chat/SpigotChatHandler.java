@@ -1,4 +1,4 @@
-package com.github.fernthedev.fernapi.server.spigot;
+package com.github.fernthedev.fernapi.server.spigot.chat;
 
 import com.github.fernthedev.fernapi.universal.handlers.IChatHandler;
 

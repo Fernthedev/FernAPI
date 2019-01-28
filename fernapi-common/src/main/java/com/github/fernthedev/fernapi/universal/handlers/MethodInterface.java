@@ -12,5 +12,9 @@ public interface MethodInterface {
 
     IFPlayer convertPlayerObjectToFPlayer(Object player);
 
+    Object convertFPlayerToPlayer(IFPlayer ifPlayer);
+
+
+
 }
 

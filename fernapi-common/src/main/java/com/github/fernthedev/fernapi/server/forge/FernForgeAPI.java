@@ -1,5 +1,7 @@
 package com.github.fernthedev.fernapi.server.forge;
 
+import com.github.fernthedev.fernapi.server.forge.interfaces.UUIDForge;
+import com.github.fernthedev.fernapi.server.forge.network.ForgeMessageHandler;
 import com.github.fernthedev.fernapi.universal.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
@@ -28,7 +30,7 @@ public class FernForgeAPI implements FernAPIPlugin {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         configfile = event.getSuggestedConfigurationFile();
-        Universal.getInstance().setup(new ForgeInterface(this),null);
+        Universal.getInstance().setup(new ForgeInterface(this),null,new ForgeMessageHandler());
         UUIDFetcher.setFetchManager(new UUIDForge());
     }
 

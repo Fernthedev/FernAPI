@@ -1,8 +1,9 @@
-package com.github.fernthedev.fernapi.server.forge;
+package com.github.fernthedev.fernapi.server.forge.player;
 
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
 import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
+import lombok.Getter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
@@ -10,9 +11,12 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IChatComponent;
 
-public class ForgeFPlayer implements IFPlayer{
+public class ForgeFPlayer extends IFPlayer {
+    @Getter
     private EntityPlayer player;
+
     public ForgeFPlayer(EntityPlayer player) {
+        super(player.getName(),player.getUniqueID());
         this.player = player;
     }
 

@@ -1,41 +1,43 @@
-package com.github.fernthedev.fernapi.server.spigot;
+package com.github.fernthedev.fernapi.server.forge.interfaces;
 
 import com.github.fernthedev.fernapi.universal.handlers.UUIDFetchManager;
 import com.github.fernthedev.fernapi.universal.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.fernthedev.fernapi.universal.UUIDFetcher.*;
 
-public class UUIDSpigot implements UUIDFetchManager {
+public class UUIDForge implements UUIDFetchManager {
+    private Timer requestRunnable = new Timer();
 
-    private BukkitTask requestBukkitRunnable;
-
-    private BukkitTask banBukkitRunnable;
+    private static Timer banRunnable = new Timer();
 
 
 
     public void runTimerRequest() {
         debug("Server is bukkit");
-        this.requestBukkitRunnable = new BukkitRunnable() {
+
+        requestRunnable.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 UUIDFetcher.setRequests(0);
                 playerNameCache.clear();
                 playerUUIDCache.clear();
                 playerHistoryCache.clear();
-                print("Refreshed uuid cache.");
+                debug("Refreshed uuid cache.");
             }
-        }.runTaskLater((Plugin) Universal.getMethods().getInstance(),
-                TimeUnit.MINUTES.toSeconds(10) * 20);
+        }, TimeUnit.MINUTES.toMillis(10),TimeUnit.MINUTES.toMillis(10));
+
+
+        //.runTaskLater((Plugin) Universal.getMethods().getInstance(),
+        //        TimeUnit.MINUTES.toSeconds(10) * 20);
     }
 
     public void runHourTask() {
-        banBukkitRunnable = new BukkitRunnable() {
+        banRunnable.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 if (!hourRan && didHourCheck) {
@@ -45,18 +47,20 @@ public class UUIDSpigot implements UUIDFetchManager {
                     stopHourTask();
                 } else if (!didHourCheck) didHourCheck = true;
             }
-        }.runTaskLater((Plugin) Universal.getMethods().getInstance(),
-                TimeUnit.HOURS.toSeconds(1) *20);
+        },TimeUnit.HOURS.toMillis(1),TimeUnit.HOURS.toMillis(1));
+
+        // }.runTaskLater((Plugin) Universal.getMethods().getInstance(),
+        //          TimeUnit.HOURS.toSeconds(1) *20);
     }
 
     public void stopTimerRequest() {
-        if(requestBukkitRunnable != null) {
-            Universal.getMethods().getInstance().cancelTask(requestBukkitRunnable.getTaskId());
+        if(requestRunnable != null) {
+            requestRunnable.cancel();
         }
     }
 
     public void stopHourTask() {
-        if(banBukkitRunnable != null) Universal.getMethods().getInstance().cancelTask(banBukkitRunnable.getTaskId());
+        banRunnable.cancel();
     }
 
 

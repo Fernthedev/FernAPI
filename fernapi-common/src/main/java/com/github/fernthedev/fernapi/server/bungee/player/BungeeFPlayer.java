@@ -1,14 +1,18 @@
-package com.github.fernthedev.fernapi.server.bungee;
+package com.github.fernthedev.fernapi.server.bungee.player;
 
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
+import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-public class BungeeFPlayer implements IFPlayer{
+public class BungeeFPlayer extends IFPlayer{
+    @Getter
     private ProxiedPlayer player;
+
     public BungeeFPlayer(ProxiedPlayer player) {
+        super(player.getName(),player.getUniqueId());
         this.player = player;
     }
 

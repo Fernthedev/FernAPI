@@ -1,4 +1,4 @@
-package com.github.fernthedev.fernapi.server.bungee;
+package com.github.fernthedev.fernapi.server.bungee.interfaces;
 
 import com.github.fernthedev.fernapi.universal.handlers.UUIDFetchManager;
 import com.github.fernthedev.fernapi.universal.UUIDFetcher;

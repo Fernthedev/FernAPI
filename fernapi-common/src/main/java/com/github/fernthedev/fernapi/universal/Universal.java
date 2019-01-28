@@ -1,8 +1,10 @@
 package com.github.fernthedev.fernapi.universal;
 
+import com.github.fernthedev.fernapi.universal.data.network.IPMessageHandler;
 import com.github.fernthedev.fernapi.universal.handlers.IChatHandler;
 import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
 import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
+import lombok.NonNull;
 
 public class Universal {
 
@@ -14,16 +16,18 @@ public class Universal {
 
     private static MethodInterface mi;
     private static IChatHandler ch;
+    private static IPMessageHandler mh;
 
 
     public static Universal getInstance() {
         return instance == null ? instance = new Universal() : instance;
     }
 
-    public void setup(MethodInterface methodInterface, IChatHandler chatHandler) {
+    public void setup(MethodInterface methodInterface, IChatHandler chatHandler, IPMessageHandler messageHandler) {
         methodInterface.getLogger().info("Registered interface");
         mi = methodInterface;
         ch = chatHandler;
+        mh = messageHandler;
     }
 
     public static void setDebug(boolean debug) {
@@ -34,6 +38,13 @@ public class Universal {
         mi.getLogger().info("[DEBUG] " + message);
     }
 
+    public static IFPlayer convertObjectPlayerToFPlayer(Object player) {
+        return mi.convertPlayerObjectToFPlayer(player);
+    }
+
+    public static Object convertFPlayerToPlayer(@NonNull IFPlayer ifPlayer) {
+        return mi.convertFPlayerToPlayer(ifPlayer);
+    }
 
     public static MethodInterface getMethods() {
         return mi;
@@ -43,7 +54,7 @@ public class Universal {
         return ch;
     }
 
-    public static IFPlayer convertPlayerObjectToFPlayer(Object player) {
-        return mi.convertPlayerObjectToFPlayer(player);
+    public static IPMessageHandler getMessageHandler() {
+        return mh;
     }
 }
