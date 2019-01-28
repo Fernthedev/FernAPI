@@ -15,10 +15,19 @@ public abstract class PluginMessageHandler {
 
     /**
      * This is the channel name that will be registered incoming and outcoming
-     * @return The channels that will be incoming and outcoming
+     * This is where you specify the channels you want to listen to
+     * Just make a new List<Channel> instance and add an instance of the channel accordingly.
+     * @see com.github.fernthedev.fernapi.server.bungee.network.AskPlaceHolder as an example
+     * @return The channels that will be incoming and outgoing
      */
     public abstract List<Channel> getChannels();
 
+    /**
+     * The event called when message is received from the channels registered
+     *
+     * @param data The data received for use of the event.
+     * @param channel The channel it was received from, for use of multiple channels in one listener
+     */
     public abstract void onMessageReceived(PluginMessageData data, Channel channel);
 
     protected String getDataString(DataInputStream in) throws IOException {
