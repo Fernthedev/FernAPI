@@ -135,7 +135,7 @@ data = new PluginMessageData(stream,"Forward",player.getServer().getInfo().getNa
 
 data.addData("Data1");
 
-data.addData("Data2"); //MESSAGE 2 (UUID)
+data.addData("Data2"); //MESSAGE 2
 
 Universal.getMessageHandler().sendPluginData(fplayer,data);
 ```
