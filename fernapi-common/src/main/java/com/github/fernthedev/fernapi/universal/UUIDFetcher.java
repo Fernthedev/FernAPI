@@ -282,6 +282,10 @@ public class UUIDFetcher {
         Universal.getMethods().getLogger().info("[com.github.fernthedev.fernapi.universal.UUIDFetcher] " + log);
     }
 
+    private static void debug(Object log) {
+        Universal.debug("[UUIDFetcher/FernAPI] " + log);
+    }
+
     public static void addRequestTimer() {
         try {
             fetchManager.runTimerRequest();

@@ -28,7 +28,7 @@ public class UUIDSpigot implements UUIDFetchManager {
                 playerNameCache.clear();
                 playerUUIDCache.clear();
                 playerHistoryCache.clear();
-                print("Refreshed uuid cache.");
+                debug("Refreshed uuid cache.");
             }
         }.runTaskLater((Plugin) Universal.getMethods().getInstance(),
                 TimeUnit.MINUTES.toSeconds(10) * 20);

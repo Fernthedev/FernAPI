@@ -35,7 +35,9 @@ public class Universal {
     }
 
     public static void debug(Object message) {
-        mi.getLogger().info("[DEBUG] " + message);
+        if(debug) {
+            mi.getLogger().info("[DEBUG] " + message);
+        }
     }
 
     public static IFPlayer convertObjectPlayerToFPlayer(Object player) {
