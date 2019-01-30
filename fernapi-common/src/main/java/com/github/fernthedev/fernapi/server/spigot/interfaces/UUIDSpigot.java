@@ -1,9 +1,8 @@
 package com.github.fernthedev.fernapi.server.spigot.interfaces;
 
-import com.github.fernthedev.fernapi.universal.handlers.UUIDFetchManager;
 import com.github.fernthedev.fernapi.universal.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
-import org.bukkit.Bukkit;
+import com.github.fernthedev.fernapi.universal.handlers.UUIDFetchManager;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -53,18 +52,11 @@ public class UUIDSpigot implements UUIDFetchManager {
 
     @Override
     public String getNameFromPlayer(UUID uuid) {
-        if(Bukkit.getPlayer(uuid) != null && Bukkit.getPlayer(uuid).isOnline()) {
-            return Bukkit.getPlayer(uuid).getName();
-        }
-
         return null;
     }
 
     @Override
     public UUID getUUIDFromPlayer(String name) {
-        if(Bukkit.getPlayer(name) != null && Bukkit.getPlayer(name).isOnline()) {
-            return Bukkit.getPlayer(name).getUniqueId();
-        }
         return null;
     }
 
