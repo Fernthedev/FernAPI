@@ -52,6 +52,12 @@ super.onEnable();
 }
 ```
 
+To get a fplayer instance, run 
+```java
+// Can only convert ProxiedPlayer, org.bukkit.entity.Player and/or EntityPlayer
+IFPlayer fPlayer = Universal.convertPlayerObjectToFPlayer(player);
+```
+
 UUID Fetch:
 ```java
 String uuid = UUIDFetcher.getUUID(Name);
