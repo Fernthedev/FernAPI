@@ -7,6 +7,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.fernthedev.fernapi.universal.UUIDFetcher.*;
@@ -41,9 +42,26 @@ public class UUIDBungee implements UUIDFetchManager {
 
     }
 
+    @Override
+    public String getNameFromPlayer(UUID uuid) {
+        if(ProxyServer.getInstance().getPlayer(uuid) != null && ProxyServer.getInstance().getPlayer(uuid).isConnected()) {
+            return ProxyServer.getInstance().getPlayer(uuid).getName();
+        }
+        return null;
+    }
+
+    @Override
+    public UUID getUUIDFromPlayer(String name) {
+        if(ProxyServer.getInstance().getPlayer(name) != null && ProxyServer.getInstance().getPlayer(name).isConnected()) {
+            return ProxyServer.getInstance().getPlayer(name).getUniqueId();
+        }
+        return null;
+    }
+
     public void stopTimerRequest() {
-        if(banHourTask != null)
-        ProxyServer.getInstance().getScheduler().cancel(banHourTask);
+        if(banHourTask != null) {
+            ProxyServer.getInstance().getScheduler().cancel(banHourTask);
+        }
     }
 
     public void stopHourTask() {

@@ -1,11 +1,12 @@
 package com.github.fernthedev.fernapi.server.forge.interfaces;
 
-import com.github.fernthedev.fernapi.universal.handlers.UUIDFetchManager;
 import com.github.fernthedev.fernapi.universal.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
+import com.github.fernthedev.fernapi.universal.handlers.UUIDFetchManager;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.fernthedev.fernapi.universal.UUIDFetcher.*;
@@ -51,6 +52,16 @@ public class UUIDForge implements UUIDFetchManager {
 
         // }.runTaskLater((Plugin) Universal.getMethods().getInstance(),
         //          TimeUnit.HOURS.toSeconds(1) *20);
+    }
+
+    @Override
+    public String getNameFromPlayer(UUID uuid) {
+        return null;
+    }
+
+    @Override
+    public UUID getUUIDFromPlayer(String name) {
+        return null;
     }
 
     public void stopTimerRequest() {

@@ -41,6 +41,10 @@ public class UUIDFetcher {
     private UUIDFetcher() { }
 
     public static String getUUID(String name) {
+        if(fetchManager.getUUIDFromPlayer(name) != null ) {
+            return fetchManager.getUUIDFromPlayer(name).toString();
+        }
+
         // Get Gson object
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         // read JSON file data as String
@@ -73,6 +77,10 @@ public class UUIDFetcher {
     }
 
     public static String getName(String uuid) {
+        if(fetchManager.getNameFromPlayer(UUID.fromString(uuid)) != null ) {
+            return fetchManager.getNameFromPlayer(UUID.fromString(uuid));
+        }
+
         // Get Gson object
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
