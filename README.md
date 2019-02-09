@@ -10,6 +10,39 @@ This is meant to be an api for my forge mods (or other's) and plugins. This plug
 [Usage](https://github.com/Fernthedev/FernAPI#usage)
 
 ## Installation
+
+### Non-Local Installation
+#### Maven:
+```maven
+<repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+</repository>
+```
+
+```maven
+<dependency>
+    <groupId>com.github.Fernthedev</groupId>
+    <artifactId>FernAPI</artifactId>
+    <version>Tag</version>
+</dependency>
+```
+
+#### Gradle:
+```gradle
+repositories {
+    ...
+    maven { url 'https://jitpack.io' }
+}
+```
+
+```gradle
+dependencies {
+        implementation 'com.github.Fernthedev:FernAPI:Tag'
+}
+```
+
+### Local Installation
 To install this, you may either clone this repository and run 
 `clean publishToMavenLocal` to add it to your local maven repository. You can also add it as a jar through 
 ```xml
