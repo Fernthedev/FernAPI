@@ -19,7 +19,7 @@ public class UUIDForge implements UUIDFetchManager {
 
 
     public void runTimerRequest() {
-        debug("Server is bukkit");
+        debug("Server is forge");
 
         requestRunnable.scheduleAtFixedRate(new TimerTask() {
             @Override

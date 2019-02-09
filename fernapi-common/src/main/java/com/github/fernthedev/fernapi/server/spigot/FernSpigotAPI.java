@@ -1,6 +1,7 @@
 package com.github.fernthedev.fernapi.server.spigot;
 
 import com.github.fernthedev.fernapi.server.spigot.chat.SpigotChatHandler;
+import com.github.fernthedev.fernapi.server.spigot.database.SpigotDatabase;
 import com.github.fernthedev.fernapi.server.spigot.interfaces.UUIDSpigot;
 import com.github.fernthedev.fernapi.server.spigot.network.PlaceHolderAPI.HookPlaceHolderAPI;
 import com.github.fernthedev.fernapi.server.spigot.network.SpigotMessageHandler;
@@ -16,7 +17,8 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
         getLogger().info("Registered FernAPI Spigot");
         Universal.getInstance().setup(new SpigotInterface(this),
                 new SpigotChatHandler(),
-                new SpigotMessageHandler(this));
+                new SpigotMessageHandler(this),
+                new SpigotDatabase(this));
         UUIDFetcher.setFetchManager(new UUIDSpigot());
 
         Universal.getMessageHandler().registerMessageHandler(new HookPlaceHolderAPI(this));

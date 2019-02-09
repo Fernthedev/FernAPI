@@ -47,7 +47,7 @@ public class UUIDFetcher {
 
         // Get Gson object
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        // read JSON file data as String
+        // read JSON file dataInfo as String
 
         if(name == null) return null;
 
@@ -87,7 +87,7 @@ public class UUIDFetcher {
         if (uuid == null) return null;
 
         uuid = uuid.replaceAll("-", "");
-        // read JSON file data as String
+        // read JSON file dataInfo as String
         try {
             String fileData = readUrl(NAME_URL.replace("%uuid%", uuid));
 
@@ -141,7 +141,7 @@ public class UUIDFetcher {
         if (uuid == null) return null;
 
         uuid = uuid.replaceAll("-", "");
-        // read JSON file data as String
+        // read JSON file dataInfo as String
         try {
             String fileData = readUrl(NAME_URL.replace("%uuid%", uuid));
 

@@ -45,9 +45,9 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
     }
 
     /**
-     * This sends plugin data.
+     * This sends plugin dataInfo.
      * @param fplayer The player can be null, not necessary
-     * @param data The data to be sent, player will be specified added automatically
+     * @param data The dataInfo to be sent, player will be specified added automatically
      */
 
     @Override
@@ -139,13 +139,13 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
                         if (in.available() > 0) {
                             server = in.readUTF();
                         } else {
-                            throw new NotEnoughDataException("The server data was not sent");
+                            throw new NotEnoughDataException("The server dataInfo was not sent");
                         }
 
                         if (in.available() > 0) {
                             subchannel = in.readUTF();
                         } else {
-                            throw new NotEnoughDataException("The subchannel data was not sent");
+                            throw new NotEnoughDataException("The subchannel dataInfo was not sent");
                         }
 
                         if(in.available() > 0) {
@@ -156,14 +156,14 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
 
                             spigot.getLogger().info("Received player info");
                         }else {
-                            throw new NotEnoughDataException("The player information data was not sent");
+                            throw new NotEnoughDataException("The player information dataInfo was not sent");
                         }
 
                         if (in.available() > 0) {
                             useGson = in.readBoolean();
                             spigot.getLogger().info("Gson status is: " + useGson);
                         } else {
-                            throw new NotEnoughDataException("The use gson boolean data was not sent");
+                            throw new NotEnoughDataException("The use gson boolean dataInfo was not sent");
                         }
 
                         data.setChannelName(type);
@@ -176,7 +176,7 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
                             if (in.available() > 0) {
                                 data = new Gson().fromJson(in.readUTF(), PluginMessageData.class);
                             } else {
-                                throw new NotEnoughDataException("The use gson json data was not sent");
+                                throw new NotEnoughDataException("The use gson json dataInfo was not sent");
                             }
                         }
 

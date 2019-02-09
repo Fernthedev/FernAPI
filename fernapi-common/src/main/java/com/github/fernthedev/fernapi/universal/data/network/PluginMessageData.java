@@ -41,7 +41,7 @@ public class PluginMessageData {
     }
 
     /**
-     * This will add extra data, you can also send an instance of this class through gson if you extend it.
+     * This will add extra dataInfo, you can also send an instance of this class through gson if you extend it.
      * @param s The object, use gson if possible for objects.
      */
     public void addData(String s) {

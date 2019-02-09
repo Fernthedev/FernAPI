@@ -10,8 +10,8 @@ import java.util.List;
 
 public abstract class PluginMessageHandler {
     
-    protected static String reason1 = "There was not enough data to be read";
-    protected static String reason2 = "There was an error processing the data.";
+    protected static String reason1 = "There was not enough dataInfo to be read";
+    protected static String reason2 = "There was an error processing the dataInfo.";
 
     /**
      * This is the channel name that will be registered incoming and outcoming
@@ -25,7 +25,7 @@ public abstract class PluginMessageHandler {
     /**
      * The event called when message is received from the channels registered
      *
-     * @param data The data received for use of the event.
+     * @param data The dataInfo received for use of the event.
      * @param channel The channel it was received from, for use of multiple channels in one listener
      */
     public abstract void onMessageReceived(PluginMessageData data, Channel channel);

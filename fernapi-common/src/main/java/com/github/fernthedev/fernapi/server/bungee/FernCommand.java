@@ -1,9 +1,13 @@
 package com.github.fernthedev.fernapi.server.bungee;
 
+import com.github.fernthedev.fernapi.universal.Universal;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
+
+import java.util.logging.Logger;
 
 public abstract class FernCommand extends Command {
     /**
@@ -30,4 +34,15 @@ public abstract class FernCommand extends Command {
     protected BaseComponent message(String text) {
         return new TextComponent(ChatColor.translateAlternateColorCodes('&',text));
     }
+
+    protected Logger logger() {
+        return Universal.getMethods().getLogger();
+    }
+
+    protected void sendMessage(CommandSender player, String message) {
+        player.sendMessage(message(message));
+    }
+
+    @Override
+    public abstract void execute(CommandSender sender, String[] args);
 }
