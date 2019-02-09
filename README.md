@@ -39,6 +39,7 @@ To install this, you may either clone this repository and run
   - Color code support
 - List sorter (Sorter Class, check methods) [u]
 - Bungee/Spigot plugin messaging [b/s]
+- MySQL [u]
 
 ## Usage:
 Main class should extend one of these classes respectively.
@@ -61,14 +62,14 @@ To get a fplayer instance, run
 IFPlayer fPlayer = Universal.convertPlayerObjectToFPlayer(player);
 ```
 
-UUID Fetch:
+### UUID Fetch:
 ```java
 String uuid = UUIDFetcher.getUUID(Name);
 String name = UUIDFetcher.getName(UUID);
 List<UUIDFetcher.PlayerHistory> names = UUIDFetcher.getNameHistory(uuidPlayer);
 ```
 
-ChatAPI
+### ChatAPI
 ```java
 // Can only convert ProxiedPlayer, org.bukkit.entity.Player and/or EntityPlayer
 IFPlayer fPlayer = Universal.convertPlayerObjectToFPlayer(player);
@@ -79,7 +80,7 @@ textMessage.setHoverData(new HoverData(HoverData.Action.SHOW_TEXT,"hover text wi
 fPlayer.sendChatMessage(textMessage);
 ```
 
-PlaceHolderAPI (Bungee)
+### PlaceHolderAPI (Bungee)
 ```java
 AskPlaceHolder askPlaceHolder = new AskPlaceHolder(Player,PlaceHolder);
 
@@ -148,3 +149,6 @@ data.addData("Data2"); //MESSAGE 2
 
 Universal.getMessageHandler().sendPluginData(fplayer,data);
 ```
+
+### MySQL
+Example usage can be found [here](https://github.com/Fernthedev/FernAPI/tree/master/fernapi-common/src/main/java/com/github/fernthedev/fernapi/universal/examples)
