@@ -43,6 +43,9 @@ repositories {
         name = 'placeholderapi'
         url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/'
     }
+
+    jcenter()
+    maven { url "https://jitpack.io" }
 }
 
 archivesBaseName = "FernAPI"
@@ -53,6 +56,7 @@ dependencies {
     compileOnly 'net.md-5:bungeecord-api:1.8-SNAPSHOT'
    compileOnly 'me.clip:placeholderapi:+'
     compileOnly 'org.projectlombok:lombok:+'
+    implementation 'com.github.jitpack:gradle-simple:1.0'
 }
 
 
