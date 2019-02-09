@@ -13,14 +13,14 @@ This is meant to be an api for my forge mods (or other's) and plugins. This plug
 
 ### Non-Local Installation
 #### Maven:
-```maven
+```xml
 <repository>
     <id>jitpack.io</id>
     <url>https://jitpack.io</url>
 </repository>
 ```
 
-```maven
+```xml
 <dependency>
     <groupId>com.github.Fernthedev</groupId>
     <artifactId>FernAPI</artifactId>
