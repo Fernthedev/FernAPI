@@ -50,6 +50,29 @@ public class Sorter {
         return list;
     }
 
+    public List<Object[]> objectToPageArray(List<Object> objects,int perPage) {
+        int index = 0;
+
+        List<Object[]> pageList = new ArrayList<>();
+
+        List<Object> curPage = new ArrayList<>();
+
+        for (Object object : objects) {
+            index++;
+
+            if (index >= perPage + 1) {
+                pageList.add(curPage.toArray());
+                curPage.clear();
+            }
+
+            curPage.add(object);
+
+
+        }
+
+        return pageList;
+    }
+
     @Getter
     @AllArgsConstructor
     public static class DateObject {
