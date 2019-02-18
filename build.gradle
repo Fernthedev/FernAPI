@@ -20,7 +20,7 @@ subprojects {
     apply plugin: 'maven-publish'
 
     group = 'com.github.fernthedev'
-    version = '1.4'
+    version = '1.5'
 
 
     ////group = project.pluginGroup
