@@ -78,7 +78,7 @@ To install this, you may either clone this repository and run
 Main class should extend one of these classes respectively.
 ```
 FernBungeeAPI
-FernForgeAPI
+FernSpongeAPI
 FernSpigotAPI
 ```
 [Bungee/Spigot Required] This is required in order for the api to work in spigot and/or bunge
@@ -87,6 +87,13 @@ FernSpigotAPI
 public void onEnable() {
 super.onEnable();
 }
+```
+For sponge, you should have 
+```java
+    @Listener
+    public void onServerStart(GameStartedServerEvent event) {
+    super.onServerStart(event);
+    }
 ```
 
 To get a fplayer instance, run 
