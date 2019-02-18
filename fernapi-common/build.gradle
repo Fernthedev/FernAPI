@@ -29,6 +29,10 @@ repositories {
         url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/'
     }
 
+    flatDir {
+        dirs 'libs'
+    }
+
     jcenter()
     maven { url "https://jitpack.io" }
 }
