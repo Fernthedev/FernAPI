@@ -89,7 +89,7 @@ public class Universal {
         return db;
     }
 
-    public static CommandHandler commandHandler() {
+    public static CommandHandler getCommandHandler() {
         checkNull();
         return comhand;
     }
