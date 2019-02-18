@@ -22,6 +22,10 @@ subprojects {
     group = 'com.github.fernthedev'
     version = '1.5'
 
+    dependencies {
+        implementation fileTree(include: ['*.jar'], dir: 'libs')
+    }
+
 
     ////group = project.pluginGroup
     //version = project.pluginVersion

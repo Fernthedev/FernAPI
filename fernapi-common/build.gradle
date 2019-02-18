@@ -29,13 +29,6 @@ repositories {
         url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/'
     }
 
-
-    maven {
-        url "http://nexus.hc.to/content/repositories/pub_releases"
-    }
-
-    mavenLocal()
-
     jcenter()
     maven { url "https://jitpack.io" }
 }
