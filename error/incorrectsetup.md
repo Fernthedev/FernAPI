@@ -3,12 +3,19 @@ To fix this, you have to have your main plugin/mod class extend one of 3 classes
 ```
 FernBungeeAPI
 FernSpigotAPI
-FernForgeAPI
+FernSpongeAPI
 ```
 After you have extended one of these classes, for bungee and spigot you have to add 
 ```java
 public void onEnable() {
     super.onEnable();
 }
+```
+For sponge, you should have 
+```java
+    @Listener
+    public void onServerStart(GameStartedServerEvent event) {
+    super.onServerStart(event);
+    }
 ```
 That should be all, unless the API updates.

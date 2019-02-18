@@ -56,7 +56,7 @@ To install this, you may either clone this repository and run
 ```
 
 ## Features:
-[f] = Forge
+[SP] = Sponge
 
 [b] = Bungee
 
@@ -70,7 +70,7 @@ To install this, you may either clone this repository and run
   - Hover message
   - Color code support
 - List sorter (Sorter Class, check methods) [u]
-- Bungee/Spigot plugin messaging [b/s]
+- Bungee/Spigot plugin messaging [u]
 - MySQL [u]
 
 ## Usage:
@@ -173,7 +173,7 @@ To receive messages, the sender also has to use the API. This is an example how:
 ByteArrayOutputStream stream = new ByteArrayOutputStream();
 DataOutputStream out = new DataOutputStream(stream);
 
-data = new PluginMessageData(stream,"Forward",player.getServer().getInfo().getName(),Subchannel such as "pluginName:channel");
+data = new PluginMessageData(stream,"Forward",player.getServer().getInfo().getName(),Sub channel such as "Channel1",Channel you defined in your getChannels() method "pluginName:channel");
 
 data.addData("Data1");
 
