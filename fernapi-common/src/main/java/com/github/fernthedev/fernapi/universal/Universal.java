@@ -2,10 +2,7 @@ package com.github.fernthedev.fernapi.universal;
 
 import com.github.fernthedev.fernapi.universal.data.network.IPMessageHandler;
 import com.github.fernthedev.fernapi.universal.exceptions.setup.IncorrectSetupException;
-import com.github.fernthedev.fernapi.universal.handlers.DatabaseHandler;
-import com.github.fernthedev.fernapi.universal.handlers.IChatHandler;
-import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
-import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
+import com.github.fernthedev.fernapi.universal.handlers.*;
 import lombok.NonNull;
 
 public class Universal {
@@ -22,20 +19,27 @@ public class Universal {
     private static IChatHandler ch;
     private static IPMessageHandler mh;
     private static DatabaseHandler db;
+    private static CommandHandler comhand;
+
+    private static FernAPIPlugin plugin;
 
 
     public static Universal getInstance() {
         return instance == null ? instance = new Universal() : instance;
     }
 
-    public void setup(@NonNull MethodInterface methodInterface, IChatHandler chatHandler, IPMessageHandler messageHandler, DatabaseHandler databaseHandler) {
+    public void setup(@NonNull MethodInterface methodInterface,FernAPIPlugin aplugin, IChatHandler chatHandler, IPMessageHandler messageHandler, DatabaseHandler databaseHandler,CommandHandler commandHandler) {
         methodInterface.getLogger().info("Registered interface");
         setup = true;
         mi = methodInterface;
         ch = chatHandler;
         mh = messageHandler;
         db = databaseHandler;
+        comhand = commandHandler;
+        plugin = aplugin;
+
     }
+
 
     public static void checkNull() {
         if(mi == null || !setup) {
@@ -83,5 +87,15 @@ public class Universal {
     public static DatabaseHandler getDatabaseHandler() {
         checkNull();
         return db;
+    }
+
+    public static CommandHandler commandHandler() {
+        checkNull();
+        return comhand;
+    }
+
+    public static FernAPIPlugin getPlugin() {
+        checkNull();
+        return plugin;
     }
 }

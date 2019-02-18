@@ -20,9 +20,6 @@ public class HoverData {
     public static enum Action {
         SHOW_TEXT,
         SHOW_ACHIEVEMENT,
-        SHOW_ITEM,
-        SHOW_ENTITY
-
     }
 }
 

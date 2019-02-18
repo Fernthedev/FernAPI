@@ -1,7 +1,6 @@
 package com.github.fernthedev.fernapi.server.bungee.network;
 
 import com.github.fernthedev.fernapi.server.bungee.FernBungeeAPI;
-import com.github.fernthedev.fernapi.universal.Channels;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.JSONPlayer;
 import com.github.fernthedev.fernapi.universal.data.network.*;
@@ -47,6 +46,7 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
                         String channelName = in.readUTF(); // channel we delivered
                         String server;
                         String subchannel;
+                        String messageChannel;
                         boolean useGson;
 
                         if (in.available() > 0) {
@@ -59,6 +59,12 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
                             subchannel = in.readUTF();
                         } else {
                             throw new NotEnoughDataException("The subchannel dataInfo was not sent");
+                        }
+
+                        if(in.available() > 0) {
+                            messageChannel = in.readUTF();
+                        } else {
+                            throw new NotEnoughDataException("The message channel data info was not sent");
                         }
 
                         if(in.available() > 0) {
@@ -76,6 +82,7 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
                         }
 
                         data.setChannelName(channelName);
+                        data.setMessageChannel(messageChannel);
                         data.setSender(ev.getSender());
                         data.setServer(server);
                         data.setSubchannel(subchannel);
@@ -152,6 +159,8 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
             out.writeUTF(data.getServer()); //SERVER
             out.writeUTF(data.getSubchannel()); //SUBCHANNEL
 
+            out.writeUTF(data.getMessageChannel());
+
             out.writeUTF(new Gson().toJson(new JSONPlayer(player.getName(),player.getUniqueId())));
 
             out.writeBoolean(data.isUseGson());
@@ -172,7 +181,7 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
             e.printStackTrace();
         }
 
-        player.getServer().sendData(Channels.PlaceHolderBungeeChannel,stream.toByteArray());
+        player.getServer().sendData(data.getMessageChannel(),stream.toByteArray());
     }
 
     /**

@@ -1,20 +1,15 @@
-package com.github.fernthedev.fernapi.universal.data;
+package com.github.fernthedev.fernapi.server.spigot.player;
 
+import com.github.fernthedev.fernapi.universal.api.CommandSender;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
-import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-import java.net.InetSocketAddress;
 import java.util.Collection;
-import java.util.UUID;
 
-@Getter
-@NoArgsConstructor
-public class JSONPlayer extends IFPlayer {
+public class SpigotFConsole implements CommandSender {
+    private org.bukkit.command.CommandSender commandSender;
 
-    public JSONPlayer(String name, UUID uuid) {
-        super(name,uuid);
+    public SpigotFConsole(org.bukkit.command.CommandSender commandSender) {
+        this.commandSender = commandSender;
     }
 
     /**
@@ -25,7 +20,7 @@ public class JSONPlayer extends IFPlayer {
      */
     @Override
     public boolean hasPermission(String permission) {
-        return false;
+        return commandSender.hasPermission(permission);
     }
 
     /**
@@ -51,12 +46,7 @@ public class JSONPlayer extends IFPlayer {
     }
 
     @Override
-    public void sendMessage(BaseMessage textMessage) {
-        throw new IllegalArgumentException("Do not call this method, it is useless. Convert it to player instance or a different FPlayer instance");
-    }
+    public void sendMessage(BaseMessage message) {
 
-    @Override
-    public InetSocketAddress getAddress() {
-        return null;
     }
 }

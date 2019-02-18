@@ -21,7 +21,7 @@ subprojects {
 
     group = 'com.github.fernthedev'
     version = '1.4'
-    
+
 
     ////group = project.pluginGroup
     //version = project.pluginVersion
@@ -30,10 +30,9 @@ subprojects {
     compileJava {
         sourceCompatibility = targetCompatibility = '1.8'
     }
-    
+
     repositories {
         mavenCentral()
     }
 }
-
 

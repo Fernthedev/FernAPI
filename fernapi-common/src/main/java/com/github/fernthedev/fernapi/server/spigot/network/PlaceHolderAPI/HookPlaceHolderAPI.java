@@ -51,7 +51,7 @@ public class HookPlaceHolderAPI extends PluginMessageHandler {
         DataInputStream in = data.getIn();
         try {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                PluginMessageData newData = new PluginMessageData(stream,"Forward","ALL",Channels.PlaceHolderValue);
+                PluginMessageData newData = new PluginMessageData(stream,"Forward","ALL",Channels.PlaceHolderValue,Channels.PlaceHolderBungeeChannel);
 
                 String placeholderOld = in.readUTF(); //PLACEHOLDER
                 String uuid = in.readUTF(); //UUID OF SENDER

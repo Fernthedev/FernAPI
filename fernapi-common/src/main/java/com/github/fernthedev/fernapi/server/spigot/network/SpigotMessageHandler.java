@@ -1,7 +1,6 @@
 package com.github.fernthedev.fernapi.server.spigot.network;
 
 import com.github.fernthedev.fernapi.server.spigot.FernSpigotAPI;
-import com.github.fernthedev.fernapi.universal.Channels;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.JSONPlayer;
 import com.github.fernthedev.fernapi.universal.data.network.*;
@@ -80,6 +79,8 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
             out.writeUTF(data.getServer()); //SERVER
             out.writeUTF(data.getSubchannel()); //SUBCHANNEL
 
+            out.writeUTF(data.getMessageChannel());
+
             out.writeUTF(new Gson().toJson(new JSONPlayer(player.getName(),player.getUniqueId())));
 
             out.writeBoolean(data.isUseGson());
@@ -97,7 +98,7 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
             e.printStackTrace();
         }
 
-        Bukkit.getServer().sendPluginMessage(spigot,Channels.PlaceHolderBungeeChannel,stream.toByteArray());
+        Bukkit.getServer().sendPluginMessage(spigot,data.getMessageChannel(),stream.toByteArray());
     }
 
     /**
@@ -134,6 +135,7 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
                         String type = in.readUTF(); //TYPE
                         String server;
                         String subchannel;
+                        String messageChannel;
                         boolean useGson;
 
                         if (in.available() > 0) {
@@ -146,6 +148,12 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
                             subchannel = in.readUTF();
                         } else {
                             throw new NotEnoughDataException("The subchannel dataInfo was not sent");
+                        }
+
+                        if (in.available() > 0) {
+                            messageChannel = in.readUTF();
+                        } else {
+                            throw new NotEnoughDataException("The message channel dataInfo was not sent");
                         }
 
                         if(in.available() > 0) {
@@ -168,6 +176,7 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
 
                         data.setChannelName(type);
                         data.setServer(server);
+                        data.setMessageChannel(messageChannel);
                         data.setSender(player);
                         data.setSubchannel(subchannel);
                         data.setUseGson(useGson);

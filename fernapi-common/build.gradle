@@ -3,48 +3,16 @@ buildscript {
         jcenter()
         maven { url = "http://files.minecraftforge.net/maven" }
     }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-    }
 }
-apply plugin: 'net.minecraftforge.gradle'
-
-
-minecraft {
-    // default run configurations.
-    // these can be tweaked, removed, or duplicated as needed.
-  //  version = "1.8.9-11.15.1.2318-1.8.9"
-
-    // default run configurations.
-    // these can be tweaked, removed, or duplicated as needed.
-    runs {
-        client = {
-            // recommended logging data for a userdev environment
-            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
-            // recommended logging level for the console
-            properties 'forge.logging.console.level': 'debug'
-            workingDirectory project.file('run').canonicalPath
-            source sourceSets.main
-        }
-        server = {
-            // recommended logging data for a userdev environment
-            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
-            // recommended logging level for the console
-            properties 'forge.logging.console.level': 'debug'
-            workingDirectory project.file('run').canonicalPath
-            source sourceSets.main
-        }
-    }
-
-    // the mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   snapshot are built nightly.
-    // stable_#            stables are built at the discretion of the MCP team.
-    // Use non-default mappings at your own risk. they may not always work.
-    // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'snapshot', version: '20180921-1.13'
-    //mappings = "snapshot_20171003"
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+plugins {
+    id 'java'
+    id 'net.nemerosa.versioning' version '2.6.1'
+    id 'org.spongepowered.plugin' version '0.9.0'
 }
+
+
+// This may not be required, but has solved issues in the past
+compileJava.options.encoding = 'UTF-8'
 
 repositories {
     maven {
@@ -55,11 +23,18 @@ repositories {
         name = 'sonatype'
         url = 'https://oss.sonatype.org/content/groups/public/'
     }
-    
+
     maven {
         name = 'placeholderapi'
         url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/'
     }
+
+
+    maven {
+        url "http://nexus.hc.to/content/repositories/pub_releases"
+    }
+
+    mavenLocal()
 
     jcenter()
     maven { url "https://jitpack.io" }
@@ -69,18 +44,21 @@ group = 'com.github.fernthedev' // http://maven.apache.org/guides/mini/guide-nam
 def developer = "FernTheDev"
 def MCVersion = "1.8.9"
 archivesBaseName = "FernAPI"
+description = 'An API for universal code'
+
 
 dependencies {
     compileOnly 'com.google.code.gson:gson:2.6.2'
     // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.8.9-11.15.1.2318-1.8.9'
+  //  minecraft 'net.minecraftforge:forge:1.8.9-11.15.1.1722'
     compileOnly 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT'
     compileOnly 'net.md-5:bungeecord-api:1.8-SNAPSHOT'
-    compileOnly 'me.clip:placeholderapi:+'
-    compileOnly 'org.projectlombok:lombok:+'
-    implementation 'com.github.jitpack:gradle-simple:1.0'
+    compile group: 'me.clip', name: 'placeholderapi', version: '2.9.2'
+    compileOnly "net.milkbowl.vault:VaultAPI:1.7"
+    compileOnly 'org.spongepowered:spongeapi:7.1.0'
+    compileOnly 'org.projectlombok:lombok:1.18.6'
 }
 
 
@@ -107,13 +85,6 @@ configurations {
 
 jar.dependsOn(shadowJar)
 
-reobf {
-    //noinspection GroovyMissingReturnStatement
-    shadowJar {
-        // Reobfuscate the shadowed JAR
-    }
-}
-
 processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
@@ -133,6 +104,17 @@ processResources {
     }
 }
 
+sponge {
+    plugin {
+        meta {
+            url = 'https://github.com/Fernthedev/FernAPI/'
+        }
+    }
+}
+
 shadowJar {
     minimize()
+    dependencies {
+        include(dependency(':fernapi-common'))
+    }
 }

@@ -1,10 +1,13 @@
 package com.github.fernthedev.fernapi.server.bungee;
 
+import com.github.fernthedev.fernapi.server.bungee.player.BungeeFConsole;
 import com.github.fernthedev.fernapi.server.bungee.player.BungeeFPlayer;
+import com.github.fernthedev.fernapi.universal.api.CommandSender;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
 import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
 import com.github.fernthedev.fernapi.universal.handlers.ServerType;
+import lombok.NonNull;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -44,5 +47,18 @@ public class BungeeInterface implements MethodInterface {
         }
 
         return ProxyServer.getInstance().getPlayer(ifPlayer.getUuid());
+    }
+
+    @Override
+    public CommandSender convertCommandSenderToAPISender(@NonNull Object commandSender) {
+        if(commandSender instanceof ProxiedPlayer) {
+            return new BungeeFPlayer((ProxiedPlayer) commandSender);
+        }
+
+        if(commandSender instanceof net.md_5.bungee.api.CommandSender) {
+            return new BungeeFConsole((net.md_5.bungee.api.CommandSender) commandSender);
+        }
+
+        return null;
     }
 }

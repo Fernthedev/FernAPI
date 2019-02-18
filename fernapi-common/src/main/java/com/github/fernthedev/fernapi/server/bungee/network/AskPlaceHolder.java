@@ -58,7 +58,7 @@ public class AskPlaceHolder extends PluginMessageHandler {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(stream);
 
-        data = new PluginMessageData(stream,"Forward",player.getServer().getInfo().getName(),Channels.getPlaceHolderResult);
+        data = new PluginMessageData(stream,"Forward",player.getServer().getInfo().getName(),Channels.getPlaceHolderResult,Channels.PlaceHolderBungeeChannel);
 
         uuid = UUID.randomUUID().toString();
         if (!instances.isEmpty()) {

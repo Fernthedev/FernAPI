@@ -21,6 +21,8 @@ public class PluginMessageData {
     protected String server;
     protected String subchannel;
 
+    protected String messageChannel;
+
     protected boolean useGson = false;
 
     protected List<String> extraData = new ArrayList<>();
@@ -32,12 +34,17 @@ public class PluginMessageData {
         this.in = new DataInputStream(inputStream);
     }
 
-    public PluginMessageData(@NonNull ByteArrayOutputStream outputStream,String channelName,String server,String subchannel) {
+    public PluginMessageData(Object channelBuf) {
+
+    }
+
+    public PluginMessageData(@NonNull ByteArrayOutputStream outputStream,String channelName,String server,String subchannel,String messageChannel) {
         this.outputStream = outputStream;
         this.in = new DataInputStream(inputStream);
         this.channelName = channelName;
         this.server = server;
         this.subchannel = subchannel;
+        this.messageChannel = messageChannel;
     }
 
     /**

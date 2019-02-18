@@ -23,10 +23,6 @@ public class ClickData {
          */
         OPEN_URL,
         /**
-         * Open a file at the path given
-         */
-        OPEN_FILE,
-        /**
          * Run the command given
          */
         RUN_COMMAND,
