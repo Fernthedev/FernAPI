@@ -72,6 +72,7 @@ To install this, you may either clone this repository and run
 - List sorter (Sorter Class, check methods) [u]
 - Bungee/Spigot plugin messaging [u]
 - MySQL [u]
+- Universal Commands [u]
 
 ## Usage:
 Main class should extend one of these classes respectively.
@@ -184,3 +185,18 @@ Universal.getMessageHandler().sendPluginData(fplayer,data);
 
 ### MySQL
 Example usage can be found [here](https://github.com/Fernthedev/FernAPI/tree/master/fernapi-common/src/main/java/com/github/fernthedev/fernapi/universal/examples)
+
+### Universal Commands
+Universal Commands are commands that can be registered with the same class and code in spigot, sponge and bungee without necessarily adding server specific code, but that can be done anyways.
+```java
+public class UC extends UniversalCommand() {
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+
+    }
+};
+```
+and register with 
+```java
+Universal.getCommandHandler().registerFernCommand(universalCommand);
+```
