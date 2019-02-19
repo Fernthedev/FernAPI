@@ -24,6 +24,7 @@ This is meant to be an api for my sponge and plugins. This plugin is compiled in
 <dependency>
     <groupId>com.github.Fernthedev</groupId>
     <artifactId>FernAPI</artifactId>
+    <!-- Tag can be found in releases at github repository -->
     <version>Tag</version>
 </dependency>
 ```
@@ -38,6 +39,7 @@ repositories {
 
 ```gradle
 dependencies {
+//Tag can be found in releases at github repository
         implementation 'com.github.Fernthedev:FernAPI:Tag'
 }
 ```
