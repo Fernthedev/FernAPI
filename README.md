@@ -1,5 +1,5 @@
 # FernAPI
-This is meant to be an api for my forge mods (or other's) and plugins. This plugin is compiled in 1.8.9, but should work regaurdless of your mod/plugin's version unless it uses outdated libraries or other means of change.
+This is meant to be an api for my sponge and plugins. This plugin is compiled in 1.8.9, but should work regaurdless of your mod/plugin's version unless it uses outdated libraries or other means of change.
 
 [![Release](https://jitpack.io/v/Fernthedev/FernAPI.svg)](https://jitpack.io/#Fernthedev/FernAPI)
 
@@ -24,6 +24,7 @@ This is meant to be an api for my forge mods (or other's) and plugins. This plug
 <dependency>
     <groupId>com.github.Fernthedev</groupId>
     <artifactId>FernAPI</artifactId>
+    <!-- Tag can be found in releases at github repository -->
     <version>Tag</version>
 </dependency>
 ```
@@ -38,6 +39,7 @@ repositories {
 
 ```gradle
 dependencies {
+//Tag can be found in releases at github repository
         implementation 'com.github.Fernthedev:FernAPI:Tag'
 }
 ```
@@ -78,7 +80,7 @@ To install this, you may either clone this repository and run
 Main class should extend one of these classes respectively.
 ```
 FernBungeeAPI
-FernForgeAPI
+FernSpongeAPI
 FernSpigotAPI
 ```
 [Bungee/Spigot Required] This is required in order for the api to work in spigot and/or bunge
@@ -87,6 +89,13 @@ FernSpigotAPI
 public void onEnable() {
 super.onEnable();
 }
+```
+For sponge, you should have 
+```java
+    @Listener
+    public void onServerStart(GameStartedServerEvent event) {
+    super.onServerStart(event);
+    }
 ```
 
 To get a fplayer instance, run 
