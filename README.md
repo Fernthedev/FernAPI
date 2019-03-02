@@ -57,6 +57,11 @@ To install this, you may either clone this repository and run
 </dependency>
 ```
 
+### Shading
+After you have added it as a dependency, it is required to shade the library. To do this,you can use other methods if you liked, I suggest these:
+For gradle: https://github.com/johnrengelman/shadow
+For maven: https://maven.apache.org/plugins/maven-shade-plugin/usage.html
+
 ## Features:
 [SP] = Sponge
 
