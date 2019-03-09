@@ -39,6 +39,10 @@ subprojects {
         mavenCentral()
     }
 
+
+}
+
+allprojects {
     dependencies {
         compileOnly 'com.google.code.gson:gson:2.6.2'
         // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
@@ -51,6 +55,6 @@ subprojects {
         compileOnly 'org.spongepowered:spongeapi:7.1.0'
         compileOnly 'org.projectlombok:lombok:1.18.6'
         implementation 'com.github.Fernthedev:VaultAPI:7.0'
-    } 
+    }
 }
 
