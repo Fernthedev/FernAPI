@@ -49,8 +49,8 @@ To install this, you may either clone this repository and run
 `clean publishToMavenLocal` to add it to your local maven repository. You can also add it as a jar through 
 ```xml
 <dependency>
-    <groupId>com.github.fernthedev</groupId>
-    <artifactId>fernapi</artifactId>
+    <groupId>fernthedev</groupId>
+    <artifactId>com.github.fernthedev.fernapi</artifactId>
     <version>LATEST</version>
     <scope>system</scope>
     <systemPath>${project.basedir}/path</systemPath>
@@ -199,7 +199,7 @@ Universal.getMessageHandler().sendPluginData(fplayer,data);
 ```
 
 ### MySQL
-Example usage can be found [here](https://github.com/Fernthedev/FernAPI/tree/master/fernapi-common/src/main/java/com/github/fernthedev/fernapi/universal/examples)
+Example usage can be found [here](https://github.com/Fernthedev/FernAPI/tree/master/com.github.fernthedev.fernapi-common/src/main/java/com/github/fernthedev/com.github.fernthedev.fernapi/universal/examples)
 
 ### Universal Commands
 Universal Commands are commands that can be registered with the same class and code in spigot, sponge and bungee without necessarily adding server specific code, but that can be done anyways.

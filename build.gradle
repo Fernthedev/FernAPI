@@ -10,51 +10,110 @@ buildscript {
         classpath "com.github.jengelman.gradle.plugins:shadow:4.0.4"
     }
 }
-apply plugin: 'maven'
-
-
-subprojects {
-    apply plugin: 'java'
-    apply plugin: 'maven'
-    apply plugin: 'com.github.johnrengelman.shadow'
-    apply plugin: 'maven-publish'
-
-    group = 'com.github.fernthedev'
-    version = '1.6'
-
-    dependencies {
-        implementation fileTree(include: ['*.jar'], dir: 'libs')
-    }
-
-
-    ////group = project.pluginGroup
-    //version = project.pluginVersion
-
-    sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
-    compileJava {
-        sourceCompatibility = targetCompatibility = '1.8'
-    }
-
-    repositories {
-        mavenCentral()
-    }
-
-
+plugins {
+    id 'java'
+    id 'net.nemerosa.versioning' version '2.6.1'
+    id 'org.spongepowered.plugin' version '0.9.0'
 }
 
-allprojects {
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'maven-publish'
+
+
+repositories {
+    maven {
+        name = 'spigotmc-repo'
+        url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
+    }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+
+    maven {
+        name = 'placeholderapi'
+        url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
+
+    flatDir {
+        dirs 'libs'
+    }
+
+    jcenter()
+    maven { url "https://jitpack.io" }
+    mavenCentral()
+}
+
+group = 'com.github.fernthedev'
+
+version = '1.6'
+def developer = "FernTheDev"
+def MCVersion = "1.8.9"
+archivesBaseName = "FernAPI"
+description = 'An API for universal code'
+
+compileJava.options.encoding = 'UTF-8'
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    compileOnly 'com.google.code.gson:gson:2.6.2'
+    // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
+    // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
+    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
+    //  minecraft 'net.minecraftforge:forge:1.8.9-11.15.1.1722'
+    compileOnly 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT'
+    compileOnly 'net.md-5:bungeecord-api:1.8-SNAPSHOT'
+    compile group: 'me.clip', name: 'placeholderapi', version: '2.9.2'
+    compileOnly 'org.spongepowered:spongeapi:7.1.0'
+    compileOnly 'org.projectlombok:lombok:1.18.6'
+    implementation 'com.github.Fernthedev:VaultAPI:7.0'
+}
+
+sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
+// This may not be required, but has solved issues in the past
+
+
+
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            groupId = 'fernthedev'
+            artifactId = 'com.github.fernthedev.fernapi'
+            version = '1.1'
+
+        }
+    }
+}
+
+configurations {
+    shade
+    compile.extendsFrom shade
+}
+
+jar.dependsOn(shadowJar)
+
+sponge {
+    plugin {
+        id = 'fernapi'
+        meta {
+            url = 'https://github.com/Fernthedev/FernAPI/'
+        }
+    }
+}
+
+shadowJar {
+    minimize()
     dependencies {
-        compileOnly 'com.google.code.gson:gson:2.6.2'
-        // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
-        // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
-        // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-        //  minecraft 'net.minecraftforge:forge:1.8.9-11.15.1.1722'
-        compileOnly 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT'
-        compileOnly 'net.md-5:bungeecord-api:1.8-SNAPSHOT'
-        compile group: 'me.clip', name: 'placeholderapi', version: '2.9.2'
-        compileOnly 'org.spongepowered:spongeapi:7.1.0'
-        compileOnly 'org.projectlombok:lombok:1.18.6'
-        implementation 'com.github.Fernthedev:VaultAPI:7.0'
+        include(dependency(':com.github.fernthedev.fernapi'))
     }
 }
 

@@ -1,2 +1,1 @@
-rootProject.name = 'fernapi'
-include 'fernapi-common'
+rootProject.name = 'com.github.fernthedev.fernapi'
