@@ -4,6 +4,8 @@ import com.github.fernthedev.fernapi.server.spigot.FernSpigotAPI;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.JSONPlayer;
 import com.github.fernthedev.fernapi.universal.data.network.*;
+import com.github.fernthedev.fernapi.universal.exceptions.network.NoPlayersOnlineException;
+import com.github.fernthedev.fernapi.universal.exceptions.network.NotEnoughDataException;
 import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
 import com.github.fernthedev.fernapi.universal.handlers.PluginMessageHandler;
 import com.google.gson.Gson;

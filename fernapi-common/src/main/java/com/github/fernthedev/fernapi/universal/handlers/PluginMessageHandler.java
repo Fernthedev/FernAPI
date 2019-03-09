@@ -1,7 +1,7 @@
 package com.github.fernthedev.fernapi.universal.handlers;
 
 import com.github.fernthedev.fernapi.universal.data.network.Channel;
-import com.github.fernthedev.fernapi.universal.data.network.NotEnoughDataException;
+import com.github.fernthedev.fernapi.universal.exceptions.network.NotEnoughDataException;
 import com.github.fernthedev.fernapi.universal.data.network.PluginMessageData;
 
 import java.io.DataInputStream;

@@ -1,4 +1,4 @@
-package com.github.fernthedev.fernapi.universal.data.network;
+package com.github.fernthedev.fernapi.universal.exceptions.network;
 
 import java.io.IOException;
 
