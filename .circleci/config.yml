@@ -16,6 +16,7 @@ jobs:
 
     working_directory: ~/repo
 
+
     environment:
       # Customize the JVM maximum heap limit
       JVM_OPTS: -Xmx5200m
@@ -41,3 +42,6 @@ jobs:
 
       # run tests!
       - run: ./gradlew test clean shadowJar
+
+      - store_test_results:
+          path: test-results
