@@ -44,8 +44,8 @@ jobs:
       - run: ./gradlew test clean shadowJar
 
       - store_artifacts:
-          path: ./test-results
-          destination: prefix
+          path: /build/
+          destination: jar
 
       - store_test_results:
-          path: ./test-results
+          path: /test-results
