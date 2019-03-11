@@ -46,4 +46,4 @@ jobs:
 
       - store_artifacts:
           path: build/libs/
-          destination: artifact-file
+          destination: jars
