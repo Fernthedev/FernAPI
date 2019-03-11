@@ -79,7 +79,7 @@ For maven: https://maven.apache.org/plugins/maven-shade-plugin/usage.html
   - Hover message
   - Color code support
 - [List sorter (Sorter Class, check methods)]() [u]
-- [Bungee/Spigot/Sponge plugin messaging]() [u]
+- [Bungee/Spigot/Sponge plugin messaging](https://github.com/Fernthedev/FernAPI#bungeespigot-plugin-messaging-must-implement-pluginmessagehandler) [u]
 - [MySQL](https://github.com/Fernthedev/FernAPI#mysql) [u]
 - [Universal Commands](https://github.com/Fernthedev/FernAPI#universal-commands) [u]
 
