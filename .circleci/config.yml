@@ -40,5 +40,4 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
       # run tests!
-      - run: ./gradlew test
-      - run: gradle clean shadowJar
+      - run: ./gradlew test clean shadowJar
