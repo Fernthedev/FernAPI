@@ -23,7 +23,7 @@ public class SpongeCommandHandler extends CommandHandler {
     @Override
     public void registerFernCommand(UniversalCommand command) {
         CommandManager cmdService = Sponge.getCommandManager();
-        cmdService.register(sponge, new SpongeCommandHandler.CommandHandler() {
+        cmdService.register(sponge, new CommandHandler() {
             /**
              * Execute the command based on input arguments.
              *
