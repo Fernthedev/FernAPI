@@ -27,10 +27,21 @@ repositories {
         name = 'spigotmc-repo'
         url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
     }
+
     maven {
         name = 'sonatype'
         url = 'https://oss.sonatype.org/content/groups/public/'
     }
+    /*
+ As Spigot-API depends on the Bungeecord ChatComponent-API,
+we need to add the Sonatype OSS repository, as Gradle,
+in comparison to maven, doesn't want to understand the ~/.m2
+directory unless added using mavenLocal(). Maven usually just gets
+it from there, as most people have run the BuildTools at least once.
+This is therefore not needed if you're using the full Spigot/CraftBukkit,
+or if you're using the Bukkit API.
+*/
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
 
     maven {
         name = 'placeholderapi'
@@ -63,17 +74,29 @@ dependencies {
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     //  minecraft 'net.minecraftforge:forge:1.8.9-11.15.1.1722'
-    compileOnly 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT'
+    //compileOnly 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT' // The Spigot API with no shadowing. Requires the OSS repo.
     compileOnly 'net.md-5:bungeecord-api:1.8-SNAPSHOT'
     compile group: 'me.clip', name: 'placeholderapi', version: '2.9.2'
     compileOnly 'org.spongepowered:spongeapi:7.1.0'
     compileOnly 'org.projectlombok:lombok:1.18.6'
-    implementation 'com.github.Fernthedev:VaultAPI:7.0'
+
+    compileOnly ('com.github.Fernthedev:VaultAPI:7.0') {
+        exclude group: 'org.bukkit'
+    }
+    
+
 }
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
+}
+
+configurations.all {
+    resolutionStrategy {
+        force 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT'
+    }
 }
 
 // This may not be required, but has solved issues in the past

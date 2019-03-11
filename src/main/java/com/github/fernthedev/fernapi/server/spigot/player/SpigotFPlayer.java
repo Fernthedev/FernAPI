@@ -96,8 +96,9 @@ public class SpigotFPlayer extends IFPlayer {
 
             fullMessage.addExtra(te);
         }
-        
+
         player.spigot().sendMessage(fullMessage);
+
 
     }
 
