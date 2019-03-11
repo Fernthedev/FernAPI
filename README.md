@@ -73,15 +73,15 @@ For maven: https://maven.apache.org/plugins/maven-shade-plugin/usage.html
 
 [u] = All of the above, in other words universal
 
-- UUID Fetch [u]
-- ChatAPI [u]
+- [UUID Fetch](https://github.com/Fernthedev/FernAPI#uuid-fetch) [u]
+- [ChatAPI](https://github.com/Fernthedev/FernAPI#chatapi) [u]
   - Clickable text
   - Hover message
   - Color code support
-- List sorter (Sorter Class, check methods) [u]
-- Bungee/Spigot plugin messaging [u]
-- MySQL [u]
-- Universal Commands [u]
+- [List sorter (Sorter Class, check methods)]() [u]
+- [Bungee/Spigot/Sponge plugin messaging]() [u]
+- [MySQL](https://github.com/Fernthedev/FernAPI#mysql) [u]
+- [Universal Commands](https://github.com/Fernthedev/FernAPI#universal-commands) [u]
 
 ## Usage:
 Main class should extend one of these classes respectively.
@@ -143,7 +143,7 @@ askPlaceHolder.setRunnable(new MessageRunnable() {
 });
 ```
 
-Bungee/Spigot Plugin Messaging (Must implement PluginMessageHandler)
+### Bungee/Spigot Plugin Messaging (Must implement PluginMessageHandler)
 ```java
 public class Test extends PluginMessageHandler {
 
