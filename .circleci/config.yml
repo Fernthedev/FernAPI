@@ -45,5 +45,4 @@ jobs:
       - run: ./gradlew clean shadowJar
 
       - store_artifacts:
-          path: /build/libs/
-          destination: jar
+          path: /build
