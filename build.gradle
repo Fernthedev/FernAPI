@@ -70,10 +70,6 @@ compileJava.options.encoding = 'UTF-8'
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     compileOnly 'com.google.code.gson:gson:2.6.2'
-    // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
-    // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
-    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    //  minecraft 'net.minecraftforge:forge:1.8.9-11.15.1.1722'
     //compileOnly 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT'
     compileOnly 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT' // The Spigot API with no shadowing. Requires the OSS repo.
     compileOnly 'net.md-5:bungeecord-api:1.8-SNAPSHOT'
