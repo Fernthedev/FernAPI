@@ -50,7 +50,7 @@ repositories {
 
 group = 'com.github.fernthedev'
 
-version = '1.6'
+version = '1.6.3'
 def developer = "FernTheDev"
 def MCVersion = "1.8.9"
 archivesBaseName = "FernAPI"
