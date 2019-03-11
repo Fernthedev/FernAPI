@@ -89,12 +89,6 @@ compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
 }
 
-configurations.all {
-    resolutionStrategy {
-        force 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT'
-    }
-}
-
 // This may not be required, but has solved issues in the past
 
 
