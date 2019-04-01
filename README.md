@@ -79,7 +79,8 @@ For maven: https://maven.apache.org/plugins/maven-shade-plugin/usage.html
   - Hover message
   - Color code support
 - [List sorter (Sorter Class, check methods)](src/main/java/com/github/fernthedev/fernapi/universal/Sorter.java) [u]
-- [Bungee/Spigot/Sponge plugin messaging](https://github.com/Fernthedev/FernAPI#bungeespigot-plugin-messaging-must-implement-pluginmessagehandler) [u]
+- [Bungee/Spigot/Sponge plugin messaging](https://github.com/Fernthedev/FernAPI#bungeespigot-plugin-messaging-must-implement-pluginmessagehandler) [u*]
+    - *Sponge has not been fully tested, please feel free to report any bugs at issues at repo.
 - [MySQL](https://github.com/Fernthedev/FernAPI#mysql) [u]
 - [Universal Commands](https://github.com/Fernthedev/FernAPI#universal-commands) [u]
 
