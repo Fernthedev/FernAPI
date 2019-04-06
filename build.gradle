@@ -66,13 +66,14 @@ dependencies {
     compileOnly 'net.md-5:bungeecord-api:1.8-SNAPSHOT'
     compileOnly group: 'me.clip', name: 'placeholderapi', version: '2.9.2'
     compileOnly 'org.spongepowered:spongeapi:7.1.0'
-    annotationProcessor 'org.projectlombok:lombok:1.18.6'
+
 
     compileOnly ('com.github.Fernthedev:VaultAPI:7.0') {
         exclude group: 'org.bukkit'
     }
     
 //
+    annotationProcessor 'org.projectlombok:lombok:1.18.4'
 }
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
