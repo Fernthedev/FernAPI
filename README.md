@@ -3,6 +3,7 @@ This is meant to be an api for my sponge and plugins. This plugin is compiled in
 
 [![Release](https://jitpack.io/v/Fernthedev/FernAPI.svg)](https://jitpack.io/#Fernthedev/FernAPI)
 [![CircleCI](https://circleci.com/gh/Fernthedev/FernAPI.svg?style=svg)](https://circleci.com/gh/Fernthedev/FernAPI)
+[![Jitpack](https://jitci.com/gh/Fernthedev/FernAPI/svg)](https://jitci.com/gh/Fernthedev/FernAPI)
 
 [Installation](https://github.com/Fernthedev/FernAPI#installation)
 
