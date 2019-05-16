@@ -1,8 +1,10 @@
 package com.github.fernthedev.fernapi.universal;
 
+import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
 import com.github.fernthedev.fernapi.universal.handlers.UUIDFetchManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import lombok.NonNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -76,15 +78,17 @@ public class UUIDFetcher {
         return null;
     }
 
-    public static String getName(String uuid) {
-        if(fetchManager.getNameFromPlayer(UUID.fromString(uuid)) != null ) {
-            return fetchManager.getNameFromPlayer(UUID.fromString(uuid));
+    public static String getName(@NonNull String uuid) {
+        try {
+            if (fetchManager.getNameFromPlayer(UUID.fromString(uuid)) != null) {
+                return fetchManager.getNameFromPlayer(UUID.fromString(uuid));
+            }
+        }catch (Exception e) {
+            throw new FernRuntimeException("Unable to find name, perhaps the UUID is invalid?",e);
         }
 
         // Get Gson object
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-        if (uuid == null) return null;
 
         uuid = uuid.replaceAll("-", "");
         // read JSON file dataInfo as String

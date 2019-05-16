@@ -5,6 +5,7 @@ import com.github.fernthedev.fernapi.universal.exceptions.setup.IncorrectSetupEx
 import com.github.fernthedev.fernapi.universal.handlers.*;
 import lombok.NonNull;
 
+
 public class Universal {
 
     private Universal() {}
@@ -28,7 +29,7 @@ public class Universal {
         return instance == null ? instance = new Universal() : instance;
     }
 
-    public void setup(@NonNull MethodInterface methodInterface,FernAPIPlugin aplugin, IChatHandler chatHandler, IPMessageHandler messageHandler, DatabaseHandler databaseHandler,CommandHandler commandHandler) {
+    public void setup(@NonNull MethodInterface methodInterface, FernAPIPlugin aplugin, IChatHandler chatHandler, IPMessageHandler messageHandler, DatabaseHandler databaseHandler, CommandHandler commandHandler) {
         methodInterface.getLogger().info("Registered interface");
         setup = true;
         mi = methodInterface;
