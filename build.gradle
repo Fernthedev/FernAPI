@@ -73,6 +73,7 @@ dependencies {
     compileOnly 'org.spongepowered:spongeapi:7.1.0'
     compile 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
     annotationProcessor 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
 
     compileOnly ('com.github.Fernthedev:VaultAPI:7.0') {
         exclude group: 'org.bukkit'
