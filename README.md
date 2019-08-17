@@ -72,18 +72,22 @@ For maven: https://maven.apache.org/plugins/maven-shade-plugin/usage.html
 
 [s] = Spigot
 
+[vat] = Velocity (Alpha support, not tested)
+
+[ve] = Velocity (Should work)
+
 [u] = All of the above, in other words universal
 
-- [UUID Fetch](https://github.com/Fernthedev/FernAPI#uuid-fetch) [u]
-- [ChatAPI](https://github.com/Fernthedev/FernAPI#chatapi) [u]
+- [UUID Fetch](https://github.com/Fernthedev/FernAPI#uuid-fetch) [u] [ve]
+- [ChatAPI](https://github.com/Fernthedev/FernAPI#chatapi) [u] [vat]
   - Clickable text
   - Hover message
   - Color code support
 - [List sorter (Sorter Class, check methods)](src/main/java/com/github/fernthedev/fernapi/universal/Sorter.java) [u]
-- [Bungee/Spigot/Sponge plugin messaging](https://github.com/Fernthedev/FernAPI#bungeespigot-plugin-messaging-must-implement-pluginmessagehandler) [u*]
+- [Bungee/Spigot/Sponge/Velocity plugin messaging](https://github.com/Fernthedev/FernAPI#bungeespigot-plugin-messaging-must-implement-pluginmessagehandler) [u*] [vat]
     - *Sponge has not been fully tested, please feel free to report any bugs at issues at repo.
-- [MySQL](https://github.com/Fernthedev/FernAPI#mysql) [u]
-- [Universal Commands](https://github.com/Fernthedev/FernAPI#universal-commands) [u]
+- [MySQL](https://github.com/Fernthedev/FernAPI#mysql) [u] [vat]
+- [Universal Commands](https://github.com/Fernthedev/FernAPI#universal-commands) [u] [vet]
 
 ## Usage:
 Main class should extend one of these classes respectively.
@@ -91,6 +95,7 @@ Main class should extend one of these classes respectively.
 FernBungeeAPI
 FernSpongeAPI
 FernSpigotAPI
+FernVelocityAPI
 ```
 [Bungee/Spigot Required] This is required in order for the api to work in spigot and/or bunge
 ```java
@@ -104,6 +109,19 @@ For sponge, you should have
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
     super.onServerStart(event);
+    }
+```
+For Velocity
+```java
+    public FernVelocityAPI(ProxyServer server, Logger logger) {
+        super(server, logger);
+    }
+
+    @Subscribe
+    public void onProxyInitialization(ProxyInitializeEvent event) {
+        super.onProxyInitialization(event);
+        // Do some operation demanding access to the Velocity API here.
+        // For instance, we could register an event:
     }
 ```
 
@@ -145,7 +163,7 @@ askPlaceHolder.setRunnable(new MessageRunnable() {
 });
 ```
 
-### Bungee/Spigot Plugin Messaging (Must implement PluginMessageHandler)
+### Bungee/Spigot/Sponge/Velocity Plugin Messaging (Must implement PluginMessageHandler)
 ```java
 public class Test extends PluginMessageHandler {
 
@@ -161,7 +179,7 @@ public class Test extends PluginMessageHandler {
     public List<Channel> getChannels() {
         List<Channel> channels = new ArrayList<>();
 
-        channels.add(new Channel("pluginName:channel",Channel.ChannelAction.BOTH));
+        channels.add(new Channel(namespace,channelName,Channel.ChannelAction.BOTH));
 
         return channels;
     }
