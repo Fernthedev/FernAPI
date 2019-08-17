@@ -2,7 +2,6 @@ package com.github.fernthedev.fernapi.server.sponge.database;
 
 import com.github.fernthedev.fernapi.server.sponge.FernSpongeAPI;
 import com.github.fernthedev.fernapi.universal.DatabaseManager;
-import com.github.fernthedev.fernapi.universal.data.database.DatabaseInfo;
 import com.github.fernthedev.fernapi.universal.handlers.DatabaseHandler;
 import org.spongepowered.api.scheduler.Task;
 
@@ -10,7 +9,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class SpongeDatabase extends DatabaseHandler {
-    private static DatabaseInfo data;
     private static boolean scheduled;
 
     private Task refreshTask;
@@ -42,7 +40,7 @@ public class SpongeDatabase extends DatabaseHandler {
         };
 
         scheduled = true;
-        scheduler.execute(runnable).async().submit(spigot);
+        refreshTask = scheduler.execute(runnable).async().submit(spigot);
     }
 
     @Override

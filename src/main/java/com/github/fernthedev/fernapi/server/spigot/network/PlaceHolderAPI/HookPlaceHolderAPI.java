@@ -41,7 +41,7 @@ public class HookPlaceHolderAPI extends PluginMessageHandler {
     @Override
     public List<Channel> getChannels() {
         List<Channel> channels = new ArrayList<>();
-        channels.add(new Channel(Channels.PlaceHolderBungeeChannel, Channel.ChannelAction.BOTH));
+        channels.add(Channel.createChannelFromString(Channels.PlaceHolderBungeeChannel, Channel.ChannelAction.BOTH));
 
         return channels;
     }

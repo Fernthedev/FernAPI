@@ -37,12 +37,12 @@ public class SpongeMessageHandler implements IPMessageHandler {
     public void registerMessageHandler(PluginMessageHandler pluginMessageHandler) {
         recievers.add(pluginMessageHandler);
         for(Channel channelPlugin : pluginMessageHandler.getChannels()) {
-            ChannelBinding.RawDataChannel channele = game.getChannelRegistrar().getOrCreateRaw(sponge,channelPlugin.getChannel());
+            ChannelBinding.RawDataChannel channele = game.getChannelRegistrar().getOrCreateRaw(sponge,channelPlugin.getChannelName());
 
             channele.addListener(Platform.Type.SERVER, (data, connection, side) -> {
                 for(PluginMessageHandler pl : recievers) {
                     for(Channel channel : pl.getChannels()) {
-                        if (channelPlugin.getChannel().equals(channel.getChannel()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
+                        if (channelPlugin.getChannelName().equals(channel.getChannelName()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
 
                             Player player = null;
                             ChannelBuf in = data;

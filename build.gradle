@@ -39,6 +39,11 @@ repositories {
         url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/'
     }
 
+    maven {
+        name 'velocity'
+        url 'https://repo.velocitypowered.com/snapshots/'
+    }
+
     flatDir {
         dirs 'libs'
     }
@@ -50,9 +55,9 @@ repositories {
 
 group = 'com.github.fernthedev'
 
-version = '1.6.3'
+version = '1.7'
 def developer = "FernTheDev"
-def MCVersion = "1.8.9"
+def MCVersion = "1.14.4"
 archivesBaseName = "FernAPI"
 description = 'An API for universal code'
 
@@ -62,18 +67,20 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     compileOnly 'com.google.code.gson:gson:2.6.2'
     //compileOnly 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT'
-    compileOnly 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT' // The Spigot API with no shadowing. Requires the OSS repo.
-    compileOnly 'net.md-5:bungeecord-api:1.8-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT' // The Spigot API with no shadowing. Requires the OSS repo.
+    compileOnly 'net.md-5:bungeecord-api:1.14-SNAPSHOT'
     compileOnly group: 'me.clip', name: 'placeholderapi', version: '2.9.2'
     compileOnly 'org.spongepowered:spongeapi:7.1.0'
-
+    compile 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
+    annotationProcessor 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
 
     compileOnly ('com.github.Fernthedev:VaultAPI:7.0') {
         exclude group: 'org.bukkit'
     }
     
 //
-    compileOnly 'org.projectlombok:lombok:1.18.4'
+    compileOnly 'org.projectlombok:lombok:1.18.8'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
 }
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.

@@ -1,21 +1,23 @@
-package com.github.fernthedev.fernapi.server.bungee.player;
+package com.github.fernthedev.fernapi.server.velocity.player;
 
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
+import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
 import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
+import com.velocitypowered.api.proxy.Player;
 import lombok.Getter;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.*;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.kyori.text.TextComponent;
+import net.kyori.text.event.ClickEvent;
+import net.kyori.text.event.HoverEvent;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
 
-public class BungeeFPlayer extends IFPlayer {
+public class VelocityFPlayer extends IFPlayer{
     @Getter
-    private ProxiedPlayer player;
+    private Player player;
 
-    public BungeeFPlayer(ProxiedPlayer player) {
-        super(player.getName(),player.getUniqueId());
+    public VelocityFPlayer(Player player) {
+        super(player.getUsername(), player.getUniqueId());
         this.player = player;
     }
 
@@ -54,24 +56,24 @@ public class BungeeFPlayer extends IFPlayer {
 
     @Override
     public void sendMessage(BaseMessage baseMessage) {
-        TextComponent fullMessage = new TextComponent(ChatColor.translateAlternateColorCodes('&',baseMessage.getParentText()));
+        TextComponent fullMessage = TextComponent.of(ChatColor.translateAlternateColorCodes('&',baseMessage.getParentText()));
 
         for(BaseMessage be : baseMessage.getExtra()) {
-            TextComponent te = new TextComponent(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
+            TextComponent te = TextComponent.of(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
 
             if (be.getClickData() != null) {
-                te.setClickEvent(new ClickEvent(
+                te.clickEvent(ClickEvent.of(
                         ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
                         be.getClickData().getClickValue()));
             }
 
             if (be.getHoverData() != null) {
-                te.setHoverEvent(new HoverEvent(
+                te.hoverEvent(HoverEvent.of(
                         HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
                         message(be.getHoverData().getHoverValue())));
             }
 
-            fullMessage.addExtra(te);
+            fullMessage.append(te);
         }
 
         player.sendMessage(fullMessage);
@@ -79,10 +81,10 @@ public class BungeeFPlayer extends IFPlayer {
 
     @Override
     public InetSocketAddress getAddress() {
-        return player.getAddress();
+        return player.getRemoteAddress();
     }
 
-    private BaseComponent[] message(String text) {
-        return new ComponentBuilder(ChatColor.translateAlternateColorCodes('&',text)).create();
+    private TextComponent message(String text) {
+        return TextComponent.of(ChatColor.translateAlternateColorCodes('&',text));
     }
 }

@@ -30,11 +30,11 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
         recievers.add(pluginMessageHandler);
         for(Channel channel : pluginMessageHandler.getChannels()) {
             if(channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH) {
-                Bukkit.getMessenger().registerIncomingPluginChannel(spigot, channel.getChannel(), this);
+                Bukkit.getMessenger().registerIncomingPluginChannel(spigot, channel.getChannelName(), this);
             }
 
-            if(channel.getChannelAction() == Channel.ChannelAction.OUTCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH) {
-                Bukkit.getMessenger().registerOutgoingPluginChannel(spigot, channel.getChannel());
+            if(channel.getChannelAction() == Channel.ChannelAction.OUTGOING || channel.getChannelAction() == Channel.ChannelAction.BOTH) {
+                Bukkit.getMessenger().registerOutgoingPluginChannel(spigot, channel.getChannelName());
             }
         }
 
@@ -125,7 +125,7 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
     public void onPluginMessageReceived(String channelName, Player player, byte[] message) {
         for(PluginMessageHandler pl : recievers) {
             for(Channel channel : pl.getChannels()) {
-                if (channelName.equals(channel.getChannel()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
+                if (channelName.equals(channel.getChannelName()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
 
 
                     ByteArrayInputStream stream = new ByteArrayInputStream(message);

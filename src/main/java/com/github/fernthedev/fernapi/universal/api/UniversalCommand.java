@@ -9,6 +9,8 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 @Data
 @RequiredArgsConstructor(access = AccessLevel.NONE)
@@ -53,9 +55,29 @@ public abstract class UniversalCommand {
         return Universal.getMethods().getLogger();
     }
 
+    /**
+     * Sends a message to the player and converts the color codes to their respective colors
+     * @param player The source to send
+     * @param message The message
+     */
     protected void sendMessage(CommandSender player, String message) {
         player.sendMessage(message(message));
     }
 
+    /**
+     * Is used for tab completion. DO NOT RETURN NULL, INSTEAD RETURN AN EMPTY LIST
+     * @param source The command source
+     * @param currentArgs The arguments currently provided
+     * @return The arguments suggested. CANNOT BE NULL, INSTEAD RETURN AN EMPTY LIST
+     */
+    public List<String> suggest(CommandSender source, String[] currentArgs) {
+        return new ArrayList<>();
+    }
+
+    /**
+     * Called when executing the command
+     * @param sender The source
+     * @param args The arguments provided
+     */
     public abstract void execute(CommandSender sender, String[] args);
 }

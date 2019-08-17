@@ -2,18 +2,17 @@ package com.github.fernthedev.fernapi.server.spigot.database;
 
 import com.github.fernthedev.fernapi.server.spigot.FernSpigotAPI;
 import com.github.fernthedev.fernapi.universal.DatabaseManager;
-import com.github.fernthedev.fernapi.universal.data.database.DatabaseInfo;
 import com.github.fernthedev.fernapi.universal.handlers.DatabaseHandler;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class SpigotDatabase extends DatabaseHandler {
-    private static BukkitScheduler scheduler;
-    private static DatabaseInfo data;
     private static boolean scheduled;
+
+    private static BukkitTask task;
 
     private FernSpigotAPI spigot;
 
@@ -23,8 +22,8 @@ public class SpigotDatabase extends DatabaseHandler {
 
     @Override
     protected void setupSchedule() {
-        if (scheduler != null && scheduled) {
-            scheduler.cancelTasks(spigot);
+        if (task != null && scheduled) {
+            task.cancel();
             scheduled = false;
         }
 
@@ -43,15 +42,15 @@ public class SpigotDatabase extends DatabaseHandler {
             }
         };
         scheduled = true;
-        runnable.runTaskAsynchronously(spigot);
+        task = runnable.runTaskAsynchronously(spigot);
     }
 
     @Override
     public void stopSchedule() {
         scheduled = false;
 
-        if (scheduler != null) {
-            scheduler.cancelTasks(spigot);
+        if (task != null) {
+            task.cancel();
         }
     }
 }

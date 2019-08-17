@@ -1,26 +1,27 @@
-package com.github.fernthedev.fernapi.server.bungee.network;
+package com.github.fernthedev.fernapi.server.velocity.network;
 
 
-import com.github.fernthedev.fernapi.server.bungee.FernBungeeAPI;
+import com.github.fernthedev.fernapi.server.velocity.FernVelocityAPI;
 import com.github.fernthedev.fernapi.universal.Channels;
 import com.github.fernthedev.fernapi.universal.Universal;
+import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
 import com.github.fernthedev.fernapi.universal.data.network.Channel;
 import com.github.fernthedev.fernapi.universal.data.network.PluginMessageData;
 import com.github.fernthedev.fernapi.universal.handlers.PluginMessageHandler;
+import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ServerConnection;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
 import lombok.NoArgsConstructor;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.connection.Server;
+import org.slf4j.Logger;
 
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 @NoArgsConstructor
 public class AskPlaceHolder extends PluginMessageHandler {
 
-    private ProxiedPlayer player;
+    private Player player;
     private String placeHolderValue;
 
     boolean checked;
@@ -38,11 +39,11 @@ public class AskPlaceHolder extends PluginMessageHandler {
     private String uuid;
 
     private PluginMessageData data;
-    private static FernBungeeAPI bungee;
+    private static FernVelocityAPI velocity;
 
 
-    public AskPlaceHolder(FernBungeeAPI fernBungeeAPI) {
-        bungee = fernBungeeAPI;
+    public AskPlaceHolder(FernVelocityAPI fernVelocityAPI) {
+        velocity = fernVelocityAPI;
         getLogger().info("Registered PlaceHolderAPI Listener");
     }
 
@@ -51,14 +52,14 @@ public class AskPlaceHolder extends PluginMessageHandler {
     }
 
 
-    public AskPlaceHolder(ProxiedPlayer player, String placeHolderValue) {
+    public AskPlaceHolder(Player player, String placeHolderValue) {
         this.player = player;
 
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(stream);
 
-        data = new PluginMessageData(stream,"Forward",player.getServer().getInfo().getName(),Channels.getPlaceHolderResult,Channels.PlaceHolderBungeeChannel);
+        data = new PluginMessageData(stream,"Forward",player.getCurrentServer().get().getServerInfo().getName(),Channels.getPlaceHolderResult,Channels.PlaceHolderBungeeChannel);
 
         uuid = UUID.randomUUID().toString();
         if (!instances.isEmpty()) {
@@ -79,8 +80,8 @@ public class AskPlaceHolder extends PluginMessageHandler {
         data.addData(uuid); //MESSAGE 2 (UUID)
 
 
-        Server server = player.getServer();
-        getLogger().info("Placeholder requested to " + server.getInfo().getName() + " for placeholder " + placeHolderValue);
+        ServerConnection server = player.getCurrentServer().get();
+        getLogger().info("Placeholder requested to " + server.getServerInfo().getName() + " for placeholder " + placeHolderValue);
 
         checked = false;
     }
@@ -169,7 +170,7 @@ public class AskPlaceHolder extends PluginMessageHandler {
 
 
     private Logger getLogger() {
-        return bungee.getLogger();
+        return velocity.getLogger();
     }
 
     /**
@@ -187,7 +188,8 @@ public class AskPlaceHolder extends PluginMessageHandler {
 
     @Override
     public void onMessageReceived(PluginMessageData data, Channel channel) {
-        if (data.getSender() instanceof Server) {
+        getLogger().debug("Sender is " + data.getSender());
+        if (data.getSender() instanceof RegisteredServer) {
 
             ByteArrayInputStream stream = data.getInputStream();
             DataInputStream in = new DataInputStream(stream);

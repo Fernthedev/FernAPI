@@ -1,43 +1,45 @@
-package com.github.fernthedev.fernapi.server.bungee.network;
+package com.github.fernthedev.fernapi.server.velocity.network;
 
-import com.github.fernthedev.fernapi.server.bungee.FernBungeeAPI;
+import com.github.fernthedev.fernapi.server.velocity.FernVelocityAPI;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.JSONPlayer;
-import com.github.fernthedev.fernapi.universal.data.network.*;
+import com.github.fernthedev.fernapi.universal.data.network.Channel;
+import com.github.fernthedev.fernapi.universal.data.network.IPMessageHandler;
+import com.github.fernthedev.fernapi.universal.data.network.PluginMessageData;
 import com.github.fernthedev.fernapi.universal.exceptions.network.NoPlayersOnlineException;
 import com.github.fernthedev.fernapi.universal.exceptions.network.NotEnoughDataException;
 import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
 import com.github.fernthedev.fernapi.universal.handlers.PluginMessageHandler;
 import com.google.gson.Gson;
+import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.connection.PluginMessageEvent;
+import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
+import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import lombok.NonNull;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.event.PluginMessageEvent;
-import net.md_5.bungee.api.plugin.Listener;
-import net.md_5.bungee.event.EventHandler;
 
 import java.io.*;
 import java.util.List;
 
-public class BungeeMessageHandler implements Listener, IPMessageHandler {
+public class VelocityMessageHandler implements IPMessageHandler {
 
-    private FernBungeeAPI bungee;
+    private FernVelocityAPI velocity;
 
     public List<PluginMessageHandler> getRecievers() {
         return recievers;
     }
 
-    public BungeeMessageHandler(FernBungeeAPI fernBungeeAPI) {
-        this.bungee = fernBungeeAPI;
+    public VelocityMessageHandler(FernVelocityAPI fernVelocityAPI) {
+        this.velocity = fernVelocityAPI;
     }
 
 
 
-    @EventHandler
+    @Subscribe
     public void onPluginMessage(PluginMessageEvent ev) {
         for (PluginMessageHandler pl : recievers) {
             for (Channel channel : pl.getChannels()) {
-                if (ev.getTag().equals(channel.getChannelName()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
+                if (ev.getIdentifier().getId().equals(channel.getChannelName()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
 
                     ByteArrayInputStream stream = new ByteArrayInputStream(ev.getData());
                     DataInputStream in = new DataInputStream(stream);
@@ -85,7 +87,7 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
 
                         data.setChannelName(channelName);
                         data.setMessageChannel(messageChannel);
-                        data.setSender(ev.getSender());
+                        data.setSender(ev.getSource());
                         data.setServer(server);
                         data.setSubchannel(subchannel);
                         data.setUseGson(useGson);
@@ -116,7 +118,8 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
     public void registerMessageHandler(PluginMessageHandler pluginMessageHandler) {
         recievers.add(pluginMessageHandler);
         for(Channel channel : pluginMessageHandler.getChannels()) {
-            ProxyServer.getInstance().registerChannel(channel.getChannelName());
+            MinecraftChannelIdentifier channelIdentifier = MinecraftChannelIdentifier.create(channel.getNamespace(), channel.getChannelName());
+            velocity.getServer().getChannelRegistrar().register(channelIdentifier);
         }
 
     }
@@ -131,12 +134,11 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
      * @param fplayer The player can be null, not necessary
      * @param data The dataInfo to be sent, player will be specified added automatically
      */
-
     @Override
     public void sendPluginData(IFPlayer fplayer, @NonNull PluginMessageData data) {
-        ProxiedPlayer player;
+        Player player;
         if (fplayer != null) {
-            player = (ProxiedPlayer) Universal.convertFPlayerToPlayer(fplayer);
+            player = (Player) Universal.convertFPlayerToPlayer(fplayer);
         } else {
             player = getRandomPlayer();
         }
@@ -144,7 +146,7 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
         if (player == null) {
             Universal.getMethods().getLogger().warning("No players online, cannot send plugin message");
             try {
-                throw new NoPlayersOnlineException("Players are required to send plugin messages through bungee to other servers.");
+                throw new NoPlayersOnlineException("Players are required to send plugin messages through bungee/velocity to other servers.");
             } catch (NoPlayersOnlineException e) {
                 e.printStackTrace();
             }
@@ -163,10 +165,10 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
 
             out.writeUTF(data.getMessageChannel());
 
-            out.writeUTF(new Gson().toJson(new JSONPlayer(player.getName(),player.getUniqueId())));
+            out.writeUTF(new Gson().toJson(new JSONPlayer(player.getUsername(),player.getUniqueId())));
 
             out.writeBoolean(data.isUseGson());
-            bungee.getLogger().info("Use gson status: " + data.isUseGson());
+            velocity.getLogger().info("Use gson status: " + data.isUseGson());
 
 
             if (data.isUseGson()) {
@@ -183,15 +185,18 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
             e.printStackTrace();
         }
 
-        player.getServer().sendData(data.getMessageChannel(),stream.toByteArray());
+        Channel channel = Channel.createChannelFromString(data.getMessageChannel(), Channel.ChannelAction.BOTH);
+        ChannelIdentifier channelIdentifier = MinecraftChannelIdentifier.create(channel.getNamespace(), channel.getChannelName());
+
+        player.getCurrentServer().get().getServer().sendPluginMessage(channelIdentifier, stream.toByteArray());
     }
 
     /**
      * @return A random Player (/ the first player in the Player Collection)
      */
-    private static ProxiedPlayer getRandomPlayer() {
-        if (!ProxyServer.getInstance().getPlayers().isEmpty())
-            return ProxyServer.getInstance().getPlayers().iterator().next();
+    private Player getRandomPlayer() {
+        if (!velocity.getServer().getAllPlayers().isEmpty())
+            return velocity.getServer().getAllPlayers().iterator().next();
         else
             return null;
     }

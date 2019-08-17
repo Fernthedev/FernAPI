@@ -1,25 +1,24 @@
-package com.github.fernthedev.fernapi.server.bungee.database;
+package com.github.fernthedev.fernapi.server.velocity.database;
 
-import com.github.fernthedev.fernapi.server.bungee.FernBungeeAPI;
+import com.github.fernthedev.fernapi.server.velocity.FernVelocityAPI;
 import com.github.fernthedev.fernapi.universal.DatabaseManager;
 import com.github.fernthedev.fernapi.universal.handlers.DatabaseHandler;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.scheduler.ScheduledTask;
+import com.velocitypowered.api.scheduler.ScheduledTask;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class BungeeDatabase extends DatabaseHandler {
-    private FernBungeeAPI bungee;
-    private ScheduledTask task;
+public class VelocityDatabase extends DatabaseHandler {
+    private FernVelocityAPI velocity;
+    private static ScheduledTask task;
 
-    public BungeeDatabase(FernBungeeAPI bungee) {
-        this.bungee = bungee;
+    public VelocityDatabase(FernVelocityAPI velocity) {
+        this.velocity = velocity;
     }
 
     @Override
     protected void setupSchedule() {
-        if(task != null) {
+        if(task != null && scheduled) {
             task.cancel();
             scheduled = false;
         }
@@ -35,7 +34,7 @@ public class BungeeDatabase extends DatabaseHandler {
             }
         };
         scheduled = true;
-        task = ProxyServer.getInstance().getScheduler().runAsync(bungee, runnable);
+        task = velocity.getServer().getScheduler().buildTask(velocity, runnable).schedule();
     }
 
     @Override

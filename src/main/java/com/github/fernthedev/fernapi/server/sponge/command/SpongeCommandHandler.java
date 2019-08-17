@@ -23,28 +23,15 @@ public class SpongeCommandHandler extends CommandHandler {
     @Override
     public void registerFernCommand(UniversalCommand command) {
         CommandManager cmdService = Sponge.getCommandManager();
-        cmdService.register(sponge, new CommandHandler() {
-            /**
-             * Execute the command based on input arguments.
-             *
-             * <p>The implementing class must perform the necessary permission
-             * checks.</p>
-             *
-             * @param source    The caller of the command
-             * @param arguments The raw arguments for this command
-             * @return The result of a command being processed
-             * @throws CommandException Thrown on a command error
-             */
-            @Override
-            public CommandResult process(CommandSource source, String arguments) throws CommandException {
-                command.execute(Universal.getMethods().convertCommandSenderToAPISender(source),arguments.split(" "));
-                return CommandResult.success();
-            }
-        }, command.getAliases());
+        cmdService.register(sponge, new SpongeCommandHandler.CommandHandler(command), command.getAliases());
     }
 
-    private abstract class CommandHandler implements CommandCallable {
+    private static class CommandHandler implements CommandCallable {
+        private UniversalCommand command;
 
+        public CommandHandler(UniversalCommand command) {
+            this.command = command;
+        }
 
         /**
          * Execute the command based on input arguments.
@@ -58,7 +45,10 @@ public class SpongeCommandHandler extends CommandHandler {
          * @throws CommandException Thrown on a command error
          */
         @Override
-        public abstract CommandResult process(CommandSource source, String arguments) throws CommandException;
+        public CommandResult process(CommandSource source, String arguments) throws CommandException {
+            command.execute(Universal.getMethods().convertCommandSenderToAPISender(source),arguments.split(" "));
+            return CommandResult.success();
+        }
 
         /**
          * Gets a list of suggestions based on input.
@@ -75,7 +65,7 @@ public class SpongeCommandHandler extends CommandHandler {
          */
         @Override
         public List<String> getSuggestions(CommandSource source, String arguments, @Nullable Location<World> targetPosition) throws CommandException {
-            return null;
+            return command.suggest(Universal.getMethods().convertCommandSenderToAPISender(source), arguments.split(" "));
         }
 
         /**
@@ -91,7 +81,7 @@ public class SpongeCommandHandler extends CommandHandler {
          */
         @Override
         public boolean testPermission(CommandSource source) {
-            return false;
+            return source.hasPermission(command.getPermission());
         }
 
         /**
