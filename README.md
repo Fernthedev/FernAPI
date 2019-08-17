@@ -86,7 +86,7 @@ For maven: https://maven.apache.org/plugins/maven-shade-plugin/usage.html
   - Clickable text
   - Hover message
   - Color code support
-- [List sorter (Sorter Class, check methods)](src/main/java/com/github/fernthedev/fernapi/universal/Sorter.java) [u]
+- [List sorter (Sorter Class, check methods)](https://github.com/Fernthedev/FernAPI/blob/master/src/main/java/com/github/fernthedev/fernapi/universal/Sorter.java) [u]
 - [Bungee/Spigot/Sponge/Velocity plugin messaging](#bungeespigotspongevelocity-plugin-messaging-must-implement-pluginmessagehandler) [u*] [vat]
     - *Sponge has not been fully tested, please feel free to report any bugs at issues at repo.
 - [MySQL](#mysql) [u] [vat]
