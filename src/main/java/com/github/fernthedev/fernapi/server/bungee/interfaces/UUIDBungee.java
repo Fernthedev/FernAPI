@@ -59,14 +59,14 @@ public class UUIDBungee implements UUIDFetchManager {
     }
 
     public void stopTimerRequest() {
-        if(banHourTask != null) {
-            ProxyServer.getInstance().getScheduler().cancel(banHourTask);
+        if(requestTask != null) {
+            ProxyServer.getInstance().getScheduler().cancel(requestTask);
         }
     }
 
     public void stopHourTask() {
-        if(requestTask != null)
-        ProxyServer.getInstance().getScheduler().cancel(requestTask);
+        if(banHourTask != null)
+        ProxyServer.getInstance().getScheduler().cancel(banHourTask);
 
     }
 
