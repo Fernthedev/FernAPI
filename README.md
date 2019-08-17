@@ -6,6 +6,7 @@ This API allows for use of code that should work accross all server platforms. I
 [![Release](https://jitpack.io/v/Fernthedev/FernAPI.svg)](https://jitpack.io/#Fernthedev/FernAPI)
 [![CircleCI](https://circleci.com/gh/Fernthedev/FernAPI.svg?style=svg)](https://circleci.com/gh/Fernthedev/FernAPI)
 [![Jitpack](https://jitci.com/gh/Fernthedev/FernAPI/svg)](https://jitci.com/gh/Fernthedev/FernAPI)
+[![Build Status](https://dev.azure.com/Fernthedev/FernAPI/_apis/build/status/Fernthedev.FernAPI?branchName=master)](https://dev.azure.com/Fernthedev/FernAPI/_build/latest?definitionId=5&branchName=master)
 
 [Installation](https://github.com/Fernthedev/FernAPI#installation)
 
