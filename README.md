@@ -1,5 +1,5 @@
 # FernAPI
-This is meant to be an api for my plugins. This plugin is compiled in 1.14.4, but should work regaurdless of your mod/plugin's version unless it uses outdated libraries or other means of change.
+This plugin is compiled in 1.14.4, but should work regaurdless of your mod/plugin's version unless it uses outdated libraries or other means of change.
 
 This API allows for use of code that should work accross all server platforms. It aims to allow developers to create better plugins without having incosistency across platforms and ease their workflow and project workspaces.
 
