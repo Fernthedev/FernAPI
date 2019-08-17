@@ -1,5 +1,5 @@
 # FernAPI
-This is meant to be an api for my sponge and plugins. This plugin is compiled in 1.8.9, but should work regaurdless of your mod/plugin's version unless it uses outdated libraries or other means of change.
+This is meant to be an api for my sponge and plugins. This plugin is compiled in 1.14.4, but should work regaurdless of your mod/plugin's version unless it uses outdated libraries or other means of change.
 
 [![Release](https://jitpack.io/v/Fernthedev/FernAPI.svg)](https://jitpack.io/#Fernthedev/FernAPI)
 [![CircleCI](https://circleci.com/gh/Fernthedev/FernAPI.svg?style=svg)](https://circleci.com/gh/Fernthedev/FernAPI)
