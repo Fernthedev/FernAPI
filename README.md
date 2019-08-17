@@ -223,7 +223,7 @@ Universal.getMessageHandler().sendPluginData(fplayer,data);
 ```
 
 ### MySQL
-Example usage can be found [here](src/main/java/com/github/fernthedev/fernapi/universal/examples)
+Example usage can be found [here](https://github.com/Fernthedev/FernAPI/blob/master/src/main/java/com/github/fernthedev/fernapi/universal/examples)
 
 ### Universal Commands
 Universal Commands are commands that can be registered with the same class and code in spigot, sponge and bungee without necessarily adding server specific code, but that can be done anyways.
