@@ -144,7 +144,10 @@ List<UUIDFetcher.PlayerHistory> names = UUIDFetcher.getNameHistory(uuidPlayer);
 ### ChatAPI
 ```java
 // Can only convert ProxiedPlayer, org.bukkit.entity.Player and/or EntityPlayer
-IFPlayer fPlayer = Universal.convertPlayerObjectToFPlayer(player);
+IFPlayer fPlayer = Universal.getMethods().convertPlayerObjectToFPlayer(player);
+// Or
+IFPlayer fPlayer = Universal.getMethods().getPlayerFromName(String name);
+IFPlayer fPlayer = Universal.getMethods().getPlayerFromUUID(UUID uuid);
 
 TextMessage textMessage = new TextMessage("Message with color code");
 textMessage.setClickData(new ClickData(ClickData.Action.SUGGEST_COMMAND,"/example"));

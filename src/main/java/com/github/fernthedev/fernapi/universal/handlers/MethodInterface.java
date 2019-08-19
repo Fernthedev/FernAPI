@@ -3,6 +3,7 @@ package com.github.fernthedev.fernapi.universal.handlers;
 import com.github.fernthedev.fernapi.universal.api.CommandSender;
 import lombok.NonNull;
 
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public interface MethodInterface {
@@ -20,6 +21,8 @@ public interface MethodInterface {
     CommandSender convertCommandSenderToAPISender(@NonNull Object commandSender);
 
 
+    IFPlayer getPlayerFromName(String name);
 
+    IFPlayer getPlayerFromUUID(UUID uuid);
 }
 

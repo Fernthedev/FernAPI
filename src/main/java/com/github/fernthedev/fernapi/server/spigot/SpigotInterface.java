@@ -10,6 +10,7 @@ import com.github.fernthedev.fernapi.universal.handlers.ServerType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public class SpigotInterface implements MethodInterface {
@@ -59,5 +60,15 @@ public class SpigotInterface implements MethodInterface {
         }
 
         return null;
+    }
+
+    @Override
+    public IFPlayer getPlayerFromName(String name) {
+        return convertPlayerObjectToFPlayer(fernSpigotAPI.getServer().getPlayer(name));
+    }
+
+    @Override
+    public IFPlayer getPlayerFromUUID(UUID uuid) {
+        return convertPlayerObjectToFPlayer(fernSpigotAPI.getServer().getPlayer(uuid));
     }
 }

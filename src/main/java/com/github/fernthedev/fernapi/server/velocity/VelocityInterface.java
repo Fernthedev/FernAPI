@@ -11,6 +11,7 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import lombok.NonNull;
 
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public class VelocityInterface implements MethodInterface {
@@ -22,6 +23,7 @@ public class VelocityInterface implements MethodInterface {
 
     @Override
     public Logger getLogger() {
+        fernVelocityAPI.getLogger().warn("Java Logger does not exist in Velocity.");
         return (Logger) fernVelocityAPI.getLogger();
     }
 
@@ -63,4 +65,15 @@ public class VelocityInterface implements MethodInterface {
 
         return null;
     }
+
+    @Override
+    public IFPlayer getPlayerFromName(String name) {
+        return convertPlayerObjectToFPlayer(fernVelocityAPI.getServer().getPlayer(name));
+    }
+
+    @Override
+    public IFPlayer getPlayerFromUUID(UUID uuid) {
+        return convertPlayerObjectToFPlayer(fernVelocityAPI.getServer().getPlayer(uuid));
+    }
+
 }

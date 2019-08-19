@@ -11,6 +11,7 @@ import lombok.NonNull;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public class BungeeInterface implements MethodInterface {
@@ -60,5 +61,15 @@ public class BungeeInterface implements MethodInterface {
         }
 
         return null;
+    }
+
+    @Override
+    public IFPlayer getPlayerFromName(String name) {
+        return convertPlayerObjectToFPlayer(fernBungeeAPI.getProxy().getPlayer(name));
+    }
+
+    @Override
+    public IFPlayer getPlayerFromUUID(UUID uuid) {
+        return convertPlayerObjectToFPlayer(fernBungeeAPI.getProxy().getPlayer(uuid));
     }
 }

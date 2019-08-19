@@ -5,6 +5,8 @@ import com.github.fernthedev.fernapi.universal.exceptions.setup.IncorrectSetupEx
 import com.github.fernthedev.fernapi.universal.handlers.*;
 import lombok.NonNull;
 
+import java.util.UUID;
+
 
 public class Universal {
 
@@ -62,12 +64,38 @@ public class Universal {
         }
     }
 
+    /**
+     * Shortcut to getMethods()
+     * This shortcut might me removed in later versions, attempt to avoid it
+     */
+    @Deprecated
     public static IFPlayer convertObjectPlayerToFPlayer(Object player) {
         return getMethods().convertPlayerObjectToFPlayer(player);
     }
 
+    /**
+     * Shortcut to getMethods()
+     * This shortcut might me removed in later versions, attempt to avoid it
+     */
+    @Deprecated
     public static Object convertFPlayerToPlayer(@NonNull IFPlayer ifPlayer) {
         return getMethods().convertFPlayerToPlayer(ifPlayer);
+    }
+
+    /**
+     * Shortcut to getMethods()
+     * This shortcut might me removed in later versions, attempt to avoid it
+     */
+    public static IFPlayer getPlayerFromName(String name) {
+        return getMethods().getPlayerFromName(name);
+    }
+
+    /**
+     * Shortcut to getMethods()
+     * This shortcut might me removed in later versions, attempt to avoid it
+     */
+    public static IFPlayer getPlayerFromUUID(UUID uuid) {
+        return getMethods().getPlayerFromUUID(uuid);
     }
 
     public static MethodInterface getMethods() {
