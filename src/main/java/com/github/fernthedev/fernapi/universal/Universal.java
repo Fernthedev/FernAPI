@@ -86,6 +86,7 @@ public class Universal {
      * Shortcut to getMethods()
      * This shortcut might me removed in later versions, attempt to avoid it
      */
+    @Deprecated
     public static IFPlayer getPlayerFromName(String name) {
         return getMethods().getPlayerFromName(name);
     }
@@ -94,6 +95,7 @@ public class Universal {
      * Shortcut to getMethods()
      * This shortcut might me removed in later versions, attempt to avoid it
      */
+    @Deprecated
     public static IFPlayer getPlayerFromUUID(UUID uuid) {
         return getMethods().getPlayerFromUUID(uuid);
     }
