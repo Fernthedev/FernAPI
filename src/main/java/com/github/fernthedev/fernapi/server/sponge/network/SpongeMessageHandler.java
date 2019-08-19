@@ -81,14 +81,14 @@ public class SpongeMessageHandler implements IPMessageHandler {
                                         player = Sponge.getServer().getPlayer(player1.getUuid()).get();
                                     }
 
-                                    sponge.getLogger().info("Received player info");
+                                    sponge.getLogger().debug("Received player info");
                                 }else {
                                     throw new NotEnoughDataException("The player information dataInfo was not sent");
                                 }
 
                                 if (in.available() > 0) {
                                     useGson = in.readBoolean();
-                                    sponge.getLogger().info("Gson status is: " + useGson);
+                                    sponge.getLogger().debug("Gson status is: " + useGson);
                                 } else {
                                     throw new NotEnoughDataException("The use gson boolean dataInfo was not sent");
                                 }

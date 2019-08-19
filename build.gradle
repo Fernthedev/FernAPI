@@ -71,7 +71,7 @@ dependencies {
     compileOnly 'net.md-5:bungeecord-api:1.14-SNAPSHOT'
     compileOnly group: 'me.clip', name: 'placeholderapi', version: '2.9.2'
     compileOnly 'org.spongepowered:spongeapi:7.1.0'
-    compile 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
+    compileOnly 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
     annotationProcessor 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
 
