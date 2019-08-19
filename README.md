@@ -1,17 +1,18 @@
 # FernAPI
-This is meant to be an api for my plugins. This plugin is compiled in 1.14.4, but should work regaurdless of your mod/plugin's version unless it uses outdated libraries or other means of change.
+This plugin is compiled in 1.14.4, but should work regaurdless of your plugin's version unless it uses outdated libraries or other means of change.
 
 This API allows for use of code that should work accross all server platforms. It aims to allow developers to create better plugins without having incosistency across platforms and ease their workflow and project workspaces.
 
 [![Release](https://jitpack.io/v/Fernthedev/FernAPI.svg)](https://jitpack.io/#Fernthedev/FernAPI)
 [![CircleCI](https://circleci.com/gh/Fernthedev/FernAPI.svg?style=svg)](https://circleci.com/gh/Fernthedev/FernAPI)
 [![Jitpack](https://jitci.com/gh/Fernthedev/FernAPI/svg)](https://jitci.com/gh/Fernthedev/FernAPI)
+[![Build Status](https://dev.azure.com/Fernthedev/FernAPI/_apis/build/status/Fernthedev.FernAPI?branchName=master)](https://dev.azure.com/Fernthedev/FernAPI/_build/latest?definitionId=5&branchName=master)
 
-[Installation](https://github.com/Fernthedev/FernAPI#installation)
+[Installation](#installation)
 
-[Features](https://github.com/Fernthedev/FernAPI#features)
+[Features](#features)
 
-[Usage](https://github.com/Fernthedev/FernAPI#usage)
+[Usage](#usage)
 
 ## Installation
 
@@ -80,16 +81,16 @@ For maven: https://maven.apache.org/plugins/maven-shade-plugin/usage.html
 
 [u] = All of the above, in other words universal
 
-- [UUID Fetch](https://github.com/Fernthedev/FernAPI#uuid-fetch) [u] [ve]
-- [ChatAPI](https://github.com/Fernthedev/FernAPI#chatapi) [u] [vat]
+- [UUID Fetch](#uuid-fetch) [u] [ve]
+- [ChatAPI](#chatapi) [u] [vat]
   - Clickable text
   - Hover message
   - Color code support
-- [List sorter (Sorter Class, check methods)](src/main/java/com/github/fernthedev/fernapi/universal/Sorter.java) [u]
-- [Bungee/Spigot/Sponge/Velocity plugin messaging](https://github.com/Fernthedev/FernAPI#bungeespigot-plugin-messaging-must-implement-pluginmessagehandler) [u*] [vat]
+- [List sorter (Sorter Class, check methods)](https://github.com/Fernthedev/FernAPI/blob/master/src/main/java/com/github/fernthedev/fernapi/universal/Sorter.java) [u]
+- [Bungee/Spigot/Sponge/Velocity plugin messaging](#bungeespigotspongevelocity-plugin-messaging-must-implement-pluginmessagehandler) [u*] [vat]
     - *Sponge has not been fully tested, please feel free to report any bugs at issues at repo.
-- [MySQL](https://github.com/Fernthedev/FernAPI#mysql) [u] [vat]
-- [Universal Commands](https://github.com/Fernthedev/FernAPI#universal-commands) [u] [vet]
+- [MySQL](#mysql) [u] [vat]
+- [Universal Commands](#universal-commands) [u] [vet]
 
 ## Usage:
 Main class should extend one of these classes respectively.
@@ -222,7 +223,7 @@ Universal.getMessageHandler().sendPluginData(fplayer,data);
 ```
 
 ### MySQL
-Example usage can be found [here](https://github.com/Fernthedev/FernAPI/tree/master/com.github.fernthedev.fernapi-common/src/main/java/com/github/fernthedev/com.github.fernthedev.fernapi/universal/examples)
+Example usage can be found [here](https://github.com/Fernthedev/FernAPI/blob/master/src/main/java/com/github/fernthedev/fernapi/universal/examples)
 
 ### Universal Commands
 Universal Commands are commands that can be registered with the same class and code in spigot, sponge and bungee without necessarily adding server specific code, but that can be done anyways.
