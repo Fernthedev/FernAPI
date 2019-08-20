@@ -4,7 +4,6 @@ import com.github.fernthedev.fernapi.server.velocity.chat.VelocityChatHandler;
 import com.github.fernthedev.fernapi.server.velocity.command.VelocityCommandHandler;
 import com.github.fernthedev.fernapi.server.velocity.database.VelocityDatabase;
 import com.github.fernthedev.fernapi.server.velocity.interfaces.UUIDVelocity;
-import com.github.fernthedev.fernapi.server.velocity.network.AskPlaceHolder;
 import com.github.fernthedev.fernapi.server.velocity.network.VelocityMessageHandler;
 import com.github.fernthedev.fernapi.universal.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
@@ -45,7 +44,6 @@ public class FernVelocityAPI implements FernAPIPlugin {
         // Do some operation demanding access to the Velocity API here.
         // For instance, we could register an event:
         server.getEventManager().register(this, messageHandler);
-        Universal.getMessageHandler().registerMessageHandler(new AskPlaceHolder(this));
     }
 
     @Override
