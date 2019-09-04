@@ -85,6 +85,10 @@ public class AskPlaceHolder extends PluginMessageHandler {
         checked = false;
     }
 
+    /**
+     * Must be called in order for the message to be sent
+     * @param messageRunnable The action to run when the placeholder is received
+     */
     public void setRunnable(MessageRunnable messageRunnable) {
         runnableset = true;
         this.runnable = messageRunnable;
@@ -209,6 +213,7 @@ public class AskPlaceHolder extends PluginMessageHandler {
                         for (AskPlaceHolder askPlaceHolder : instances) {
                             if (askPlaceHolder.uuid.equals(uuide)) {
                                 instance = askPlaceHolder;
+                                break;
                             }
                         }
                     } else {

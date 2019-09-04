@@ -74,6 +74,7 @@ dependencies {
     compileOnly 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
     annotationProcessor 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
+    compile 'com.github.Fernthedev:fern-configmanager:1.0' // Check github releases tag for the version.
 
     compileOnly ('com.github.Fernthedev:VaultAPI:7.0') {
         exclude group: 'org.bukkit'
