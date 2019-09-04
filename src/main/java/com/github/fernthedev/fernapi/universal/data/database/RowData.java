@@ -7,21 +7,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Contains the full row data of columns.
+ * Each column is one data.
+ */
 public class RowData {
 
     @Getter
-    private List<RowObject> objects = new ArrayList<>();
+    private List<ColumnData> objects = new ArrayList<>();
 
-    public RowData(@NonNull RowObject rowObject,@NonNull RowObject... objects) {
-        this.objects.add(rowObject);
+    public RowData(@NonNull ColumnData columnData, @NonNull ColumnData... objects) {
+        this.objects.add(columnData);
         this.objects.addAll(Arrays.asList(objects));
     }
 
-    public RowData(@NonNull RowObject object) {
+    public RowData(@NonNull ColumnData object) {
         this.objects.add(object);
     }
 
-    public void addData(RowObject data) {
+    public void addData(ColumnData data) {
         objects.add(data);
     }
 }

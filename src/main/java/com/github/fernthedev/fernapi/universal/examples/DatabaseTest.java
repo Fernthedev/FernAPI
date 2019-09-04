@@ -4,7 +4,7 @@ import com.github.fernthedev.fernapi.universal.DatabaseManager;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.database.DatabaseInfo;
 import com.github.fernthedev.fernapi.universal.data.database.RowData;
-import com.github.fernthedev.fernapi.universal.data.database.RowObject;
+import com.github.fernthedev.fernapi.universal.data.database.ColumnData;
 import com.github.fernthedev.fernapi.universal.data.database.TableInfo;
 
 public class DatabaseTest extends DatabaseManager {
@@ -44,15 +44,15 @@ public class DatabaseTest extends DatabaseManager {
 
         tableInfo = new TableInfo("test_no");
 
-        RowData rowData = new RowData(new RowObject("row1","value1"));
+        RowData rowData = new RowData(new ColumnData("row1","value1"));
 
-        rowData.addData(new RowObject("row2","value2"));
+        rowData.addData(new ColumnData("row2","value2"));
 
         tableInfo.addTableInfo(rowData);
 
-        rowData = new RowData(new RowObject("row1","value1nou"));
+        rowData = new RowData(new ColumnData("row1","value1nou"));
 
-        rowData.addData(new RowObject("row2","value2nou"));
+        rowData.addData(new ColumnData("row2","value2nou"));
 
         tableInfo.addTableInfo(rowData);
 

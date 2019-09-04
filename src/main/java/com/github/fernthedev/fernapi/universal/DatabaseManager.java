@@ -2,7 +2,7 @@ package com.github.fernthedev.fernapi.universal;
 
 import com.github.fernthedev.fernapi.universal.data.database.DatabaseInfo;
 import com.github.fernthedev.fernapi.universal.data.database.RowData;
-import com.github.fernthedev.fernapi.universal.data.database.RowObject;
+import com.github.fernthedev.fernapi.universal.data.database.ColumnData;
 import com.github.fernthedev.fernapi.universal.data.database.TableInfo;
 import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseNotConnectedException;
 import lombok.Getter;
@@ -137,19 +137,19 @@ public abstract class DatabaseManager {
                 for(int i = 0; i < count; i++) {
                     time++;
 
-                    RowObject rowObject = new RowObject(
+                    ColumnData columnData = new ColumnData(
                             rsMetaData.getColumnName(time),
                             result.getString(time),
                             rsMetaData.getColumnDisplaySize(time)
                     );
 
-                    rowObject.setType(rsMetaData.getColumnTypeName(time));
-                    rowObject.setAutoIncrement(rsMetaData.isAutoIncrement(time));
+                    columnData.setType(rsMetaData.getColumnTypeName(time));
+                    columnData.setAutoIncrement(rsMetaData.isAutoIncrement(time));
 
                     if(rowData == null) {
-                        rowData = new RowData(rowObject);
+                        rowData = new RowData(columnData);
                     }else {
-                        rowData.addData(rowObject);
+                        rowData.addData(columnData);
                     }
                 }
                 
@@ -227,7 +227,7 @@ public abstract class DatabaseManager {
 
         int times = 0;
 
-        for(RowObject string : rowData.getObjects()) {
+        for(ColumnData string : rowData.getObjects()) {
             times++;
 
 
@@ -257,7 +257,7 @@ public abstract class DatabaseManager {
         if(!tableDataInfo.getRowDataList().isEmpty()) {
             RowData rd = tableDataInfo.getRowDataList().iterator().next();
             int time = 0;
-            for (RowObject object : rd.getObjects()) {
+            for (ColumnData object : rd.getObjects()) {
                 time++;
 
                 append = object.getRow();
@@ -319,7 +319,7 @@ public abstract class DatabaseManager {
         if(!tableDataInfo.getRowDataList().isEmpty()) {
             RowData rd = tableDataInfo.getRowDataList().iterator().next();
             int time = 0;
-            for (RowObject object : rd.getObjects()) {
+            for (ColumnData object : rd.getObjects()) {
                 time++;
 
                 String type = "varchar(" + object.getLength() + ")";

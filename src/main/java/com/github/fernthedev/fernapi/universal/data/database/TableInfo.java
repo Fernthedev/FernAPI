@@ -22,7 +22,8 @@ public class TableInfo {
         rowDataList.add(rowData);
     }
 
-    public void getFromDatabase(DatabaseManager databaseManager) {
+    public TableInfo getFromDatabase(DatabaseManager databaseManager) {
         rowDataList = databaseManager.getTable(tableName).getRowDataList();
+        return this;
     }
 }
