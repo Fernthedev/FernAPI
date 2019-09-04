@@ -9,7 +9,7 @@ import lombok.Setter;
 public class ColumnData {
 
     @Getter
-    private String row;
+    private String columnName;
 
     @Getter
     private String value;
@@ -33,13 +33,13 @@ public class ColumnData {
     @Setter
     private boolean primaryKey;
 
-    public ColumnData(String row, String value) {
-        this.row = row;
+    public ColumnData(String columnName, String value) {
+        this.columnName = columnName;
         this.value = value;
     }
 
-    public ColumnData(String row, String value, int length) {
-        this(row,value);
+    public ColumnData(String columnName, String value, int length) {
+        this(columnName,value);
         this.length = length;
     }
 

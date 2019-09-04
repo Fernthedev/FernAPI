@@ -227,7 +227,7 @@ public abstract class DatabaseManager {
 
         int times = 0;
 
-        for(ColumnData string : rowData.getObjects()) {
+        for(ColumnData string : rowData.getColumnDataList()) {
             times++;
 
 
@@ -235,7 +235,7 @@ public abstract class DatabaseManager {
 
             append += "'";
 
-            if(times > 0 && times <= rowData.getObjects().size() - 1) {
+            if(times > 0 && times <= rowData.getColumnDataList().size() - 1) {
                 append += ',';
             }
 
@@ -257,12 +257,12 @@ public abstract class DatabaseManager {
         if(!tableDataInfo.getRowDataList().isEmpty()) {
             RowData rd = tableDataInfo.getRowDataList().iterator().next();
             int time = 0;
-            for (ColumnData object : rd.getObjects()) {
+            for (ColumnData object : rd.getColumnDataList()) {
                 time++;
 
-                append = object.getRow();
+                append = object.getColumnName();
 
-                if (time > 0 && time <= rd.getObjects().size() - 1) {
+                if (time > 0 && time <= rd.getColumnDataList().size() - 1) {
                     append += ',';
                 }
 
@@ -319,7 +319,7 @@ public abstract class DatabaseManager {
         if(!tableDataInfo.getRowDataList().isEmpty()) {
             RowData rd = tableDataInfo.getRowDataList().iterator().next();
             int time = 0;
-            for (ColumnData object : rd.getObjects()) {
+            for (ColumnData object : rd.getColumnDataList()) {
                 time++;
 
                 String type = "varchar(" + object.getLength() + ")";
@@ -331,7 +331,7 @@ public abstract class DatabaseManager {
                     type = "INT PRIMARY KEY";
                 }
 
-                append = object.getRow() + " " + type;
+                append = object.getColumnName() + " " + type;
 
                 if (object.isAutoIncrement()) {
                     append += " AUTO_INCREMENT";
@@ -341,7 +341,7 @@ public abstract class DatabaseManager {
                     append += " NOT NULL";
                 }
 
-                if (time > 0 && time <= rd.getObjects().size() - 1) {
+                if (time > 0 && time <= rd.getColumnDataList().size() - 1) {
                     append += ',';
                 }
 

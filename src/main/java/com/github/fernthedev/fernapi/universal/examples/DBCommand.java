@@ -55,10 +55,10 @@ public class DBCommand extends FernCommand {
                     break;
                 case "get":
                     for (RowData rowData1 : db.getTable(db.getTableInfo().getTableName()).getRowDataList()) {
-                        logger().info(Arrays.toString(rowData1.getObjects().toArray()));
+                        logger().info(Arrays.toString(rowData1.getColumnDataList().toArray()));
 
-                        for (ColumnData columnData : rowData1.getObjects()) {
-                            logger().info(columnData.getRow() + ":" + columnData.getValue() + " (" + columnData.getType() + "|" + columnData.getLength() + ")\n");
+                        for (ColumnData columnData : rowData1.getColumnDataList()) {
+                            logger().info(columnData.getColumnName() + ":" + columnData.getValue() + " (" + columnData.getType() + "|" + columnData.getLength() + ")\n");
                         }
                     }
                     break;
