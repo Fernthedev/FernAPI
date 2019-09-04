@@ -30,7 +30,7 @@ public class DatabaseTest extends DatabaseManager {
      * @see DatabaseManager#connect(DatabaseInfo)
      */
     @Override
-    public void runAfterConnectAttempt(boolean connected) {
+    public void onConnectAttempt(boolean connected) {
         if(connected) {
             Universal.getMethods().getLogger().info("Connected successfully");
         }else{

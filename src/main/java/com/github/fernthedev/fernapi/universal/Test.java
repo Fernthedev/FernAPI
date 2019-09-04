@@ -7,7 +7,7 @@ public class Test extends DatabaseManager {
      * @param connected
      */
     @Override
-    public void runAfterConnectAttempt(boolean connected) {
+    public void onConnectAttempt(boolean connected) {
 
     }
 }

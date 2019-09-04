@@ -20,9 +20,10 @@ public interface MethodInterface {
 
     CommandSender convertCommandSenderToAPISender(@NonNull Object commandSender);
 
-
     IFPlayer getPlayerFromName(String name);
 
     IFPlayer getPlayerFromUUID(UUID uuid);
+
+    void runAsync(Runnable runnable);
 }
 

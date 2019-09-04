@@ -129,4 +129,9 @@ public class Universal {
         checkNull();
         return plugin;
     }
+
+    public void onDisable() {
+        getDatabaseHandler().stopSchedule();
+        getDatabaseHandler().closeConnection();
+    }
 }

@@ -10,6 +10,8 @@ import lombok.NonNull;
 import lombok.Setter;
 
 import java.sql.*;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.logging.Logger;
 
 public abstract class DatabaseManager {
@@ -26,6 +28,8 @@ public abstract class DatabaseManager {
         return connected;
     }
 
+    private Queue<Runnable> runOnConnectQueue = new LinkedList<>();
+    private Queue<Runnable> runOnConnectAsync = new LinkedList<>();
 
     public Statement statement() {
         try {
@@ -53,19 +57,55 @@ public abstract class DatabaseManager {
      * @see DatabaseManager#connect(DatabaseInfo)
      * @param connected Returns true if successful
      */
-    public abstract void runAfterConnectAttempt(boolean connected);
+    public abstract void onConnectAttempt(boolean connected);
+
+
+    public void runOnConnect(Runnable runnable) {
+        if(!connected) {
+            runOnConnectQueue.add(runnable);
+        } else {
+            runnable.run();
+        }
+    }
+
+    /**
+     * Runs the code in an async thread from the other scheduled runnable code.
+     * @param runnable The code to run
+     */
+    public void runOnConnectAsync(Runnable runnable) {
+        if (!connected) {
+            runOnConnectAsync.add(runnable);
+        } else {
+            Universal.getMethods().runAsync(runnable);
+        }
+    }
+
 
     /**
      * Attempts to make a connection to the database
      * @param data The data required for login
-     * @see DatabaseManager#runAfterConnectAttempt(boolean) Called after attempted
+     * @see DatabaseManager#onConnectAttempt(boolean) Called after attempted
      */
     public void connect(DatabaseInfo data) {
         Universal.getDatabaseHandler().registerDatabase(data,this);
         try {
-            Universal.getDatabaseHandler().openConnection(data);
+            connected = Universal.getDatabaseHandler().openConnection(data);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
+        }
+
+        if (connected) {
+            Universal.getMethods().runAsync(() -> {
+                while(!runOnConnectQueue.isEmpty()) {
+                    runOnConnectQueue.remove().run();
+                }
+            });
+
+            Universal.getMethods().runAsync(() -> {
+                while(!runOnConnectAsync.isEmpty()) {
+                    Universal.getMethods().runAsync(() -> runOnConnectAsync.remove().run());
+                }
+            });
         }
     }
 

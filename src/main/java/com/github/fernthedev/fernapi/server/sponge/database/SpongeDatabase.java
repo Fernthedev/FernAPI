@@ -7,6 +7,7 @@ import org.spongepowered.api.scheduler.Task;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.TimeUnit;
 
 public class SpongeDatabase extends DatabaseHandler {
     private static boolean scheduled;
@@ -40,7 +41,7 @@ public class SpongeDatabase extends DatabaseHandler {
         };
 
         scheduled = true;
-        refreshTask = scheduler.execute(runnable).async().submit(spigot);
+        refreshTask = scheduler.execute(runnable).interval(scheduleTime, TimeUnit.MINUTES).async().submit(spigot);
     }
 
     @Override

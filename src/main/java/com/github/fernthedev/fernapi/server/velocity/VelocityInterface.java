@@ -76,4 +76,9 @@ public class VelocityInterface implements MethodInterface {
         return convertPlayerObjectToFPlayer(fernVelocityAPI.getServer().getPlayer(uuid));
     }
 
+    @Override
+    public void runAsync(Runnable runnable) {
+        new Thread(runnable).start();
+    }
+
 }

@@ -7,6 +7,7 @@ import com.velocitypowered.api.scheduler.ScheduledTask;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.TimeUnit;
 
 public class VelocityDatabase extends DatabaseHandler {
     private FernVelocityAPI velocity;
@@ -34,7 +35,7 @@ public class VelocityDatabase extends DatabaseHandler {
             }
         };
         scheduled = true;
-        task = velocity.getServer().getScheduler().buildTask(velocity, runnable).schedule();
+        task = velocity.getServer().getScheduler().buildTask(velocity, runnable).repeat(scheduleTime, TimeUnit.MINUTES).schedule();
     }
 
     @Override

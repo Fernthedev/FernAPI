@@ -4,7 +4,9 @@ import com.github.fernthedev.fernapi.universal.DatabaseManager;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.database.DatabaseInfo;
 import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseNotRegisteredException;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,6 +17,13 @@ import java.util.Map;
 
 public abstract class DatabaseHandler {
     protected boolean scheduled;
+
+    /**
+     * The rate of minutes it takes to reconnect to the sql database.
+     */
+    @Setter
+    @Getter
+    protected int scheduleTime = 15;
 
     protected Map<DatabaseInfo,DatabaseManager> databaseManagerMap = new HashMap<>();
 
@@ -30,10 +39,10 @@ public abstract class DatabaseHandler {
 
 
 
-    public void openConnection(DatabaseInfo dataInfo) throws SQLException, ClassNotFoundException {
+    public boolean openConnection(DatabaseInfo dataInfo) throws SQLException, ClassNotFoundException {
         DatabaseManager manager = databaseManagerMap.get(dataInfo);
 
-        boolean connected;
+        boolean connected = false;
 
         if(manager == null) {
             throw new DatabaseNotRegisteredException("The database info was not correctly registered. Call registerDatabase to fix this",new NullPointerException());
@@ -41,7 +50,7 @@ public abstract class DatabaseHandler {
         Connection connection = manager.getConnection();
 
         if (connection != null && !connection.isClosed()) {
-            return;
+            return true;
         }
 
         try { //We use a try catch to avoid errors, hopefully we don't get any.
@@ -61,7 +70,7 @@ public abstract class DatabaseHandler {
         if (!manager.isSetup()) {
             connected = !connection.isClosed();
 
-            manager.runAfterConnectAttempt(connected);
+            manager.onConnectAttempt(connected);
             manager.setConnection(connection);
 
             Universal.getMethods().getLogger().info("Connected successfully");
@@ -69,6 +78,8 @@ public abstract class DatabaseHandler {
 
             setupSchedule();
         }
+
+        return connected;
     }
 
     public abstract void stopSchedule();
@@ -90,7 +101,19 @@ public abstract class DatabaseHandler {
     }
 
 
-
-
+    public void closeConnection() {
+        for(DatabaseManager databaseManager : databaseManagerMap.values()) {
+            Connection connection = databaseManager.getConnection();
+            // invoke on disable.
+            try { //using a try catch to catch connection errors (like wrong sql password...)
+                if (connection != null && !connection.isClosed()) { //checking if connection isn't null to
+                    //avoid receiving a nullpointer
+                    connection.close(); //closing the connection field variable.
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
 
