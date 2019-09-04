@@ -1,5 +1,6 @@
 package com.github.fernthedev.fernapi.universal.data.database;
 
+import com.github.fernthedev.fernapi.universal.DatabaseManager;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -19,5 +20,9 @@ public class TableInfo {
 
     public void addTableInfo(RowData rowData) {
         rowDataList.add(rowData);
+    }
+
+    public void getFromDatabase(DatabaseManager databaseManager) {
+        rowDataList = databaseManager.getTable(tableName).getRowDataList();
     }
 }
