@@ -2,7 +2,7 @@ package com.github.fernthedev.fernapi.universal.examples;
 
 import com.github.fernthedev.fernapi.universal.DatabaseManager;
 import com.github.fernthedev.fernapi.universal.Universal;
-import com.github.fernthedev.fernapi.universal.data.database.DatabaseInfo;
+import com.github.fernthedev.fernapi.universal.data.database.DatabaseAuthInfo;
 import com.github.fernthedev.fernapi.universal.data.database.RowData;
 import com.github.fernthedev.fernapi.universal.data.database.ColumnData;
 import com.github.fernthedev.fernapi.universal.data.database.TableInfo;
@@ -11,7 +11,7 @@ public class DatabaseTest extends DatabaseManager {
     private TableInfo tableInfo;
 
     public DatabaseTest(String username,String password,String port,String URLHost,String database) {
-        connect(new DatabaseInfo(username,password,port,URLHost,database));
+        connect(new DatabaseAuthInfo(username,password,port,URLHost,database));
     }
 
     public TableInfo getTableInfo() {
@@ -27,7 +27,7 @@ public class DatabaseTest extends DatabaseManager {
      * This is called after you attempt a connection
      *
      * @param connected Returns true if successful
-     * @see DatabaseManager#connect(DatabaseInfo)
+     * @see DatabaseManager#connect(DatabaseAuthInfo)
      */
     @Override
     public void onConnectAttempt(boolean connected) {

@@ -38,6 +38,10 @@ public class Channel {
         return new Channel(namespace, channelName, channelAction);
     }
 
+    public String getFullChannelName() {
+        return namespace + ":" + channelName;
+    }
+
     public enum ChannelAction {
         INCOMING,
         OUTGOING,

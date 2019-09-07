@@ -1,8 +1,8 @@
 package com.github.fernthedev.fernapi.universal;
 
-import com.github.fernthedev.fernapi.universal.data.database.DatabaseInfo;
-import com.github.fernthedev.fernapi.universal.data.database.RowData;
 import com.github.fernthedev.fernapi.universal.data.database.ColumnData;
+import com.github.fernthedev.fernapi.universal.data.database.DatabaseAuthInfo;
+import com.github.fernthedev.fernapi.universal.data.database.RowData;
 import com.github.fernthedev.fernapi.universal.data.database.TableInfo;
 import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseNotConnectedException;
 import lombok.Getter;
@@ -40,13 +40,9 @@ public abstract class DatabaseManager {
         return null;
     }
 
-    public Connection getConnection() {
+    public Connection getConnection() throws DatabaseNotConnectedException {
         if(connection == null) {
-            try {
-                throw new DatabaseNotConnectedException("You must call the connect(); method before calling any methods affecting the database.",new NullPointerException());
-            } catch (DatabaseNotConnectedException e) {
-                e.printStackTrace();
-            }
+            throw new DatabaseNotConnectedException("You must call the connect(); method before calling any methods affecting the database.", new NullPointerException());
         }
 
         return connection;
@@ -54,12 +50,15 @@ public abstract class DatabaseManager {
 
     /**
      * This is called after you attempt a connection
-     * @see DatabaseManager#connect(DatabaseInfo)
+     * @see DatabaseManager#connect(DatabaseAuthInfo)
      * @param connected Returns true if successful
      */
     public abstract void onConnectAttempt(boolean connected);
 
-
+    /**
+     * Runs the code in an async thread but in a queue blocking order of runnable list.
+     * @param runnable The code to run
+     */
     public void runOnConnect(Runnable runnable) {
         if(!connected) {
             runOnConnectQueue.add(runnable);
@@ -86,7 +85,7 @@ public abstract class DatabaseManager {
      * @param data The data required for login
      * @see DatabaseManager#onConnectAttempt(boolean) Called after attempted
      */
-    public void connect(DatabaseInfo data) {
+    public void connect(DatabaseAuthInfo data) {
         Universal.getDatabaseHandler().registerDatabase(data,this);
         try {
             connected = Universal.getDatabaseHandler().openConnection(data);
@@ -163,15 +162,17 @@ public abstract class DatabaseManager {
     }
 
     /**
-     * Removes the row if column contains value
+     * Removes the row if columnName contains value
      * @param tableInfo The table
-     * @param column The column
-     * @param value The value needed to remove from the column to be true to remove row
+     * @param columnName The columnName
+     * @param value The value needed to remove from the columnName to be true to remove row
      */
-    public void removeRowIfColumnContainsValue(TableInfo tableInfo,String column,String value) {
-        String sql = "DELETE FROM " + tableInfo.getTableName() + " WHERE " + column + "='" + value + "';";
+    public void removeRowIfColumnContainsValue(TableInfo tableInfo,String columnName,String value) {
+        String sql = "DELETE FROM " + tableInfo.getTableName() + " WHERE " + columnName + "='" + value + "';";
 
         runSqlStatement(sql);
+
+        tableInfo.getFromDatabase(this);
     }
 
     /**
@@ -186,6 +187,8 @@ public abstract class DatabaseManager {
         String sql = "INSERT INTO " + tableInfo.getTableName() + "(" + getColumnName(tableInfo) + ") VALUES (" + getColumnValues(rowData) + ");";
 
         runSqlStatement(sql);
+
+        tableInfo.getFromDatabase(this);
     }
 
     /**
@@ -203,6 +206,8 @@ public abstract class DatabaseManager {
         String sql = "UPDATE " + tableInfo.getTableName() + " SET " + getColumnValues(newRow) + " WHERE " + conditionKey + "=" + conditionValue + ";";
 
         runSqlStatement(sql);
+
+        tableInfo.getFromDatabase(this);
     }
 
 
@@ -287,7 +292,7 @@ public abstract class DatabaseManager {
             try {
                 stmt = getConnection().prepareStatement(sql);
 
-                getLogger().info("Running {" + sql+ "}");
+                Universal.debug("Running {" + sql+ "}");
 
                 if(sql.startsWith("SELECT ")) {
                     return stmt.executeQuery();
@@ -349,9 +354,11 @@ public abstract class DatabaseManager {
             }
         }
 
+
         sql.append(");");
 
         runSqlStatement(sql.toString());
+        tableDataInfo.getFromDatabase(this);
     }
 
     protected Logger getLogger() {

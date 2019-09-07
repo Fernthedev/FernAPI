@@ -10,7 +10,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="com.github.fernthedev.FernAPI.main" />
     <orderEntry type="library" name="Gradle: mysql:mysql-connector-java:8.0.17" level="project" />
-    <orderEntry type="library" name="Gradle: com.github.Fernthedev:fern-configmanager:1.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.Fernthedev:fern-configmanager:1.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.google.protobuf:protobuf-java:3.6.1" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.5" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okio:okio:2.4.0" level="project" />

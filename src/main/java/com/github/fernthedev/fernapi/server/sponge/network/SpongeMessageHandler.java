@@ -31,18 +31,22 @@ public class SpongeMessageHandler implements IPMessageHandler {
     Task task;
     private static FernSpongeAPI sponge;
 
-    private Map<Channel,PluginMessageHandler> channelPluginMessageHandlerHashMap = new HashMap<>();
+    private Map<Channel, PluginMessageHandler> channelPluginMessageHandlerHashMap = new HashMap<>();
 
+    /**
+     * Needs to be rewritten.
+     * @param pluginMessageHandler
+     */
     @Override
     public void registerMessageHandler(PluginMessageHandler pluginMessageHandler) {
         recievers.add(pluginMessageHandler);
         for(Channel channelPlugin : pluginMessageHandler.getChannels()) {
-            ChannelBinding.RawDataChannel channele = game.getChannelRegistrar().getOrCreateRaw(sponge,channelPlugin.getChannelName());
+            ChannelBinding.RawDataChannel spongeChannel = game.getChannelRegistrar().getOrCreateRaw(sponge, channelPlugin.getFullChannelName());
 
-            channele.addListener(Platform.Type.SERVER, (data, connection, side) -> {
+            spongeChannel.addListener(Platform.Type.SERVER, (data, connection, side) -> {
                 for(PluginMessageHandler pl : recievers) {
                     for(Channel channel : pl.getChannels()) {
-                        if (channelPlugin.getChannelName().equals(channel.getChannelName()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
+                        if (channelPlugin.getChannelName().equals(channel.getFullChannelName()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
 
                             Player player = null;
                             ChannelBuf in = data;
@@ -120,7 +124,7 @@ public class SpongeMessageHandler implements IPMessageHandler {
                     }
                 }
             });
-            channelPluginMessageHandlerHashMap.put(channelPlugin,pluginMessageHandler);
+            channelPluginMessageHandlerHashMap.put(channelPlugin, pluginMessageHandler);
         }
     }
 

@@ -4,6 +4,7 @@ import com.github.fernthedev.fernapi.server.spigot.FernSpigotAPI;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.JSONPlayer;
 import com.github.fernthedev.fernapi.universal.data.network.*;
+import com.github.fernthedev.fernapi.universal.exceptions.network.IllegalChannelState;
 import com.github.fernthedev.fernapi.universal.exceptions.network.NoPlayersOnlineException;
 import com.github.fernthedev.fernapi.universal.exceptions.network.NotEnoughDataException;
 import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
@@ -29,12 +30,16 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
     public void registerMessageHandler(PluginMessageHandler pluginMessageHandler) {
         recievers.add(pluginMessageHandler);
         for(Channel channel : pluginMessageHandler.getChannels()) {
-            if(channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH) {
-                Bukkit.getMessenger().registerIncomingPluginChannel(spigot, channel.getChannelName(), this);
-            }
+            try {
+                if (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH) {
+                    Bukkit.getMessenger().registerIncomingPluginChannel(spigot, channel.getFullChannelName(), this);
+                }
 
-            if(channel.getChannelAction() == Channel.ChannelAction.OUTGOING || channel.getChannelAction() == Channel.ChannelAction.BOTH) {
-                Bukkit.getMessenger().registerOutgoingPluginChannel(spigot, channel.getChannelName());
+                if (channel.getChannelAction() == Channel.ChannelAction.OUTGOING || channel.getChannelAction() == Channel.ChannelAction.BOTH) {
+                    Bukkit.getMessenger().registerOutgoingPluginChannel(spigot, channel.getFullChannelName());
+                }
+            } catch (Exception e) {
+                throw new IllegalChannelState("Channel name: " + channel.getNamespace() + ":" + channel.getChannelName() + " {" + channel.getChannelAction() + "}", e);
             }
         }
 
