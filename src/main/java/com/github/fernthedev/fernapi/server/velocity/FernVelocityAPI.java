@@ -10,6 +10,7 @@ import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -44,6 +45,11 @@ public class FernVelocityAPI implements FernAPIPlugin {
         // Do some operation demanding access to the Velocity API here.
         // For instance, we could register an event:
         server.getEventManager().register(this, messageHandler);
+    }
+
+    @Subscribe
+    public void onProxyStop(ProxyShutdownEvent event) {
+        Universal.getInstance().onDisable();
     }
 
     @Override

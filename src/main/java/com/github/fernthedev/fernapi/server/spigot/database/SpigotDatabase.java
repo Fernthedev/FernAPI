@@ -42,7 +42,8 @@ public class SpigotDatabase extends DatabaseHandler {
             }
         };
         scheduled = true;
-        task = runnable.runTaskAsynchronously(spigot);
+        // Multiply by ticks per second and seconds per minute.
+        task = runnable.runTaskTimerAsynchronously(spigot, 0, scheduleTime * 20 * 60);
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import lombok.Getter;
 import org.slf4j.Logger;
+import org.spongepowered.api.event.game.state.GameStoppedEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
@@ -35,6 +36,12 @@ public class FernSpongeAPI implements FernAPIPlugin {
                 new SpongeMessageHandler(this),
                 new SpongeDatabase(this),new SpongeCommandHandler(this));
         UUIDFetcher.setFetchManager(new UUIDSponge(this));
+    }
+
+    @Listener
+    public void onServerStart(GameStoppedEvent event) {
+        Universal.getInstance().onDisable();
+
     }
 
     @Override

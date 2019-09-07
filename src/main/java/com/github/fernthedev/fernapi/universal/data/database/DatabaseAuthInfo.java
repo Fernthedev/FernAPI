@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class DatabaseInfo {
+public class DatabaseAuthInfo {
     //DataBase vars.
     @NonNull
     protected String username; //Enter in your db username

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id="FernAPI:main" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" external.system.module.group="com.github.fernthedev" external.system.module.type="sourceSet" external.system.module.version="1.7" type="JAVA_MODULE" version="4">
+<module external.linked.project.id="FernAPI:main" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" external.system.module.group="com.github.fernthedev" external.system.module.type="sourceSet" external.system.module.version="1.8" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="minecraft" name="Minecraft">
       <configuration>
@@ -20,54 +20,60 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Gradle: mysql:mysql-connector-java:8.0.17" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.Fernthedev:fern-configmanager:1.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains:annotations:13.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.3.50" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.3.50" level="project" />
+    <orderEntry type="library" name="Gradle: com.alibaba:fastjson:1.2.59" level="project" />
+    <orderEntry type="library" name="Gradle: com.squareup.okio:okio:2.4.0" level="project" />
     <orderEntry type="library" name="Gradle: com.google.protobuf:protobuf-java:3.6.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.md-5:bungeecord-event:1.14-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm:5.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: io.netty:netty-common:4.1.34.Final" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.github.Fernthedev:VaultAPI:7.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.spongepowered:configurate-hocon:3.6" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.github.ben-manes.caffeine:caffeine:2.5.4" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.spongepowered:spongeapi:7.1.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.md-5:bungeecord-config:1.14-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.flowpowered:flow-math:1.0.3" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-lang:commons-lang:2.6" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.flowpowered:flow-noise:1.0.1-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.spongepowered:configurate-yaml:3.6" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.sf.trove4j:core:3.1.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.spongepowered:configurate-core:3.6" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.md-5:bungeecord-protocol:1.14-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.md-5:bungeecord-chat:1.14-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.typesafe:config:1.3.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.md-5:bungeecord-api:1.14-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.projectlombok:lombok:1.18.8" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.codehaus.mojo:animal-sniffer-annotations:1.14" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: io.netty:netty-buffer:4.1.34.Final" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.spongepowered:configurate-gson:3.6" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: me.clip:placeholderapi:2.9.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: io.netty:netty-codec:4.1.34.Final" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.spongepowered:plugin-meta:0.4.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: io.netty:netty-transport:4.1.34.Final" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.5" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: org.yaml:snakeyaml:1.23" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.inject:guice:4.2.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.spongepowered:spongeapi:7.1.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.kyori:text-serializer-plain:3.0.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.md-5:bungeecord-api:1.14-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.guava:guava:25.1-jre" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: aopalliance:aopalliance:1.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.typesafe:config:1.3.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.projectlombok:lombok:1.18.8" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: io.netty:netty-resolver:4.1.34.Final" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.github.ben-manes.caffeine:guava:2.5.4" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.code.gson:gson:2.8.5" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.velocitypowered:velocity-api:1.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.guava:guava:25.1-jre" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.slf4j:slf4j-api:1.7.25" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.inject:guice:4.2.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: io.netty:netty-transport:4.1.34.Final" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: net.kyori:text-api:3.0.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.kyori:text-serializer-gson:3.0.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.velocitypowered:velocity-api:1.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.spongepowered:configurate-yaml:3.6" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.inject:javax.inject:1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.spongepowered:configurate-gson:3.6" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.md-5:brigadier:1.0.16-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: net.kyori:text-serializer-legacy:3.0.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.kyori:text-serializer-plain:3.0.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.moandjiezana.toml:toml4j:0.7.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.code.findbugs:jsr305:3.0.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-lang:commons-lang:2.6" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: me.clip:placeholderapi:2.9.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: org.checkerframework:checker-qual:2.7.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: io.netty:netty-common:4.1.34.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.code.findbugs:jsr305:3.0.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.spongepowered:plugin-meta:0.4.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.errorprone:error_prone_annotations:2.1.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.google.j2objc:j2objc-annotations:1.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.github.Fernthedev:VaultAPI:7.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: org.apache.commons:commons-lang3:3.5" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.md-5:brigadier:1.0.16-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: aopalliance:aopalliance:1.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.inject:javax.inject:1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.github.ben-manes.caffeine:caffeine:2.5.4" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.flowpowered:flow-math:1.0.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.sf.trove4j:core:3.1.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.ow2.asm:asm:5.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.kyori:text-serializer-gson:3.0.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.codehaus.mojo:animal-sniffer-annotations:1.14" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.slf4j:slf4j-api:1.7.25" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.md-5:bungeecord-event:1.14-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.md-5:bungeecord-protocol:1.14-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.md-5:bungeecord-chat:1.14-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.flowpowered:flow-noise:1.0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: io.netty:netty-buffer:4.1.34.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: net.md-5:bungeecord-config:1.14-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.spongepowered:configurate-core:3.6" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: com.moandjiezana.toml:toml4j:0.7.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: io.netty:netty-codec:4.1.34.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.spongepowered:configurate-hocon:3.6" level="project" />
   </component>
 </module>

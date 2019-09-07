@@ -72,4 +72,9 @@ public class BungeeInterface implements MethodInterface {
     public IFPlayer getPlayerFromUUID(UUID uuid) {
         return convertPlayerObjectToFPlayer(fernBungeeAPI.getProxy().getPlayer(uuid));
     }
+
+    @Override
+    public void runAsync(Runnable runnable) {
+        fernBungeeAPI.getProxy().getScheduler().runAsync(fernBungeeAPI, runnable);
+    }
 }

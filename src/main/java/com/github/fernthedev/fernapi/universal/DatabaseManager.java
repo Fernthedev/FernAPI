@@ -1,8 +1,8 @@
 package com.github.fernthedev.fernapi.universal;
 
-import com.github.fernthedev.fernapi.universal.data.database.DatabaseInfo;
+import com.github.fernthedev.fernapi.universal.data.database.ColumnData;
+import com.github.fernthedev.fernapi.universal.data.database.DatabaseAuthInfo;
 import com.github.fernthedev.fernapi.universal.data.database.RowData;
-import com.github.fernthedev.fernapi.universal.data.database.RowObject;
 import com.github.fernthedev.fernapi.universal.data.database.TableInfo;
 import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseNotConnectedException;
 import lombok.Getter;
@@ -10,6 +10,8 @@ import lombok.NonNull;
 import lombok.Setter;
 
 import java.sql.*;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.logging.Logger;
 
 public abstract class DatabaseManager {
@@ -26,6 +28,8 @@ public abstract class DatabaseManager {
         return connected;
     }
 
+    private Queue<Runnable> runOnConnectQueue = new LinkedList<>();
+    private Queue<Runnable> runOnConnectAsync = new LinkedList<>();
 
     public Statement statement() {
         try {
@@ -36,13 +40,9 @@ public abstract class DatabaseManager {
         return null;
     }
 
-    public Connection getConnection() {
+    public Connection getConnection() throws DatabaseNotConnectedException {
         if(connection == null) {
-            try {
-                throw new DatabaseNotConnectedException("You must call the connect(); method before calling any methods affecting the database.",new NullPointerException());
-            } catch (DatabaseNotConnectedException e) {
-                e.printStackTrace();
-            }
+            throw new DatabaseNotConnectedException("You must call the connect(); method before calling any methods affecting the database.", new NullPointerException());
         }
 
         return connection;
@@ -50,22 +50,61 @@ public abstract class DatabaseManager {
 
     /**
      * This is called after you attempt a connection
-     * @see DatabaseManager#connect(DatabaseInfo)
+     * @see DatabaseManager#connect(DatabaseAuthInfo)
      * @param connected Returns true if successful
      */
-    public abstract void runAfterConnectAttempt(boolean connected);
+    public abstract void onConnectAttempt(boolean connected);
+
+    /**
+     * Runs the code in an async thread but in a queue blocking order of runnable list.
+     * @param runnable The code to run
+     */
+    public void runOnConnect(Runnable runnable) {
+        if(!connected) {
+            runOnConnectQueue.add(runnable);
+        } else {
+            runnable.run();
+        }
+    }
+
+    /**
+     * Runs the code in an async thread from the other scheduled runnable code.
+     * @param runnable The code to run
+     */
+    public void runOnConnectAsync(Runnable runnable) {
+        if (!connected) {
+            runOnConnectAsync.add(runnable);
+        } else {
+            Universal.getMethods().runAsync(runnable);
+        }
+    }
+
 
     /**
      * Attempts to make a connection to the database
      * @param data The data required for login
-     * @see DatabaseManager#runAfterConnectAttempt(boolean) Called after attempted
+     * @see DatabaseManager#onConnectAttempt(boolean) Called after attempted
      */
-    public void connect(DatabaseInfo data) {
+    public void connect(DatabaseAuthInfo data) {
         Universal.getDatabaseHandler().registerDatabase(data,this);
         try {
-            Universal.getDatabaseHandler().openConnection(data);
+            connected = Universal.getDatabaseHandler().openConnection(data);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
+        }
+
+        if (connected) {
+            Universal.getMethods().runAsync(() -> {
+                while(!runOnConnectQueue.isEmpty()) {
+                    runOnConnectQueue.remove().run();
+                }
+            });
+
+            Universal.getMethods().runAsync(() -> {
+                while(!runOnConnectAsync.isEmpty()) {
+                    Universal.getMethods().runAsync(() -> runOnConnectAsync.remove().run());
+                }
+            });
         }
     }
 
@@ -97,19 +136,19 @@ public abstract class DatabaseManager {
                 for(int i = 0; i < count; i++) {
                     time++;
 
-                    RowObject rowObject = new RowObject(
+                    ColumnData columnData = new ColumnData(
                             rsMetaData.getColumnName(time),
                             result.getString(time),
                             rsMetaData.getColumnDisplaySize(time)
                     );
 
-                    rowObject.setType(rsMetaData.getColumnTypeName(time));
-                    rowObject.setAutoIncrement(rsMetaData.isAutoIncrement(time));
+                    columnData.setType(rsMetaData.getColumnTypeName(time));
+                    columnData.setAutoIncrement(rsMetaData.isAutoIncrement(time));
 
                     if(rowData == null) {
-                        rowData = new RowData(rowObject);
+                        rowData = new RowData(columnData);
                     }else {
-                        rowData.addData(rowObject);
+                        rowData.addData(columnData);
                     }
                 }
                 
@@ -123,15 +162,17 @@ public abstract class DatabaseManager {
     }
 
     /**
-     * Removes the row if column contains value
+     * Removes the row if columnName contains value
      * @param tableInfo The table
-     * @param column The column
-     * @param value The value needed to remove from the column to be true to remove row
+     * @param columnName The columnName
+     * @param value The value needed to remove from the columnName to be true to remove row
      */
-    public void removeRowIfColumnContainsValue(TableInfo tableInfo,String column,String value) {
-        String sql = "DELETE FROM " + tableInfo.getTableName() + " WHERE " + column + "='" + value + "';";
+    public void removeRowIfColumnContainsValue(TableInfo tableInfo,String columnName,String value) {
+        String sql = "DELETE FROM " + tableInfo.getTableName() + " WHERE " + columnName + "='" + value + "';";
 
         runSqlStatement(sql);
+
+        tableInfo.getFromDatabase(this);
     }
 
     /**
@@ -146,6 +187,8 @@ public abstract class DatabaseManager {
         String sql = "INSERT INTO " + tableInfo.getTableName() + "(" + getColumnName(tableInfo) + ") VALUES (" + getColumnValues(rowData) + ");";
 
         runSqlStatement(sql);
+
+        tableInfo.getFromDatabase(this);
     }
 
     /**
@@ -163,6 +206,8 @@ public abstract class DatabaseManager {
         String sql = "UPDATE " + tableInfo.getTableName() + " SET " + getColumnValues(newRow) + " WHERE " + conditionKey + "=" + conditionValue + ";";
 
         runSqlStatement(sql);
+
+        tableInfo.getFromDatabase(this);
     }
 
 
@@ -187,7 +232,7 @@ public abstract class DatabaseManager {
 
         int times = 0;
 
-        for(RowObject string : rowData.getObjects()) {
+        for(ColumnData string : rowData.getColumnDataList()) {
             times++;
 
 
@@ -195,7 +240,7 @@ public abstract class DatabaseManager {
 
             append += "'";
 
-            if(times > 0 && times <= rowData.getObjects().size() - 1) {
+            if(times > 0 && times <= rowData.getColumnDataList().size() - 1) {
                 append += ',';
             }
 
@@ -217,12 +262,12 @@ public abstract class DatabaseManager {
         if(!tableDataInfo.getRowDataList().isEmpty()) {
             RowData rd = tableDataInfo.getRowDataList().iterator().next();
             int time = 0;
-            for (RowObject object : rd.getObjects()) {
+            for (ColumnData object : rd.getColumnDataList()) {
                 time++;
 
-                append = object.getRow();
+                append = object.getColumnName();
 
-                if (time > 0 && time <= rd.getObjects().size() - 1) {
+                if (time > 0 && time <= rd.getColumnDataList().size() - 1) {
                     append += ',';
                 }
 
@@ -247,7 +292,7 @@ public abstract class DatabaseManager {
             try {
                 stmt = getConnection().prepareStatement(sql);
 
-                getLogger().info("Running {" + sql+ "}");
+                Universal.debug("Running {" + sql+ "}");
 
                 if(sql.startsWith("SELECT ")) {
                     return stmt.executeQuery();
@@ -279,7 +324,7 @@ public abstract class DatabaseManager {
         if(!tableDataInfo.getRowDataList().isEmpty()) {
             RowData rd = tableDataInfo.getRowDataList().iterator().next();
             int time = 0;
-            for (RowObject object : rd.getObjects()) {
+            for (ColumnData object : rd.getColumnDataList()) {
                 time++;
 
                 String type = "varchar(" + object.getLength() + ")";
@@ -291,7 +336,7 @@ public abstract class DatabaseManager {
                     type = "INT PRIMARY KEY";
                 }
 
-                append = object.getRow() + " " + type;
+                append = object.getColumnName() + " " + type;
 
                 if (object.isAutoIncrement()) {
                     append += " AUTO_INCREMENT";
@@ -301,7 +346,7 @@ public abstract class DatabaseManager {
                     append += " NOT NULL";
                 }
 
-                if (time > 0 && time <= rd.getObjects().size() - 1) {
+                if (time > 0 && time <= rd.getColumnDataList().size() - 1) {
                     append += ',';
                 }
 
@@ -309,9 +354,11 @@ public abstract class DatabaseManager {
             }
         }
 
+
         sql.append(");");
 
         runSqlStatement(sql.toString());
+        tableDataInfo.getFromDatabase(this);
     }
 
     protected Logger getLogger() {

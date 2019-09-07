@@ -8,6 +8,7 @@ import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.TimeUnit;
 
 public class BungeeDatabase extends DatabaseHandler {
     private FernBungeeAPI bungee;
@@ -35,7 +36,7 @@ public class BungeeDatabase extends DatabaseHandler {
             }
         };
         scheduled = true;
-        task = ProxyServer.getInstance().getScheduler().runAsync(bungee, runnable);
+        task = ProxyServer.getInstance().getScheduler().schedule(bungee, runnable, 0, scheduleTime, TimeUnit.MINUTES);
     }
 
     @Override

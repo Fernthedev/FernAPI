@@ -3,10 +3,13 @@ package com.github.fernthedev.fernapi.universal.data.database;
 import lombok.Getter;
 import lombok.Setter;
 
-public class RowObject {
+/**
+ * The column is a piece of data.
+ */
+public class ColumnData {
 
     @Getter
-    private String row;
+    private String columnName;
 
     @Getter
     private String value;
@@ -30,13 +33,13 @@ public class RowObject {
     @Setter
     private boolean primaryKey;
 
-    public RowObject( String row, String value) {
-        this.row = row;
+    public ColumnData(String columnName, String value) {
+        this.columnName = columnName;
         this.value = value;
     }
 
-    public RowObject(String row, String value,int length) {
-        this(row,value);
+    public ColumnData(String columnName, String value, int length) {
+        this(columnName,value);
         this.length = length;
     }
 

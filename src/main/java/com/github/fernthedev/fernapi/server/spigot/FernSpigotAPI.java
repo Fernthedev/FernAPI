@@ -40,6 +40,12 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
     }
 
     @Override
+    public void onDisable() {
+        Universal.getInstance().onDisable();
+        getServer().getScheduler().cancelTasks(this);
+    }
+
+    @Override
     public void cancelTask(int id) {
         getServer().getScheduler().cancelTask(id);
     }

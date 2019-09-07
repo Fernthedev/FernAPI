@@ -116,7 +116,7 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
     public void registerMessageHandler(PluginMessageHandler pluginMessageHandler) {
         recievers.add(pluginMessageHandler);
         for(Channel channel : pluginMessageHandler.getChannels()) {
-            ProxyServer.getInstance().registerChannel(channel.getChannelName());
+            ProxyServer.getInstance().registerChannel(channel.getFullChannelName());
         }
 
     }

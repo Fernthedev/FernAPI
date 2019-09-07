@@ -27,6 +27,11 @@ public class FernBungeeAPI extends Plugin implements FernAPIPlugin {
         Universal.getMessageHandler().registerMessageHandler(new AskPlaceHolder(this));
     }
 
+    @Override
+    public void onDisable() {
+        Universal.getInstance().onDisable();
+        getProxy().getScheduler().cancel(this);
+    }
 
     @Override
     public void cancelTask(int id) {

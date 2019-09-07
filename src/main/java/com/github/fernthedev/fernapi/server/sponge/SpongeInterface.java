@@ -68,4 +68,9 @@ public class SpongeInterface implements MethodInterface {
     public IFPlayer getPlayerFromUUID(UUID uuid) {
         return convertPlayerObjectToFPlayer(Sponge.getServer().getPlayer(uuid));
     }
+
+    @Override
+    public void runAsync(Runnable runnable) {
+        new Thread(runnable).start();
+    }
 }

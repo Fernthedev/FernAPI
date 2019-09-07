@@ -71,4 +71,9 @@ public class SpigotInterface implements MethodInterface {
     public IFPlayer getPlayerFromUUID(UUID uuid) {
         return convertPlayerObjectToFPlayer(fernSpigotAPI.getServer().getPlayer(uuid));
     }
+
+    @Override
+    public void runAsync(Runnable runnable) {
+        fernSpigotAPI.getServer().getScheduler().runTaskAsynchronously(fernSpigotAPI, runnable);
+    }
 }

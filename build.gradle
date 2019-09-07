@@ -55,7 +55,7 @@ repositories {
 
 group = 'com.github.fernthedev'
 
-version = '1.7.3'
+version = '1.8'
 def developer = "FernTheDev"
 def MCVersion = "1.14.4"
 archivesBaseName = "FernAPI"
@@ -74,7 +74,7 @@ dependencies {
     compileOnly 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
     annotationProcessor 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
-    compile 'com.github.Fernthedev:fern-configmanager:1.0' // Check github releases tag for the version.
+    compile 'com.github.Fernthedev:fern-configmanager:1.0.1' // Check github releases tag for the version.
 
     compileOnly ('com.github.Fernthedev:VaultAPI:7.0') {
         exclude group: 'org.bukkit'
@@ -94,6 +94,26 @@ compileJava {
 
 
 
+// Must be BELOW subprojects{}
+task alljavadoc(type: Javadoc) {
+    source subprojects.collect { it.sourceSets.main.allJava }
+    classpath = files(subprojects.collect { it.sourceSets.main.compileClasspath })
+    destinationDir = file("${buildDir}/docs/javadoc")
+}
+
+task javadocJar(type: Jar, dependsOn: alljavadoc) {
+    classifier = 'javadoc'
+    from alljavadoc.destinationDir
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from subprojects.collect { it.sourceSets.main.allSource }
+}
+
+task sourceJarPublish(type: Jar) {
+    from sourceSets.main.allJava
+}
 
 publishing {
     publications {
@@ -102,8 +122,11 @@ publishing {
 
             groupId = 'fernthedev'
             artifactId = 'com.github.fernthedev.fernapi'
-            version = '1.1'
+            version = this.version
 
+            artifact sourceJarPublish {
+                classifier "sources"
+            }
         }
     }
 }
@@ -128,22 +151,6 @@ shadowJar {
     minimize()
 }
 
-// Must be BELOW subprojects{}
-task alljavadoc(type: Javadoc) {
-    source subprojects.collect { it.sourceSets.main.allJava }
-    classpath = files(subprojects.collect { it.sourceSets.main.compileClasspath })
-    destinationDir = file("${buildDir}/docs/javadoc")
-}
-
-task javadocJar(type: Jar, dependsOn: alljavadoc) {
-    classifier = 'javadoc'
-    from alljavadoc.destinationDir
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from subprojects.collect { it.sourceSets.main.allSource }
-}
 
 shadowJar.finalizedBy javadocJar
 shadowJar.finalizedBy sourcesJar
