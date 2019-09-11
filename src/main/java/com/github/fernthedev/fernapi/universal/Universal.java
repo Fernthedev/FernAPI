@@ -3,6 +3,7 @@ package com.github.fernthedev.fernapi.universal;
 import com.github.fernthedev.fernapi.universal.data.network.IPMessageHandler;
 import com.github.fernthedev.fernapi.universal.exceptions.setup.IncorrectSetupException;
 import com.github.fernthedev.fernapi.universal.handlers.*;
+import com.github.fernthedev.fernapi.universal.misc.MethodInterface;
 import lombok.NonNull;
 
 import java.util.UUID;
@@ -23,6 +24,7 @@ public class Universal {
     private static IPMessageHandler mh;
     private static DatabaseHandler db;
     private static CommandHandler comhand;
+    private static NetworkHandler nh;
 
     private static FernAPIPlugin plugin;
 
@@ -31,7 +33,7 @@ public class Universal {
         return instance == null ? instance = new Universal() : instance;
     }
 
-    public void setup(@NonNull MethodInterface methodInterface, FernAPIPlugin aplugin, IChatHandler chatHandler, IPMessageHandler messageHandler, DatabaseHandler databaseHandler, CommandHandler commandHandler) {
+    public void setup(@NonNull MethodInterface methodInterface, FernAPIPlugin aplugin, IChatHandler chatHandler, IPMessageHandler messageHandler, DatabaseHandler databaseHandler, CommandHandler commandHandler, NetworkHandler networkHandler) {
         methodInterface.getLogger().info("Registered interface");
         setup = true;
         mi = methodInterface;
@@ -40,6 +42,7 @@ public class Universal {
         db = databaseHandler;
         comhand = commandHandler;
         plugin = aplugin;
+        nh = networkHandler;
 
     }
 
@@ -118,6 +121,11 @@ public class Universal {
     public static DatabaseHandler getDatabaseHandler() {
         checkNull();
         return db;
+    }
+
+    public static NetworkHandler getNetworkHandler() {
+        checkNull();
+        return nh;
     }
 
     public static CommandHandler getCommandHandler() {

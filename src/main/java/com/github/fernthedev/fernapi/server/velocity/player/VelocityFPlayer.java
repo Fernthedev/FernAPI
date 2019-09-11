@@ -84,6 +84,16 @@ public class VelocityFPlayer extends IFPlayer{
         return player.getRemoteAddress();
     }
 
+    @Override
+    public long getPing() {
+        return player.getPing();
+    }
+
+    @Override
+    public String getCurrentServerName() {
+        return player.getCurrentServer().get().getServerInfo().getName();
+    }
+
     private TextComponent message(String text) {
         return TextComponent.of(ChatColor.translateAlternateColorCodes('&',text));
     }

@@ -82,6 +82,16 @@ public class BungeeFPlayer extends IFPlayer {
         return player.getAddress();
     }
 
+    @Override
+    public long getPing() {
+        return player.getPing();
+    }
+
+    @Override
+    public String getCurrentServerName() {
+        return player.getServer().getInfo().getName();
+    }
+
     private BaseComponent[] message(String text) {
         return new ComponentBuilder(ChatColor.translateAlternateColorCodes('&',text)).create();
     }

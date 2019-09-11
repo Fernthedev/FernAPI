@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.Plugin;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.HashMap;
@@ -105,6 +106,22 @@ public class SpigotFPlayer extends IFPlayer {
     @Override
     public InetSocketAddress getAddress() {
         return player.getAddress();
+    }
+
+    @Override
+    public long getPing() {
+        try {
+            Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
+            return (int) entityPlayer.getClass().getField("ping").get(entityPlayer);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    @Override
+    public String getCurrentServerName() {
+        return player.getServer().getName();
     }
 
     private BaseComponent[] message(String text) {

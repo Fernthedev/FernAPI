@@ -1,8 +1,10 @@
 package com.github.fernthedev.fernapi.universal.handlers;
 
+import com.github.fernthedev.fernapi.universal.ProxyAskPlaceHolder;
 import com.github.fernthedev.fernapi.universal.data.network.Channel;
 import com.github.fernthedev.fernapi.universal.exceptions.network.NotEnoughDataException;
 import com.github.fernthedev.fernapi.universal.data.network.PluginMessageData;
+import lombok.NonNull;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -10,16 +12,17 @@ import java.util.List;
 
 public abstract class PluginMessageHandler {
     
-    protected static String reason1 = "There was not enough dataInfo to be read";
-    protected static String reason2 = "There was an error processing the dataInfo.";
+    protected static final String reason1 = "There was not enough dataInfo to be read";
+    protected static final String reason2 = "There was an error processing the dataInfo.";
 
     /**
-     * This is the channel name that will be registered incoming and outcoming
+     * This is the channel name that will be registered incoming and outgoing
      * This is where you specify the channels you want to listen to
      * Just make a new List<Channel> instance and add an instance of the channel accordingly.
-     * @see com.github.fernthedev.fernapi.server.bungee.network.AskPlaceHolder as an example
+     * @see ProxyAskPlaceHolder as an example
      * @return The channels that will be incoming and outgoing
      */
+    @NonNull
     public abstract List<Channel> getChannels();
 
     /**
@@ -30,6 +33,12 @@ public abstract class PluginMessageHandler {
      */
     public abstract void onMessageReceived(PluginMessageData data, Channel channel);
 
+    /**
+     * Used to get data string with descriptive exception
+     * @param in
+     * @return Data
+     * @throws IOException
+     */
     protected String getDataString(DataInputStream in) throws IOException {
         try {
             if (in.available() > 0) {
@@ -38,10 +47,16 @@ public abstract class PluginMessageHandler {
                 throw new NotEnoughDataException(reason1);
             }
         } catch (IOException es) {
-            throw new NotEnoughDataException(reason2,new IOException());
+            throw new NotEnoughDataException(reason2, es);
         }
     }
 
+    /**
+     * Used to get data string with descriptive exception
+     * @param in
+     * @return Data
+     * @throws IOException
+     */
     protected int getDataInt(DataInputStream in) throws IOException {
         try {
             if (in.available() > 0) {
@@ -50,10 +65,16 @@ public abstract class PluginMessageHandler {
                 throw new NotEnoughDataException(reason1);
             }
         } catch (IOException es) {
-            throw new NotEnoughDataException(reason2,new IOException());
+            throw new NotEnoughDataException(reason2, es);
         }
     }
 
+    /**
+     * Used to get data string with descriptive exception
+     * @param in
+     * @return Data
+     * @throws IOException
+     */
     protected Long getDataLong(DataInputStream in) throws IOException {
         try {
             if (in.available() > 0) {
@@ -62,10 +83,16 @@ public abstract class PluginMessageHandler {
                 throw new NotEnoughDataException(reason1);
             }
         } catch (IOException es) {
-            throw new NotEnoughDataException(reason2,new IOException());
+            throw new NotEnoughDataException(reason2, es);
         }
     }
 
+    /**
+     * Used to get data string with descriptive exception
+     * @param in
+     * @return Data
+     * @throws IOException
+     */
     protected byte getDataBytes(DataInputStream in) throws IOException {
         try {
             if (in.available() > 0) {
@@ -74,7 +101,7 @@ public abstract class PluginMessageHandler {
                 throw new NotEnoughDataException(reason1);
             }
         } catch (IOException es) {
-            throw new NotEnoughDataException(reason2, new IOException());
+            throw new NotEnoughDataException(reason2, es);
         }
     }
 

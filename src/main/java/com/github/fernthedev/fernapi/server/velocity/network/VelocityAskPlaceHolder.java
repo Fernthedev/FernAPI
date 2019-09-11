@@ -3,25 +3,26 @@ package com.github.fernthedev.fernapi.server.velocity.network;
 
 import com.github.fernthedev.fernapi.server.velocity.FernVelocityAPI;
 import com.github.fernthedev.fernapi.universal.Channels;
+import com.github.fernthedev.fernapi.universal.ProxyAskPlaceHolder;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
 import com.github.fernthedev.fernapi.universal.data.network.Channel;
 import com.github.fernthedev.fernapi.universal.data.network.PluginMessageData;
+import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
 import com.github.fernthedev.fernapi.universal.handlers.PluginMessageHandler;
-import com.velocitypowered.api.proxy.Player;
-import com.velocitypowered.api.proxy.ServerConnection;
-import com.velocitypowered.api.proxy.server.RegisteredServer;
-import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-@NoArgsConstructor
-public class AskPlaceHolder extends PluginMessageHandler {
+/**
+ * @deprecated Use {@link ProxyAskPlaceHolder}
+ */
+@Deprecated
+public class VelocityAskPlaceHolder extends PluginMessageHandler {
 
-    private Player player;
+    private IFPlayer player;
     private String placeHolderValue;
 
     boolean checked;
@@ -31,9 +32,9 @@ public class AskPlaceHolder extends PluginMessageHandler {
 
     private Timer taske;
 
-    private MessageRunnable runnable;
+    private Runnable runnable;
 
-    private static List<AskPlaceHolder> instances = new ArrayList<>();
+    private static List<VelocityAskPlaceHolder> instances = new ArrayList<>();
 
     private boolean runnableset = false;
     private String uuid;
@@ -42,7 +43,7 @@ public class AskPlaceHolder extends PluginMessageHandler {
     private static FernVelocityAPI velocity;
 
 
-    public AskPlaceHolder(FernVelocityAPI fernVelocityAPI) {
+    public VelocityAskPlaceHolder(FernVelocityAPI fernVelocityAPI) {
         velocity = fernVelocityAPI;
         getLogger().info("Registered PlaceHolderAPI Listener");
     }
@@ -52,20 +53,20 @@ public class AskPlaceHolder extends PluginMessageHandler {
     }
 
 
-    public AskPlaceHolder(Player player, String placeHolderValue) {
+    public VelocityAskPlaceHolder(IFPlayer player, String placeHolderValue) {
         this.player = player;
 
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(stream);
 
-        data = new PluginMessageData(stream,"Forward",player.getCurrentServer().get().getServerInfo().getName(),Channels.getPlaceHolderResult,Channels.PlaceHolderBungeeChannel);
+        data = new PluginMessageData(stream, player.getCurrentServerName(),Channels.getPlaceHolderResult,Channels.PlaceHolderBungeeChannel);
 
         uuid = UUID.randomUUID().toString();
         if (!instances.isEmpty()) {
-            for (AskPlaceHolder askPlaceHolder : instances) {
-                if (askPlaceHolder.uuid != null) {
-                    while (askPlaceHolder.uuid.equals(uuid)) {
+            for (VelocityAskPlaceHolder velocityAskPlaceHolder : instances) {
+                if (velocityAskPlaceHolder.uuid != null) {
+                    while (velocityAskPlaceHolder.uuid.equals(uuid)) {
                         uuid = UUID.randomUUID().toString();
                     }
                 }
@@ -80,13 +81,13 @@ public class AskPlaceHolder extends PluginMessageHandler {
         data.addData(uuid); //MESSAGE 2 (UUID)
 
 
-        ServerConnection server = player.getCurrentServer().get();
-        getLogger().info("Placeholder requested to " + server.getServerInfo().getName() + " for placeholder " + placeHolderValue);
+//        ServerConnection server = player.getCurrentServer().get();
+//        getLogger().info("Placeholder requested to " + server.getServerInfo().getName() + " for placeholder " + placeHolderValue);
 
         checked = false;
     }
 
-    public void setRunnable(MessageRunnable messageRunnable) {
+    public void setRunnable(Runnable messageRunnable) {
         runnableset = true;
         this.runnable = messageRunnable;
         instances.add(this);
@@ -102,9 +103,9 @@ public class AskPlaceHolder extends PluginMessageHandler {
 
 
     @Deprecated
-    private void removeInstance(AskPlaceHolder askPlaceHolder) {
+    private void removeInstance(VelocityAskPlaceHolder velocityAskPlaceHolder) {
         //  getLogger().info("Removed an instance from list");
-        instances.remove(askPlaceHolder);
+        instances.remove(velocityAskPlaceHolder);
     }
 
     @SuppressWarnings("unused")
@@ -128,7 +129,7 @@ public class AskPlaceHolder extends PluginMessageHandler {
         //getLogger().info("This instance uuid is " + uuid);
 
         taske.schedule(new TimerTask() {
-            AskPlaceHolder instance = null;
+            VelocityAskPlaceHolder instance = null;
             private int count = 0;
 
             @Override
@@ -137,9 +138,9 @@ public class AskPlaceHolder extends PluginMessageHandler {
                 if (count == 0) {
                     if (instance == null) {
                         if (!instances.isEmpty()) {
-                            for (AskPlaceHolder askPlaceHolder : instances) {
-                                if (askPlaceHolder.uuid.equals(uuid)) {
-                                    instance = askPlaceHolder;
+                            for (VelocityAskPlaceHolder velocityAskPlaceHolder : instances) {
+                                if (velocityAskPlaceHolder.uuid.equals(uuid)) {
+                                    instance = velocityAskPlaceHolder;
                                     //          getLogger().info("Found on the list an instance with uuid " + askPlaceHolder.uuid);
                                     //           getLogger().info("It is equal to current uuid " + uuid);
                                 }
@@ -181,7 +182,7 @@ public class AskPlaceHolder extends PluginMessageHandler {
     @Override
     public List<Channel> getChannels() {
         List<Channel> channels = new ArrayList<>();
-        channels.add(Channel.createChannelFromString(Channels.PlaceHolderBungeeChannel, Channel.ChannelAction.BOTH));
+        channels.add(Channels.PlaceHolderBungeeChannel);
 
         return channels;
     }
@@ -189,15 +190,15 @@ public class AskPlaceHolder extends PluginMessageHandler {
     @Override
     public void onMessageReceived(PluginMessageData data, Channel channel) {
         getLogger().debug("Sender is " + data.getSender());
-        if (data.getSender() instanceof RegisteredServer) {
+        if (Universal.getNetworkHandler().isRegistered(data.getSender()) ) {
 
             ByteArrayInputStream stream = data.getInputStream();
             DataInputStream in = new DataInputStream(stream);
 
             try {
-                String channelName = data.getChannelName(); // channel we delivered
+                String channelName = data.getBungeeChannelType(); // channel we delivered
                 String server = data.getServer(); //Just incase
-                String subchannel = data.getSubchannel(); //The channel of our custom desire
+                String subchannel = data.getSubChannel(); //The channel of our custom desire
 
                 if (channelName.equalsIgnoreCase("Forward") && subchannel.equalsIgnoreCase(Channels.PlaceHolderValue)) {
                     String placeholder = in.readUTF();
@@ -206,11 +207,11 @@ public class AskPlaceHolder extends PluginMessageHandler {
 
                     String uuide = in.readUTF();
 
-                    AskPlaceHolder instance = null;
+                    VelocityAskPlaceHolder instance = null;
                     if (!instances.isEmpty()) {
-                        for (AskPlaceHolder askPlaceHolder : instances) {
-                            if (askPlaceHolder.uuid.equals(uuide)) {
-                                instance = askPlaceHolder;
+                        for (VelocityAskPlaceHolder velocityAskPlaceHolder : instances) {
+                            if (velocityAskPlaceHolder.uuid.equals(uuide)) {
+                                instance = velocityAskPlaceHolder;
                             }
                         }
                     } else {
