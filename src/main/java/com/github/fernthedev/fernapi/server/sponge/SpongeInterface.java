@@ -2,10 +2,11 @@ package com.github.fernthedev.fernapi.server.sponge;
 
 import com.github.fernthedev.fernapi.server.sponge.player.SpongeFConsole;
 import com.github.fernthedev.fernapi.server.sponge.player.SpongeFPlayer;
+import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.CommandSender;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
-import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
+import com.github.fernthedev.fernapi.universal.misc.MethodInterface;
 import com.github.fernthedev.fernapi.universal.handlers.ServerType;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,9 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class SpongeInterface implements MethodInterface {
@@ -72,5 +75,10 @@ public class SpongeInterface implements MethodInterface {
     @Override
     public void runAsync(Runnable runnable) {
         new Thread(runnable).start();
+    }
+
+    @Override
+    public List<IFPlayer> getPlayers() {
+        return Sponge.getServer().getOnlinePlayers().stream().map(proxiedPlayer -> Universal.getMethods().convertPlayerObjectToFPlayer(proxiedPlayer)).collect(Collectors.toList());
     }
 }

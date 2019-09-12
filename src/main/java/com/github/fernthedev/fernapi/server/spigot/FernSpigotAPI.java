@@ -4,8 +4,9 @@ import com.github.fernthedev.fernapi.server.spigot.chat.SpigotChatHandler;
 import com.github.fernthedev.fernapi.server.spigot.command.SpigotCommandHandler;
 import com.github.fernthedev.fernapi.server.spigot.database.SpigotDatabase;
 import com.github.fernthedev.fernapi.server.spigot.interfaces.UUIDSpigot;
-import com.github.fernthedev.fernapi.server.spigot.network.PlaceHolderAPI.HookPlaceHolderAPI;
+import com.github.fernthedev.fernapi.server.spigot.network.PlaceHolderAPI.PlaceHolderAPIResponder;
 import com.github.fernthedev.fernapi.server.spigot.network.SpigotMessageHandler;
+import com.github.fernthedev.fernapi.server.spigot.network.SpigotNetworkHandler;
 import com.github.fernthedev.fernapi.server.spigot.pluginhandlers.VaultHandler;
 import com.github.fernthedev.fernapi.universal.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
@@ -26,10 +27,11 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
                 this,
                 new SpigotChatHandler(),
                 new SpigotMessageHandler(this),
-                new SpigotDatabase(this),new SpigotCommandHandler());
+                new SpigotDatabase(this),new SpigotCommandHandler(),
+                new SpigotNetworkHandler());
         UUIDFetcher.setFetchManager(new UUIDSpigot());
 
-        Universal.getMessageHandler().registerMessageHandler(new HookPlaceHolderAPI(this));
+        Universal.getMessageHandler().registerMessageHandler(new PlaceHolderAPIResponder(this));
         if(Bukkit.getPluginManager().isPluginEnabled("Vault")) {
             vaultHandler = new VaultHandler();
 

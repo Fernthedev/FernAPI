@@ -203,7 +203,11 @@ public abstract class DatabaseManager {
         //SET column1 = value1, column2 = value2, ...
         //WHERE condition;
 
-        String sql = "UPDATE " + tableInfo.getTableName() + " SET " + getColumnValues(newRow) + " WHERE " + conditionKey + "=" + conditionValue + ";";
+        // "UPDATE fern_nicks SET PLAYERUUID='" + player.getUniqueId().toString().replaceAll("-", "") + "NICK='" + args[0] + "' WHERE PLAYERUUID='" + player.getUniqueId().toString().replaceAll("-", "") + "';";
+
+        // UPDATE fern_nicks SET 'f99a5767-0aae-48ca-a8a8-6b56e6a8c470','&cF&ee&ar&bn' WHERE PLAYERUUID=f99a57670aae48caa8a86b56e6a8c470;
+
+        String sql = "UPDATE " + tableInfo.getTableName() + " SET " + getColumnValues(newRow) + " WHERE " + conditionKey + "='" + conditionValue + "';";
 
         runSqlStatement(sql);
 
@@ -232,11 +236,11 @@ public abstract class DatabaseManager {
 
         int times = 0;
 
-        for(ColumnData string : rowData.getColumnDataList()) {
+        for(ColumnData columnData : rowData.getColumnDataList()) {
             times++;
 
 
-            append = "'" + string.getValue();
+            append = columnData.getColumnName() + "='" + columnData.getValue();
 
             append += "'";
 

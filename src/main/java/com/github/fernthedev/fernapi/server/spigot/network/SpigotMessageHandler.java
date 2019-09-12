@@ -47,7 +47,7 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
 
     @Override
     public void sendPluginData(PluginMessageData data) {
-        sendPluginData(null,data);
+        sendPluginData(null, data);
     }
 
     /**
@@ -60,7 +60,7 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
     public void sendPluginData(IFPlayer fplayer, @NonNull PluginMessageData data) {
         Player player;
         if (fplayer != null) {
-            player = (Player) Universal.convertFPlayerToPlayer(fplayer);
+            player = (Player) Universal.getMethods().convertFPlayerToPlayer(fplayer);
         } else {
             player = getRandomPlayer();
         }
@@ -82,11 +82,11 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
 
 
         try {
-            out.writeUTF(data.getChannelName()); //TYPE
+            out.writeUTF(data.getBungeeChannelType()); //TYPE
             out.writeUTF(data.getServer()); //SERVER
-            out.writeUTF(data.getSubchannel()); //SUBCHANNEL
+            out.writeUTF(data.getSubChannel()); //SUBCHANNEL
 
-            out.writeUTF(data.getMessageChannel());
+//            out.writeUTF(data.getMessageChannel().getFullChannelName());
 
             out.writeUTF(new Gson().toJson(new JSONPlayer(player.getName(),player.getUniqueId())));
 
@@ -105,7 +105,9 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
             e.printStackTrace();
         }
 
-        Bukkit.getServer().sendPluginMessage(spigot,data.getMessageChannel(),stream.toByteArray());
+        System.out.println(data.getMessageChannel().getFullChannelName() + " " + data);
+
+        player.sendPluginMessage(spigot, data.getMessageChannel().getFullChannelName(), stream.toByteArray());
     }
 
     /**
@@ -130,7 +132,8 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
     public void onPluginMessageReceived(String channelName, Player player, byte[] message) {
         for(PluginMessageHandler pl : recievers) {
             for(Channel channel : pl.getChannels()) {
-                if (channelName.equals(channel.getChannelName()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
+//                System.out.println(channelName + " " + channel.getFullChannelName() + " " + channelName.equals(channel.getFullChannelName()) );
+                if (channelName.equals(channel.getFullChannelName()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
 
 
                     ByteArrayInputStream stream = new ByteArrayInputStream(message);
@@ -142,7 +145,6 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
                         String type = in.readUTF(); //TYPE
                         String server;
                         String subchannel;
-                        String messageChannel;
                         boolean useGson;
 
                         if (in.available() > 0) {
@@ -157,35 +159,36 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
                             throw new NotEnoughDataException("The subchannel dataInfo was not sent");
                         }
 
-                        if (in.available() > 0) {
-                            messageChannel = in.readUTF();
-                        } else {
-                            throw new NotEnoughDataException("The message channel dataInfo was not sent");
-                        }
+//                        if (in.available() > 0) {
+//                            messageChannel = in.readUTF();
+//                        } else {
+//                            throw new NotEnoughDataException("The message channel dataInfo was not sent");
+//                        }
 
                         if(in.available() > 0) {
                             JSONPlayer player1 = new Gson().fromJson(in.readUTF(),JSONPlayer.class);
                             if(Bukkit.getPlayer(player.getUniqueId()) != null) {
-                                data.setPlayer(Universal.convertObjectPlayerToFPlayer(Bukkit.getPlayer(player1.getUuid())));
+                                data.setPlayer(Universal.getMethods().getPlayerFromUUID(player1.getUuid()));
                             }
 
-                            spigot.getLogger().info("Received player info");
+                            Universal.debug("Received player info");
                         }else {
                             throw new NotEnoughDataException("The player information dataInfo was not sent");
                         }
 
                         if (in.available() > 0) {
                             useGson = in.readBoolean();
-                            spigot.getLogger().info("Gson status is: " + useGson);
+                            Universal.debug("Gson status is: " + useGson);
                         } else {
                             throw new NotEnoughDataException("The use gson boolean dataInfo was not sent");
                         }
 
-                        data.setChannelName(type);
+                        data.setBungeeChannelType(type);
                         data.setServer(server);
-                        data.setMessageChannel(messageChannel);
+//                        data.setMessageChannel(Channel.createChannelFromString(messageChannel, Channel.ChannelAction.BOTH));
+                        data.setMessageChannel(channel);
                         data.setSender(player);
-                        data.setSubchannel(subchannel);
+                        data.setSubChannel(subchannel);
                         data.setUseGson(useGson);
 
                         if(useGson) {
@@ -193,6 +196,10 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
                                 data = new Gson().fromJson(in.readUTF(), PluginMessageData.class);
                             } else {
                                 throw new NotEnoughDataException("The use gson json dataInfo was not sent");
+                            }
+                        } else {
+                            while(in.available() > 0) {
+                                data.addData(in.readUTF());
                             }
                         }
 
@@ -202,7 +209,7 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
                     }
 
 
-                    pl.onMessageReceived(data,channel);
+                    pl.onMessageReceived(data, channel);
                     break;
                 }
             }

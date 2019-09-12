@@ -5,6 +5,8 @@ import com.github.fernthedev.fernapi.server.velocity.command.VelocityCommandHand
 import com.github.fernthedev.fernapi.server.velocity.database.VelocityDatabase;
 import com.github.fernthedev.fernapi.server.velocity.interfaces.UUIDVelocity;
 import com.github.fernthedev.fernapi.server.velocity.network.VelocityMessageHandler;
+import com.github.fernthedev.fernapi.server.velocity.network.VelocityNetworkHandler;
+import com.github.fernthedev.fernapi.universal.ProxyAskPlaceHolder;
 import com.github.fernthedev.fernapi.universal.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
@@ -34,9 +36,11 @@ public class FernVelocityAPI implements FernAPIPlugin {
                 new VelocityChatHandler(),
                 messageHandler,
                 new VelocityDatabase(this),
-                new VelocityCommandHandler(this));
+                new VelocityCommandHandler(this),
+                new VelocityNetworkHandler());
 
         UUIDFetcher.setFetchManager(new UUIDVelocity(this));
+        Universal.getMessageHandler().registerMessageHandler(new ProxyAskPlaceHolder());
 
     }
 

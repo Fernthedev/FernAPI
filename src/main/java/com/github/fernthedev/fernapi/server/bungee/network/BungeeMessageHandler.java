@@ -3,29 +3,28 @@ package com.github.fernthedev.fernapi.server.bungee.network;
 import com.github.fernthedev.fernapi.server.bungee.FernBungeeAPI;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.JSONPlayer;
-import com.github.fernthedev.fernapi.universal.data.network.*;
-import com.github.fernthedev.fernapi.universal.exceptions.network.NoPlayersOnlineException;
+import com.github.fernthedev.fernapi.universal.data.network.Channel;
+import com.github.fernthedev.fernapi.universal.data.network.IPMessageHandler;
+import com.github.fernthedev.fernapi.universal.data.network.PluginMessageData;
 import com.github.fernthedev.fernapi.universal.exceptions.network.NotEnoughDataException;
+import com.github.fernthedev.fernapi.universal.exceptions.network.ServerDoesNotExistException;
 import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
 import com.github.fernthedev.fernapi.universal.handlers.PluginMessageHandler;
 import com.google.gson.Gson;
 import lombok.NonNull;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 import java.io.*;
-import java.util.List;
 
 public class BungeeMessageHandler implements Listener, IPMessageHandler {
 
     private FernBungeeAPI bungee;
-
-    public List<PluginMessageHandler> getRecievers() {
-        return recievers;
-    }
 
     public BungeeMessageHandler(FernBungeeAPI fernBungeeAPI) {
         this.bungee = fernBungeeAPI;
@@ -37,7 +36,8 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
     public void onPluginMessage(PluginMessageEvent ev) {
         for (PluginMessageHandler pl : recievers) {
             for (Channel channel : pl.getChannels()) {
-                if (ev.getTag().equals(channel.getChannelName()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
+//                System.out.println(ev.getTag() + " " + channel.getFullChannelName() + " " + (ev.getTag().equals(channel.getFullChannelName())));
+                if (ev.getTag().equals(channel.getFullChannelName()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
 
                     ByteArrayInputStream stream = new ByteArrayInputStream(ev.getData());
                     DataInputStream in = new DataInputStream(stream);
@@ -48,7 +48,6 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
                         String channelName = in.readUTF(); // channel we delivered
                         String server;
                         String subchannel;
-                        String messageChannel;
                         boolean useGson;
 
                         if (in.available() > 0) {
@@ -63,17 +62,25 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
                             throw new NotEnoughDataException("The subchannel dataInfo was not sent");
                         }
 
-                        if(in.available() > 0) {
-                            messageChannel = in.readUTF();
-                        } else {
-                            throw new NotEnoughDataException("The message channel data info was not sent");
-                        }
+//                        if(in.available() > 0) {
+//                            messageChannel = in.readUTF();
+//                        } else {
+//                            throw new NotEnoughDataException("The message channel data info was not sent");
+//                        }
 
                         if(in.available() > 0) {
-                            JSONPlayer ifPlayer = new Gson().fromJson(in.readUTF(),JSONPlayer.class);
-                            IFPlayer correctPlayer = Universal.convertObjectPlayerToFPlayer(Universal.convertFPlayerToPlayer(ifPlayer));
-                            data.setPlayer(correctPlayer);
-                        }else {
+                            String dataS = in.readUTF();
+
+                            JSONPlayer ifPlayer = new Gson().fromJson(dataS, JSONPlayer.class);
+
+                            if(ifPlayer != null && ifPlayer.getUuid() != null) {
+                                IFPlayer correctPlayer = Universal.getMethods().getPlayerFromUUID(ifPlayer.getUuid());
+                                data.setPlayer(correctPlayer);
+                            } else {
+                                data.setPlayer(null);
+                            }
+
+                        } else {
                             throw new NotEnoughDataException("The player information dataInfo was not sent");
                         }
 
@@ -83,11 +90,12 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
                             throw new NotEnoughDataException("The use gson boolean dataInfo was not sent");
                         }
 
-                        data.setChannelName(channelName);
-                        data.setMessageChannel(messageChannel);
+                        data.setBungeeChannelType(channelName);
+//                        data.setMessageChannel(Channel.createChannelFromString(messageChannel, Channel.ChannelAction.BOTH));
+                        data.setMessageChannel(channel);
                         data.setSender(ev.getSender());
                         data.setServer(server);
-                        data.setSubchannel(subchannel);
+                        data.setSubChannel(subchannel);
                         data.setUseGson(useGson);
 
                         if(useGson) {
@@ -96,7 +104,13 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
                             } else {
                                 throw new NotEnoughDataException("The use gson json dataInfo was not sent");
                             }
+                        } else {
+                            while(in.available() > 0) {
+                                data.addData(in.readUTF());
+                            }
                         }
+
+
 
 
 
@@ -131,25 +145,24 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
      * @param fplayer The player can be null, not necessary
      * @param data The dataInfo to be sent, player will be specified added automatically
      */
-
     @Override
     public void sendPluginData(IFPlayer fplayer, @NonNull PluginMessageData data) {
         ProxiedPlayer player;
         if (fplayer != null) {
-            player = (ProxiedPlayer) Universal.convertFPlayerToPlayer(fplayer);
+            player = (ProxiedPlayer) Universal.getMethods().convertFPlayerToPlayer(fplayer);
         } else {
             player = getRandomPlayer();
         }
 
-        if (player == null) {
-            Universal.getMethods().getLogger().warning("No players online, cannot send plugin message");
-            try {
-                throw new NoPlayersOnlineException("Players are required to send plugin messages through bungee to other servers.");
-            } catch (NoPlayersOnlineException e) {
-                e.printStackTrace();
-            }
-            return;
-        }
+//        if (player == null) {
+//            Universal.getMethods().getLogger().warning("No players online, cannot send plugin message");
+//            try {
+//                throw new NoPlayersOnlineException("Players are required to send plugin messages through bungee to other servers.");
+//            } catch (NoPlayersOnlineException e) {
+//                e.printStackTrace();
+//            }
+//            return;
+//        }
 
         data.setPlayer(fplayer);
 
@@ -157,33 +170,59 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
         DataOutputStream out = new DataOutputStream(stream);
 
         try {
-            out.writeUTF(data.getChannelName()); //TYPE
+            out.writeUTF(data.getBungeeChannelType()); //TYPE
             out.writeUTF(data.getServer()); //SERVER
-            out.writeUTF(data.getSubchannel()); //SUBCHANNEL
+            out.writeUTF(data.getSubChannel()); //SUBCHANNEL
 
-            out.writeUTF(data.getMessageChannel());
+//            out.writeUTF(data.getMessageChannel().getFullChannelName());
 
-            out.writeUTF(new Gson().toJson(new JSONPlayer(player.getName(),player.getUniqueId())));
-
+            if(player != null) {
+                out.writeUTF(new Gson().toJson(new JSONPlayer(player.getName(), player.getUniqueId())));
+            } else {
+                out.writeUTF(new Gson().toJson(new JSONPlayer()));
+            }
             out.writeBoolean(data.isUseGson());
-            bungee.getLogger().info("Use gson status: " + data.isUseGson());
+
+            Universal.debug("Use gson status: " + data.isUseGson());
 
 
             if (data.isUseGson()) {
                 out.writeUTF(new Gson().toJson(data));
             }
 
-
-
-            for(String s : data.getExtraData()) {
-                out.writeUTF(s);
+            if (!data.isUseGson()) {
+                for (String s : data.getExtraData()) {
+                    out.writeUTF(s);
+                }
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        player.getServer().sendData(data.getMessageChannel(),stream.toByteArray());
+        if (data.getServer().equalsIgnoreCase("all")) {
+            for (ServerInfo server : ProxyServer.getInstance().getServers().values()) {
+                server.sendData(data.getMessageChannel().getFullChannelName(), stream.toByteArray());
+                Universal.debug(server.getName() + " " + server);
+            }
+        } else {
+            Universal.debug("fplayer == null" + (fplayer == null));
+            if (fplayer == null) {
+                ServerInfo serverInfo = ProxyServer.getInstance().getServerInfo(data.getServer());
+                if(serverInfo == null) {
+                    throw new ServerDoesNotExistException("The specified server " + data.getServer() + " does not exist");
+                }
+
+                ProxyServer.getInstance().getScheduler().runAsync(bungee, () -> serverInfo.sendData(data.getMessageChannel().getFullChannelName(), stream.toByteArray(), true));
+
+                Universal.debug(serverInfo.getName() + " " + serverInfo + " sent");
+            } else {
+                Server serverInfo = player.getServer();
+                ProxyServer.getInstance().getScheduler().runAsync(bungee, () -> serverInfo.sendData(data.getMessageChannel().getFullChannelName(), stream.toByteArray()));
+
+                Universal.debug(serverInfo.getInfo().getName() + " " + serverInfo.getInfo() + " sent");
+            }
+        }
     }
 
     /**

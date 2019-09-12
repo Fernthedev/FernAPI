@@ -10,8 +10,17 @@ public interface IPMessageHandler {
 
     void registerMessageHandler(PluginMessageHandler pluginMessageHandler);
 
+    /**
+     * This sends plugin dataInfo.
+     * @param data The dataInfo to be sent, player will be specified added automatically
+     */
     void sendPluginData(PluginMessageData data);
 
+    /**
+     * This sends plugin dataInfo.
+     * @param player The player can be null, not necessary
+     * @param data The dataInfo to be sent, player will be specified added automatically
+     */
     void sendPluginData(IFPlayer player, PluginMessageData data);
 
     List<PluginMessageHandler> recievers = new ArrayList<>();

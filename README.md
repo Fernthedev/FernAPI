@@ -157,14 +157,14 @@ fPlayer.sendChatMessage(textMessage);
 
 ### PlaceHolderAPI (Bungee)
 ```java
-AskPlaceHolder askPlaceHolder = new AskPlaceHolder(Player,PlaceHolder);
+AskPlaceHolder velocityAskPlaceHolder = new AskPlaceHolder(Player,PlaceHolder);
 
-askPlaceHolder.setRunnable(new MessageRunnable() {
+velocityAskPlaceHolder.setRunnable(new MessageRunnable() {
     @Override
     public void run() {
         super.run();
         //Whatever you want.
-        sender.sendMessage("The player's placeholder value of " + args[1] + " is " + askPlaceHolder.getPlaceHolderResult());
+        sender.sendMessage("The player's placeholder value of " + args[1] + " is " + velocityAskPlaceHolder.getPlaceHolderResult());
     }
 });
 ```
@@ -199,9 +199,11 @@ public class Test extends PluginMessageHandler {
     @Override
     public void onMessageReceived(PluginMessageData data, Channel channel) {
         //Whatever you want
-        //Handling extra data is so:
-        String data1 = in.readUTF(); //DATA1
-        String data2 = in.readUTF(); //DATA2
+        // data Contains all the data you would need.
+        // Extra data is so:
+        for(String extraData : data.getExtraData()) {
+            
+        }
         //You read the data in the order you add it, so if you add DATA1 first, you read it first, then second DATA2 etc.
         //This works for both adding to output stream or using data.addData();
     }
@@ -216,7 +218,7 @@ To receive messages, the sender also has to use the API. This is an example how:
 ByteArrayOutputStream stream = new ByteArrayOutputStream();
 DataOutputStream out = new DataOutputStream(stream);
 
-data = new PluginMessageData(stream,"Forward",player.getServer().getInfo().getName(),Sub channel such as "Channel1",Channel you defined in your getChannels() method "pluginName:channel");
+data = new PluginMessageData(stream,player.getServer().getInfo().getName() or "All" or ServerInfo.getName(),SubChannel within pluginChannel,new Channel(namespace, pluginChannel, ChannelAction));
 
 data.addData("Data1");
 

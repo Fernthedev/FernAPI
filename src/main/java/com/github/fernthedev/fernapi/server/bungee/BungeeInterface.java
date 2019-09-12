@@ -2,17 +2,20 @@ package com.github.fernthedev.fernapi.server.bungee;
 
 import com.github.fernthedev.fernapi.server.bungee.player.BungeeFConsole;
 import com.github.fernthedev.fernapi.server.bungee.player.BungeeFPlayer;
+import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.CommandSender;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
-import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
+import com.github.fernthedev.fernapi.universal.misc.MethodInterface;
 import com.github.fernthedev.fernapi.universal.handlers.ServerType;
 import lombok.NonNull;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class BungeeInterface implements MethodInterface {
     private FernBungeeAPI fernBungeeAPI;
@@ -76,5 +79,10 @@ public class BungeeInterface implements MethodInterface {
     @Override
     public void runAsync(Runnable runnable) {
         fernBungeeAPI.getProxy().getScheduler().runAsync(fernBungeeAPI, runnable);
+    }
+
+    @Override
+    public List<IFPlayer> getPlayers() {
+        return ProxyServer.getInstance().getPlayers().stream().map(proxiedPlayer -> Universal.getMethods().convertPlayerObjectToFPlayer(proxiedPlayer)).collect(Collectors.toList());
     }
 }

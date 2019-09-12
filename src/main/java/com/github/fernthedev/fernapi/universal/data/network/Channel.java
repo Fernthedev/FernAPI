@@ -2,12 +2,12 @@ package com.github.fernthedev.fernapi.universal.data.network;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class Channel {
+
+    private Channel() {}
 
     /**
      * The namespace, used to identify from which plugin

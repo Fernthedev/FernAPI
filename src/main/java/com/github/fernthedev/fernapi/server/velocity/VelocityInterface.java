@@ -2,17 +2,20 @@ package com.github.fernthedev.fernapi.server.velocity;
 
 import com.github.fernthedev.fernapi.server.velocity.player.VelocityFConsole;
 import com.github.fernthedev.fernapi.server.velocity.player.VelocityFPlayer;
+import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.CommandSender;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
-import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
+import com.github.fernthedev.fernapi.universal.misc.MethodInterface;
 import com.github.fernthedev.fernapi.universal.handlers.ServerType;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import lombok.NonNull;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class VelocityInterface implements MethodInterface {
     private FernVelocityAPI fernVelocityAPI;
@@ -29,7 +32,7 @@ public class VelocityInterface implements MethodInterface {
 
     @Override
     public ServerType getServerType() {
-        return ServerType.BUNGEE;
+        return ServerType.VELOCITY;
     }
 
     @Override
@@ -81,4 +84,8 @@ public class VelocityInterface implements MethodInterface {
         new Thread(runnable).start();
     }
 
+    @Override
+    public List<IFPlayer> getPlayers() {
+        return fernVelocityAPI.getServer().getAllPlayers().stream().map(proxiedPlayer -> Universal.getMethods().convertPlayerObjectToFPlayer(proxiedPlayer)).collect(Collectors.toList());
+    }
 }

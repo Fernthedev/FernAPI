@@ -4,8 +4,9 @@ import com.github.fernthedev.fernapi.server.bungee.chat.BungeeChatHandler;
 import com.github.fernthedev.fernapi.server.bungee.command.BungeeCommandHandler;
 import com.github.fernthedev.fernapi.server.bungee.database.BungeeDatabase;
 import com.github.fernthedev.fernapi.server.bungee.interfaces.UUIDBungee;
-import com.github.fernthedev.fernapi.server.bungee.network.AskPlaceHolder;
 import com.github.fernthedev.fernapi.server.bungee.network.BungeeMessageHandler;
+import com.github.fernthedev.fernapi.server.bungee.network.BungeeNetworkHandler;
+import com.github.fernthedev.fernapi.universal.ProxyAskPlaceHolder;
 import com.github.fernthedev.fernapi.universal.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
@@ -21,10 +22,11 @@ public class FernBungeeAPI extends Plugin implements FernAPIPlugin {
                 new BungeeChatHandler(),
                 messageHandler,
                  new BungeeDatabase(this),
-                new BungeeCommandHandler(this));
+                new BungeeCommandHandler(this),
+                new BungeeNetworkHandler());
         UUIDFetcher.setFetchManager(new UUIDBungee());
         getProxy().getPluginManager().registerListener(this,messageHandler);
-        Universal.getMessageHandler().registerMessageHandler(new AskPlaceHolder(this));
+        Universal.getMessageHandler().registerMessageHandler(new ProxyAskPlaceHolder());
     }
 
     @Override
