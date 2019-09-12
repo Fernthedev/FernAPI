@@ -59,4 +59,14 @@ public class JSONPlayer extends IFPlayer {
     public InetSocketAddress getAddress() {
         return null;
     }
+
+    @Override
+    public long getPing() {
+        return -1;
+    }
+
+    @Override
+    public String getCurrentServerName() {
+        return "";
+    }
 }

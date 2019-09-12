@@ -1,27 +1,22 @@
-package com.github.fernthedev.fernapi.server.bungee.network;
+package com.github.fernthedev.fernapi.universal;
 
-
-import com.github.fernthedev.fernapi.server.bungee.FernBungeeAPI;
-import com.github.fernthedev.fernapi.universal.Channels;
-import com.github.fernthedev.fernapi.universal.Universal;
+import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
 import com.github.fernthedev.fernapi.universal.data.network.Channel;
 import com.github.fernthedev.fernapi.universal.data.network.PluginMessageData;
+import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
 import com.github.fernthedev.fernapi.universal.handlers.PluginMessageHandler;
-import lombok.NoArgsConstructor;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.connection.Server;
 
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
-@NoArgsConstructor
-public class AskPlaceHolder extends PluginMessageHandler {
+public class ProxyAskPlaceHolder extends PluginMessageHandler {
 
-    private ProxiedPlayer player;
+    private IFPlayer player;
     private String placeHolderValue;
+
+    public static final String PLACEHOLDER_NOT_FOUND = "NoPlaceHolderFound";
+    public static final String PLACEHOLDER_API_NOT_ENABLE = "PlaceHolderDisabled";
 
     boolean checked;
     boolean placeHolderReplaced;
@@ -30,20 +25,18 @@ public class AskPlaceHolder extends PluginMessageHandler {
 
     private Timer taske;
 
-    private MessageRunnable runnable;
+    private Runnable runnable;
 
-    private static List<AskPlaceHolder> instances = new ArrayList<>();
+    private static List<ProxyAskPlaceHolder> instances = new ArrayList<>();
 
     private boolean runnableset = false;
     private String uuid;
 
     private PluginMessageData data;
-    private static FernBungeeAPI bungee;
 
 
-    public AskPlaceHolder(FernBungeeAPI fernBungeeAPI) {
-        bungee = fernBungeeAPI;
-        getLogger().info("Registered PlaceHolderAPI Listener");
+    public ProxyAskPlaceHolder() {
+        Universal.getMethods().getLogger().info("Registered PlaceHolderAPI Listener");
     }
 
     public String getPlaceHolderResult() {
@@ -51,18 +44,18 @@ public class AskPlaceHolder extends PluginMessageHandler {
     }
 
 
-    public AskPlaceHolder(ProxiedPlayer player, String placeHolderValue) {
+    public ProxyAskPlaceHolder(IFPlayer player, String placeHolderValue) {
         this.player = player;
 
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(stream);
 
-        data = new PluginMessageData(stream,"Forward",player.getServer().getInfo().getName(),Channels.getPlaceHolderResult,Channels.PlaceHolderBungeeChannel);
+        data = new PluginMessageData(stream, player.getCurrentServerName(), Channels.getPlaceHolderResult, Channels.PlaceHolderBungeeChannel);
 
         uuid = UUID.randomUUID().toString();
         if (!instances.isEmpty()) {
-            for (AskPlaceHolder askPlaceHolder : instances) {
+            for (ProxyAskPlaceHolder askPlaceHolder : instances) {
                 if (askPlaceHolder.uuid != null) {
                     while (askPlaceHolder.uuid.equals(uuid)) {
                         uuid = UUID.randomUUID().toString();
@@ -72,31 +65,30 @@ public class AskPlaceHolder extends PluginMessageHandler {
         }
 
 
-        getLogger().info("Current uuid is " + uuid);
+        Universal.debug("Current uuid is " + uuid);
 
         data.addData(placeHolderValue); //MESSAGE 1 (placeholder requested)
         oldPlaceValue = placeHolderValue;
         data.addData(uuid); //MESSAGE 2 (UUID)
-
-
-        Server server = player.getServer();
-        getLogger().info("Placeholder requested to " + server.getInfo().getName() + " for placeholder " + placeHolderValue);
 
         checked = false;
     }
 
     /**
      * Must be called in order for the message to be sent
+     * It is called on another thread
      * @param messageRunnable The action to run when the placeholder is received
      */
-    public void setRunnable(MessageRunnable messageRunnable) {
+    public void setRunnable(Runnable messageRunnable) {
         runnableset = true;
         this.runnable = messageRunnable;
         instances.add(this);
 
-        Universal.getMessageHandler().sendPluginData(Universal.convertObjectPlayerToFPlayer(player),data);
+        Universal.getMessageHandler().sendPluginData(player, data);
 
-       // getLogger().info("Runnable has now been initialized");
+        Universal.debug("Placeholder requested to " + player.getCurrentServerName() + " for placeholder " + oldPlaceValue);
+
+        // getLogger().info("Runnable has now been initialized");
     }
 
     public boolean isPlaceHolderReplaced() {
@@ -105,7 +97,7 @@ public class AskPlaceHolder extends PluginMessageHandler {
 
 
     @Deprecated
-    private void removeInstance(AskPlaceHolder askPlaceHolder) {
+    private void removeInstance(ProxyAskPlaceHolder askPlaceHolder) {
         //  getLogger().info("Removed an instance from list");
         instances.remove(askPlaceHolder);
     }
@@ -131,7 +123,7 @@ public class AskPlaceHolder extends PluginMessageHandler {
         //getLogger().info("This instance uuid is " + uuid);
 
         taske.schedule(new TimerTask() {
-            AskPlaceHolder instance = null;
+            ProxyAskPlaceHolder instance = null;
             private int count = 0;
 
             @Override
@@ -140,7 +132,7 @@ public class AskPlaceHolder extends PluginMessageHandler {
                 if (count == 0) {
                     if (instance == null) {
                         if (!instances.isEmpty()) {
-                            for (AskPlaceHolder askPlaceHolder : instances) {
+                            for (ProxyAskPlaceHolder askPlaceHolder : instances) {
                                 if (askPlaceHolder.uuid.equals(uuid)) {
                                     instance = askPlaceHolder;
                                     //          getLogger().info("Found on the list an instance with uuid " + askPlaceHolder.uuid);
@@ -171,81 +163,72 @@ public class AskPlaceHolder extends PluginMessageHandler {
 
     }
 
-
-    private Logger getLogger() {
-        return bungee.getLogger();
-    }
-
     /**
-     * This is the channel name that will be registered incoming and outcoming
+     * This is the channel name that will be registered incoming and outgoing
      *
-     * @return The channels that will be incoming and outcoming
+     * @return The channels that will be incoming and outgoing
      */
     @Override
     public List<Channel> getChannels() {
         List<Channel> channels = new ArrayList<>();
-        channels.add(Channel.createChannelFromString(Channels.PlaceHolderBungeeChannel, Channel.ChannelAction.BOTH));
+        channels.add(Channels.PlaceHolderBungeeChannel);
 
         return channels;
     }
 
     @Override
     public void onMessageReceived(PluginMessageData data, Channel channel) {
-        if (data.getSender() instanceof Server) {
+        if (Universal.getNetworkHandler().isRegistered(data.getSender())) {
 
             ByteArrayInputStream stream = data.getInputStream();
-            DataInputStream in = new DataInputStream(stream);
 
-            try {
-                String channelName = data.getChannelName(); // channel we delivered
-                String server = data.getServer(); //Just incase
-                String subchannel = data.getSubchannel(); //The channel of our custom desire
+            String channelName = data.getBungeeChannelType(); // channel we delivered
+            String server = data.getServer(); //Just incase
+            String subchannel = data.getSubChannel(); //The channel of our custom desire
 
-                if (channelName.equalsIgnoreCase("Forward") && subchannel.equalsIgnoreCase(Channels.PlaceHolderValue)) {
-                    String placeholder = in.readUTF();
 
-                    if (placeholder.equals("NoPlaceHolderFound")) placeholder = null;
+            if (channelName.equalsIgnoreCase("Forward") && subchannel.equalsIgnoreCase(Channels.PlaceHolderValue)) {
+                Queue<String> queueData = data.getExtraDataQueue();
+                String placeholder = queueData.remove();
 
-                    String uuide = in.readUTF();
+                if (placeholder.equals(PLACEHOLDER_NOT_FOUND) || placeholder.equals(PLACEHOLDER_API_NOT_ENABLE)) placeholder = null;
 
-                    AskPlaceHolder instance = null;
-                    if (!instances.isEmpty()) {
-                        for (AskPlaceHolder askPlaceHolder : instances) {
-                            if (askPlaceHolder.uuid.equals(uuide)) {
-                                instance = askPlaceHolder;
-                                break;
-                            }
+                String uuide = queueData.remove();
+
+                ProxyAskPlaceHolder instance = null;
+                if (!instances.isEmpty()) {
+                    for (ProxyAskPlaceHolder askPlaceHolder : instances) {
+                        if (askPlaceHolder.uuid.equals(uuide)) {
+                            instance = askPlaceHolder;
+                            break;
                         }
-                    } else {
-                        getLogger().info("There were no instances");
                     }
-
-
-                    if (instance != null) {
-
-                       // getLogger().info("Found the instance");
-
-                        instance.placeHolderValue = placeholder;
-
-                        if (placeholder != null) {
-                            instance.placeHolderReplaced = !instance.placeHolderValue.equals(instance.oldPlaceValue);
-                        }
-
-                        instance.checked = true;
-                        if (instance.runnableset) {
-                          //   getLogger().info("Runnable is set because we checked");
-                        } else {
-                            getLogger().info("Runnable is not set because we checked");
-                        }
-                        instance.runTask();
-
-                    } else {
-                        getLogger().info(ChatColor.RED + "The incoming message was not expected. From an attacker?");
-                    }
+                } else {
+                    Universal.debug("There were no instances");
                 }
 
-            } catch (IOException e) {
-                e.printStackTrace();
+
+                if (instance != null) {
+
+                   // getLogger().info("Found the instance");
+
+                    instance.placeHolderValue = placeholder;
+
+                    if (placeholder != null) {
+                        instance.placeHolderReplaced = !instance.placeHolderValue.equals(instance.oldPlaceValue);
+                    }
+
+                    instance.checked = true;
+                    if (instance.runnableset) {
+                      //   getLogger().info("Runnable is set because we checked");
+                    } else {
+                        Universal.debug("Runnable is not set because we checked");
+                    }
+                    instance.runTask();
+
+                } else {
+                    Universal.debug(ChatColor.RED + "The incoming message was not expected. From an attacker?");
+                }
             }
 
         }

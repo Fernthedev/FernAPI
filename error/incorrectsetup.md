@@ -13,13 +13,23 @@ After you have extended one of these classes, for bungee and spigot you have to 
 public void onEnable() {
     super.onEnable();
 }
+
+public void onDisable() {
+    super.onDisable();
+}
 ```
 For sponge, you should have 
 ```java
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
-    super.onServerStart(event);
+        super.onServerStart(event);
     }
+
+    @Listener
+    public void onServerStop(GameStoppedEvent event) {
+        super.onServerStop(event):        
+    }
+
 ```
 For Velocity
 ```java
@@ -32,6 +42,11 @@ For Velocity
         super.onProxyInitialization(event);
         // Do some operation demanding access to the Velocity API here.
         // For instance, we could register an event:
+    }
+
+    @Subscribe
+    public void onProxyStop(ProxyShutdownEvent event) {
+        super.onProxyStop(event);        
     }
 ```
 That should be all, unless the API updates.

@@ -20,5 +20,7 @@ public abstract class IFPlayer implements CommandSender {
 
     public abstract InetSocketAddress getAddress();
 
+    public abstract long getPing();
 
+    public abstract String getCurrentServerName();
 }

@@ -1,5 +1,7 @@
 package com.github.fernthedev.fernapi.universal;
 
+import com.github.fernthedev.fernapi.universal.data.network.Channel;
+
 public class Channels {
 
     private Channels() {
@@ -9,7 +11,7 @@ public class Channels {
 
     public static String PlaceHolderValue = "PlaceHolderValue";
 
-    public static String PlaceHolderBungeeChannel = "ferncommands:ph";
+    public static Channel PlaceHolderBungeeChannel = new Channel("ferncommands", "ph", Channel.ChannelAction.BOTH);
 
 
 }

@@ -2,16 +2,19 @@ package com.github.fernthedev.fernapi.server.spigot;
 
 import com.github.fernthedev.fernapi.server.spigot.player.SpigotFConsole;
 import com.github.fernthedev.fernapi.server.spigot.player.SpigotFPlayer;
+import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.CommandSender;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
-import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
+import com.github.fernthedev.fernapi.universal.misc.MethodInterface;
 import com.github.fernthedev.fernapi.universal.handlers.ServerType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class SpigotInterface implements MethodInterface {
     private FernSpigotAPI fernSpigotAPI;
@@ -75,5 +78,10 @@ public class SpigotInterface implements MethodInterface {
     @Override
     public void runAsync(Runnable runnable) {
         fernSpigotAPI.getServer().getScheduler().runTaskAsynchronously(fernSpigotAPI, runnable);
+    }
+
+    @Override
+    public List<IFPlayer> getPlayers() {
+        return Bukkit.getOnlinePlayers().stream().map(proxiedPlayer -> Universal.getMethods().convertPlayerObjectToFPlayer(proxiedPlayer)).collect(Collectors.toList());
     }
 }
