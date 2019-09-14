@@ -101,31 +101,35 @@ task alljavadoc(type: Javadoc) {
     destinationDir = file("${buildDir}/docs/javadoc")
 }
 
-task javadocJar(type: Jar, dependsOn: alljavadoc) {
-    classifier = 'javadoc'
-    from alljavadoc.destinationDir
+task sourcesJar(type: Jar, dependsOn: classes) {
+    from sourceSets.main.java
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    from javadoc.destinationDir
 }
 
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from subprojects.collect { it.sourceSets.main.allSource }
+artifacts {
+    archives javadocJar
+    archives sourcesJar
 }
 
-task sourceJarPublish(type: Jar) {
-    from sourceSets.main.allJava
-}
+build.dependsOn sourcesJar
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
 
-            groupId = 'fernthedev'
-            artifactId = 'com.github.fernthedev.fernapi'
+            groupId = this.group;
+            artifactId = this.archivesBaseName
             version = this.version
 
-            artifact sourceJarPublish {
+            artifact sourcesJar {
                 classifier "sources"
+            }
+
+            artifact javadocJar {
+                classifier "javadoc"
             }
         }
     }
