@@ -2,6 +2,7 @@ package com.github.fernthedev.fernapi.universal.data.chat;
 
 import lombok.*;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +60,7 @@ public abstract class BaseMessage {
      * Appended components that inherit this component's formatting and events
      */
     @Getter
+    @Nullable
     private List<BaseMessage> extra;
 
     /**
