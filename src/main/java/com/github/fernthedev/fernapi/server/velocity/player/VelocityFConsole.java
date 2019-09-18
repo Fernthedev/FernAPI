@@ -53,22 +53,24 @@ public class VelocityFConsole implements com.github.fernthedev.fernapi.universal
 
         TextComponent fullMessage = TextComponent.of(ChatColor.translateAlternateColorCodes('&',baseMessage.getParentText()));
 
-        for(BaseMessage be : baseMessage.getExtra()) {
-            TextComponent te = TextComponent.of(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
+        if (baseMessage.getExtra() != null) {
+            for(BaseMessage be : baseMessage.getExtra()) {
+                TextComponent te = TextComponent.of(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
 
-            if (be.getClickData() != null) {
-                te.clickEvent(ClickEvent.of(
-                        ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
-                        be.getClickData().getClickValue()));
+                if (be.getClickData() != null) {
+                    te.clickEvent(ClickEvent.of(
+                            ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
+                            be.getClickData().getClickValue()));
+                }
+
+                if (be.getHoverData() != null) {
+                    te.hoverEvent(HoverEvent.of(
+                            HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
+                            message(be.getHoverData().getHoverValue())));
+                }
+
+                fullMessage.append(te);
             }
-
-            if (be.getHoverData() != null) {
-                te.hoverEvent(HoverEvent.of(
-                        HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
-                        message(be.getHoverData().getHoverValue())));
-            }
-
-            fullMessage.append(te);
         }
         FernVelocityAPI api = (FernVelocityAPI) Universal.getMethods().getInstance();
         api.getServer().getConsoleCommandSource().sendMessage(fullMessage);

@@ -60,17 +60,19 @@ public class SpongeFConsole implements CommandSender {
 
         Text.Builder text = Text.builder();
 
-        for(BaseMessage be : textMessage.getExtra()) {
-            Text.Builder te = TextSerializers.FORMATTING_CODE.deserialize(be.toPlainText()).toBuilder();
+        if (textMessage.getExtra() != null) {
+            for(BaseMessage be : textMessage.getExtra()) {
+                Text.Builder te = TextSerializers.FORMATTING_CODE.deserialize(be.toPlainText()).toBuilder();
 
-            if(be.getClickData() != null) {
-                te.onClick(parseAction(be.getClickData()));
-            }
+                if(be.getClickData() != null) {
+                    te.onClick(parseAction(be.getClickData()));
+                }
 
-            if(be.getHoverData() != null) {
-                te.onHover(parseAction(be.getHoverData()));
+                if(be.getHoverData() != null) {
+                    te.onHover(parseAction(be.getHoverData()));
+                }
+                text.append(te.build());
             }
-            text.append(te.build());
         }
 
         src.sendMessage(text.build());
