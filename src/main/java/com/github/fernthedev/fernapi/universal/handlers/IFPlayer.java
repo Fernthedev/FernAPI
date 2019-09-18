@@ -11,7 +11,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 public abstract class IFPlayer implements CommandSender {
+    @Getter
     String name = null;
+
+    @Getter
     UUID uuid = null;
 
     public IFPlayer() {}
