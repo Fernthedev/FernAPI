@@ -1,11 +1,11 @@
 package com.github.fernthedev.fernapi.universal.data.database;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import com.github.fernthedev.fernapi.universal.mysql.SQLDriver;
+import lombok.*;
 
 @RequiredArgsConstructor
 @Getter
+@Data
 public class DatabaseAuthInfo {
     //DataBase vars.
     @NonNull
@@ -23,10 +23,20 @@ public class DatabaseAuthInfo {
     @NonNull
     protected String database;
 
+    /**
+     * Set if necessary
+     */
+    @Setter
+    protected SQLDriver mysqlDatabaseType = SQLDriver.MARIADB_DRIVER;
+
+
+    private DatabaseAuthInfo() {}
+
 
     public String getUrlToDB() {
-        return "jdbc:mysql://%host%:%port%/%database%".replaceAll("%host%", urlHost).replaceAll("%port%", port).replaceAll("%database%", database);
+        return "jdbc:%sql%://%host%:%port%/%database%".replaceAll("%host%", urlHost).replaceAll("%port%", port).replaceAll("%database%", database).replaceAll("%sql%", mysqlDatabaseType.getSql());
     }
+
 
 
 }

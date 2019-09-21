@@ -3,6 +3,7 @@ package com.github.fernthedev.fernapi.universal.examples;
 import com.github.fernthedev.fernapi.server.bungee.FernCommand;
 import com.github.fernthedev.fernapi.universal.data.database.RowData;
 import com.github.fernthedev.fernapi.universal.data.database.ColumnData;
+import com.github.fernthedev.fernapi.universal.data.database.RowDataTemplate;
 import net.md_5.bungee.api.CommandSender;
 
 import java.util.Arrays;
@@ -48,13 +49,14 @@ public class DBCommand extends FernCommand {
                     db.test();
                     break;
                 case "insert":
-                    RowData rowData = new RowData(new ColumnData("row1", "value1test"));
+                    RowData rowData = new RowData(new ColumnData("row1", "value1test"),new ColumnData("row2", "value2test"));
 
-                    rowData.addData(new ColumnData("row2", "value2test"));
                     db.insertIntoTable(db.getTableInfo(), rowData);
                     break;
                 case "get":
-                    for (RowData rowData1 : db.getTable(db.getTableInfo().getTableName()).getRowDataList()) {
+                    for (RowData rowData1 : db.getTable(db.getTableInfo().getTableName(),
+                            new RowDataTemplate(new ColumnData("row1", "value1test"),
+                                    new ColumnData("row2", "value2test"))).getRowDataList()) {
                         logger().info(Arrays.toString(rowData1.getColumnDataList().toArray()));
 
                         for (ColumnData columnData : rowData1.getColumnDataList()) {

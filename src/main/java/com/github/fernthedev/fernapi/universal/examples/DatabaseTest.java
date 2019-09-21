@@ -1,14 +1,16 @@
 package com.github.fernthedev.fernapi.universal.examples;
 
-import com.github.fernthedev.fernapi.universal.DatabaseManager;
+import com.github.fernthedev.fernapi.universal.data.database.*;
+import com.github.fernthedev.fernapi.universal.mysql.DatabaseManager;
 import com.github.fernthedev.fernapi.universal.Universal;
-import com.github.fernthedev.fernapi.universal.data.database.DatabaseAuthInfo;
-import com.github.fernthedev.fernapi.universal.data.database.RowData;
-import com.github.fernthedev.fernapi.universal.data.database.ColumnData;
-import com.github.fernthedev.fernapi.universal.data.database.TableInfo;
 
 public class DatabaseTest extends DatabaseManager {
     private TableInfo tableInfo;
+
+    private static RowDataTemplate rowDataTemplate = new RowDataTemplate(
+            new ColumnData("thing", "test"),
+            new ColumnData("thing2", "testthing")
+    );
 
     public DatabaseTest(String username,String password,String port,String URLHost,String database) {
         connect(new DatabaseAuthInfo(username,password,port,URLHost,database));
@@ -16,7 +18,7 @@ public class DatabaseTest extends DatabaseManager {
 
     public TableInfo getTableInfo() {
         if(tableInfo == null) {
-            tableInfo = new TableInfo("test_no");
+            tableInfo = new TableInfo("test_no", rowDataTemplate);
         }
 
         return tableInfo;
@@ -40,21 +42,16 @@ public class DatabaseTest extends DatabaseManager {
 
     public void test() {
 
+        tableInfo = new TableInfo("test_no", rowDataTemplate);
 
+        RowData rowData = new RowData(new ColumnData("row1","value1"), new ColumnData("row2", "value2"));
 
-        tableInfo = new TableInfo("test_no");
+        insertIntoTable(tableInfo, rowData);
 
-        RowData rowData = new RowData(new ColumnData("row1","value1"));
+        rowData = new RowData(new ColumnData("row1","value1nou"), new ColumnData("row2","value2nou"));
 
-        rowData.addData(new ColumnData("row2","value2"));
+        insertIntoTable(tableInfo, rowData);
 
-        tableInfo.addTableInfo(rowData);
-
-        rowData = new RowData(new ColumnData("row1","value1nou"));
-
-        rowData.addData(new ColumnData("row2","value2nou"));
-
-        tableInfo.addTableInfo(rowData);
 
         createTable(tableInfo);
     }

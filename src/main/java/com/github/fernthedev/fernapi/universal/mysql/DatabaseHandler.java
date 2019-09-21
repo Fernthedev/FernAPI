@@ -1,6 +1,5 @@
-package com.github.fernthedev.fernapi.universal.handlers;
+package com.github.fernthedev.fernapi.universal.mysql;
 
-import com.github.fernthedev.fernapi.universal.DatabaseManager;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.database.DatabaseAuthInfo;
 import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseNotConnectedException;
@@ -10,7 +9,6 @@ import lombok.NonNull;
 import lombok.Setter;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,8 +55,16 @@ public abstract class DatabaseHandler {
             }
         } catch (DatabaseNotConnectedException ignored) {}
 
-        try { //We use a try catch to avoid errors, hopefully we don't get any.
-            Class.forName("com.mysql.jdbc.Driver"); //this accesses Driver in jdbc.
+//        try { //We use a try catch to avoid errors, hopefully we don't get any.
+//            Class.forName("com.mysql.jdbc.Driver"); //this accesses Driver in jdbc.
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//            System.err.println("jdbc driver unavailable!");
+//            throw e;
+//        }
+
+        try {
+            Class.forName(dataInfo.getMysqlDatabaseType().getSqlDriver());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             System.err.println("jdbc driver unavailable!");
@@ -69,16 +75,19 @@ public abstract class DatabaseHandler {
             Universal.getMethods().getLogger().info("Connecting to MySQL now.");
         }
 
-        connection = DriverManager.getConnection(dataInfo.getUrlToDB(), dataInfo.getUsername(), dataInfo.getPassword());
+//        connection = DriverManager.getConnection(dataInfo.getUrlToDB(), dataInfo.getUsername(), dataInfo.getPassword());
 
         if (!manager.isSetup()) {
-            connected = !connection.isClosed();
+            manager.setFirstConnect(true);
+            manager.createConnection(dataInfo);
+
+            try {
+                connected = manager.isConnected();
+            } catch (DatabaseNotConnectedException ignored) {}
 
             manager.onConnectAttempt(connected);
-            manager.setConnection(connection);
-
-            Universal.getMethods().getLogger().info("Connected successfully");
             manager.setSetup(true);
+
 
             setupSchedule();
         }
@@ -110,7 +119,9 @@ public abstract class DatabaseHandler {
             Connection connection = null;
             try {
                 connection = databaseManager.getConnection();
-            } catch (DatabaseNotConnectedException ignored) { }
+            } catch (DatabaseNotConnectedException ignored) { } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) { }
             // invoke on disable.
             try { //using a try catch to catch connection errors (like wrong sql password...)
                 if (connection != null && !connection.isClosed()) { //checking if connection isn't null to
