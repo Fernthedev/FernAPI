@@ -75,6 +75,22 @@ public abstract class UniversalCommand {
     }
 
     /**
+     * Allows you to make autocomplete only suggest based off what is written
+     * @param arg The argument currently used
+     * @param possibilities All of the possibilities
+     * @return The auto-complete possibilities
+     */
+    public List<String> search(String arg, List<String> possibilities) {
+        List<String> newPos = new ArrayList<>();
+        possibilities.forEach(s -> {
+            if(s.startsWith(arg) || s.contains(arg)) {
+                newPos.add(s);
+            }
+        });
+        return newPos;
+    }
+
+    /**
      * Called when executing the command
      * @param sender The source
      * @param args The arguments provided

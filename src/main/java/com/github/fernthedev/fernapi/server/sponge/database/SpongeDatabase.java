@@ -1,8 +1,8 @@
 package com.github.fernthedev.fernapi.server.sponge.database;
 
 import com.github.fernthedev.fernapi.server.sponge.FernSpongeAPI;
-import com.github.fernthedev.fernapi.universal.DatabaseManager;
-import com.github.fernthedev.fernapi.universal.handlers.DatabaseHandler;
+import com.github.fernthedev.fernapi.universal.mysql.DatabaseManager;
+import com.github.fernthedev.fernapi.universal.mysql.DatabaseHandler;
 import org.spongepowered.api.scheduler.Task;
 
 import java.sql.SQLException;

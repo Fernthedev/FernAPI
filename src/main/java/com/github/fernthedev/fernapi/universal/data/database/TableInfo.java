@@ -1,11 +1,14 @@
 package com.github.fernthedev.fernapi.universal.data.database;
 
-import com.github.fernthedev.fernapi.universal.DatabaseManager;
+import com.github.fernthedev.fernapi.universal.mysql.DatabaseManager;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@ToString
 public class TableInfo {
 
     @Getter
@@ -14,22 +17,35 @@ public class TableInfo {
     @Getter
     private String tableName;
 
-    public TableInfo(String tableName) {
+    /**
+     * Is only used as a row template required for creating the table.
+     */
+    @Getter
+    @Setter
+    protected RowDataTemplate rowDataTemplate;
+
+    public TableInfo(String tableName, RowDataTemplate rowDataTemplate) {
         this.tableName = tableName;
+        this.rowDataTemplate = rowDataTemplate;
     }
 
-    @Deprecated
+
+
     /**
-     * Don't use. It is only for creating tables
+     * Don't use. It is only used in the creation of tables
+     * To add to table, use {@link DatabaseManager#insertIntoTable(TableInfo, RowData)}
      */
+    @Deprecated
     public void addTableInfo(RowData rowData) {
         rowDataList.add(rowData);
     }
 
-    @Deprecated
+
     /**
-     * Don't use. It is only for creating tables
+     * Don't use. It is only used in the creation of tables
+     * To add to table, use {@link DatabaseManager#removeRowIfColumnContainsValue(TableInfo, String, String)}
      */
+    @Deprecated
     public void removeTableInfo(RowData rowData) {
         rowDataList.remove(rowData);
     }
@@ -37,10 +53,10 @@ public class TableInfo {
     /**
      * Shortcut
      * @param databaseManager
-     * @return {@link DatabaseManager#getTable(String)}
+     * @return {@link DatabaseManager#getTable(String, RowDataTemplate)}
      */
     public TableInfo getFromDatabase(DatabaseManager databaseManager) {
-        rowDataList = databaseManager.getTable(tableName).getRowDataList();
+        rowDataList = databaseManager.getTable(tableName, rowDataTemplate).getRowDataList();
         return this;
     }
 }

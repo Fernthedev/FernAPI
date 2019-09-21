@@ -1,8 +1,8 @@
 package com.github.fernthedev.fernapi.server.velocity.database;
 
 import com.github.fernthedev.fernapi.server.velocity.FernVelocityAPI;
-import com.github.fernthedev.fernapi.universal.DatabaseManager;
-import com.github.fernthedev.fernapi.universal.handlers.DatabaseHandler;
+import com.github.fernthedev.fernapi.universal.mysql.DatabaseManager;
+import com.github.fernthedev.fernapi.universal.mysql.DatabaseHandler;
 import com.velocitypowered.api.scheduler.ScheduledTask;
 
 import java.sql.SQLException;

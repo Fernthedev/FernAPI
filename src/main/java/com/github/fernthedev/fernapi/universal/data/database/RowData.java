@@ -3,6 +3,7 @@ package com.github.fernthedev.fernapi.universal.data.database;
 import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseColumNotExistException;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,21 +13,20 @@ import java.util.List;
  * Contains the full row data of columns.
  * Each column is one data.
  */
+@ToString
 public class RowData {
 
     @Getter
     private List<ColumnData> columnDataList = new ArrayList<>();
 
-    public RowData(@NonNull ColumnData columnData, @NonNull ColumnData... columnDataList) {
+    public RowData(@NonNull ColumnData columnData, @NonNull ColumnData columnData2, @NonNull ColumnData... columnDataList) {
         this.columnDataList.add(columnData);
+        this.columnDataList.add(columnData2);
         this.columnDataList.addAll(Arrays.asList(columnDataList));
     }
 
-    public RowData(@NonNull ColumnData object) {
-        this.columnDataList.add(object);
-    }
 
-    public void addData(ColumnData data) {
+    public void addData(@NonNull ColumnData data) {
         columnDataList.add(data);
     }
 

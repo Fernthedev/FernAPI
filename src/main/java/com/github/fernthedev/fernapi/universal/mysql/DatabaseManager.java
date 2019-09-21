@@ -1,14 +1,15 @@
-package com.github.fernthedev.fernapi.universal;
+package com.github.fernthedev.fernapi.universal.mysql;
 
-import com.github.fernthedev.fernapi.universal.data.database.ColumnData;
-import com.github.fernthedev.fernapi.universal.data.database.DatabaseAuthInfo;
-import com.github.fernthedev.fernapi.universal.data.database.RowData;
-import com.github.fernthedev.fernapi.universal.data.database.TableInfo;
+import com.github.fernthedev.fernapi.universal.Universal;
+import com.github.fernthedev.fernapi.universal.data.database.*;
+import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseException;
 import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseNotConnectedException;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+import java.net.SocketException;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -21,11 +22,16 @@ public abstract class DatabaseManager {
     private boolean isSetup;
 
     @Setter
-    protected Connection connection;
+    @Getter
+    private DatabaseAuthInfo databaseAuthInfo;
 
-    protected boolean connected = false;
-    public  boolean isConnected() {
-        return connected;
+    @Setter(AccessLevel.PACKAGE)
+    protected boolean firstConnect = false;
+
+    private Connection connection;
+
+    public boolean isConnected() throws SQLException, ClassNotFoundException {
+        return !getConnection().isClosed();
     }
 
     private Queue<Runnable> runOnConnectQueue = new LinkedList<>();
@@ -33,16 +39,20 @@ public abstract class DatabaseManager {
 
     public Statement statement() {
         try {
-            return connection.createStatement();
-        } catch (SQLException e) {
+            return getConnection().createStatement();
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public Connection getConnection() throws DatabaseNotConnectedException {
-        if(connection == null) {
+    public Connection getConnection() throws SQLException, ClassNotFoundException {
+        if(!firstConnect) {
             throw new DatabaseNotConnectedException("You must call the connect(); method before calling any methods affecting the database.", new NullPointerException());
+        }
+
+        if(connection == null) {
+            return createConnection(databaseAuthInfo);
         }
 
         return connection;
@@ -60,7 +70,7 @@ public abstract class DatabaseManager {
      * @param runnable The code to run
      */
     public void runOnConnect(Runnable runnable) {
-        if(!connected) {
+        if(!firstConnect) {
             runOnConnectQueue.add(runnable);
         } else {
             runnable.run();
@@ -72,7 +82,7 @@ public abstract class DatabaseManager {
      * @param runnable The code to run
      */
     public void runOnConnectAsync(Runnable runnable) {
-        if (!connected) {
+        if (!firstConnect) {
             runOnConnectAsync.add(runnable);
         } else {
             Universal.getMethods().runAsync(runnable);
@@ -88,12 +98,12 @@ public abstract class DatabaseManager {
     public void connect(DatabaseAuthInfo data) {
         Universal.getDatabaseHandler().registerDatabase(data,this);
         try {
-            connected = Universal.getDatabaseHandler().openConnection(data);
+            firstConnect = Universal.getDatabaseHandler().openConnection(data);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
-        if (connected) {
+        if (firstConnect) {
             Universal.getMethods().runAsync(() -> {
                 while(!runOnConnectQueue.isEmpty()) {
                     runOnConnectQueue.remove().run();
@@ -113,16 +123,17 @@ public abstract class DatabaseManager {
      * Note: This won't give you all the information given from the instance it was created from
      * Use this to get data, not to create tables exactly as the first instance.
      * @param name The name of the table
+     * @param rowDataTemplate The row data template. Used to define table parameters when creating.
      * @return The table
      */
-    public TableInfo getTable(String name) {
+    public TableInfo getTable(String name, RowDataTemplate rowDataTemplate) {
         String sql = "SELECT * FROM " + name + ";";
 
         ResultSet result = runSqlStatement(sql);
 
-        TableInfo tableInfo = new TableInfo(name);
+        TableInfo tableInfo = new TableInfo(name, rowDataTemplate);
 
-
+        ColumnData columnData2 = null;
 
         try {
             while (result.next()) {
@@ -145,10 +156,17 @@ public abstract class DatabaseManager {
                     columnData.setType(rsMetaData.getColumnTypeName(time));
                     columnData.setAutoIncrement(rsMetaData.isAutoIncrement(time));
 
+
                     if(rowData == null) {
-                        rowData = new RowData(columnData);
-                    }else {
+                        if(columnData2 != null) {
+                            rowData = new RowData(columnData, columnData2);
+                        }
+                    } else {
                         rowData.addData(columnData);
+                    }
+
+                    if(columnData2 == null) {
+                        columnData2 = columnData;
                     }
                 }
                 
@@ -157,7 +175,13 @@ public abstract class DatabaseManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
+        try {
+            result.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return tableInfo;
     }
 
@@ -240,9 +264,9 @@ public abstract class DatabaseManager {
             times++;
 
 
-            append = columnData.getColumnName() + "='" + columnData.getValue();
+//            append = columnData.getColumnName() + "='" + columnData.getValue();
 
-            append += "'";
+            append = "'" + columnData.getValue() + "'";
 
             if(times > 0 && times <= rowData.getColumnDataList().size() - 1) {
                 append += ',';
@@ -264,7 +288,7 @@ public abstract class DatabaseManager {
         String append;
 
         if(!tableDataInfo.getRowDataList().isEmpty()) {
-            RowData rd = tableDataInfo.getRowDataList().iterator().next();
+            RowData rd = tableDataInfo.getRowDataTemplate();
             int time = 0;
             for (ColumnData object : rd.getColumnDataList()) {
                 time++;
@@ -288,28 +312,42 @@ public abstract class DatabaseManager {
      * @return The result
      */
     public ResultSet runSqlStatement(String sql) {
-        PreparedStatement stmt;
 
-        Statement statement = statement();
 
-        if(statement != null) {
+        try {
+            PreparedStatement stmt = getConnection().prepareStatement(sql);
+            connection = null;
+            Universal.debug("Running {" + sql + "}");
+
             try {
-                stmt = getConnection().prepareStatement(sql);
-
-                Universal.debug("Running {" + sql+ "}");
-
-                if(sql.startsWith("SELECT ")) {
-                    return stmt.executeQuery();
-                }else{
-                    stmt.executeUpdate();
-                    return null;
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
+                return sqlRun(stmt, sql);
+            } catch (Exception e) {
+                if(e instanceof SocketException || e.getCause() instanceof SocketException) {
+                    connection = createConnection(databaseAuthInfo);
+                    return sqlRun(stmt, sql);
+                } else e.printStackTrace();
             }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            throw new DatabaseException("Unable to create statement");
+        } catch (DatabaseException e) {
+            e.printStackTrace();
         }
         return null;
+    }
+
+    private ResultSet sqlRun(PreparedStatement stmt, String sql) throws SQLException {
+        if (sql.startsWith("SELECT ")) {
+            return stmt.executeQuery();
+        } else {
+            stmt.executeUpdate();
+            return null;
+        }
     }
 
 
@@ -325,37 +363,36 @@ public abstract class DatabaseManager {
 
         String append;
 
-        if(!tableDataInfo.getRowDataList().isEmpty()) {
-            RowData rd = tableDataInfo.getRowDataList().iterator().next();
-            int time = 0;
-            for (ColumnData object : rd.getColumnDataList()) {
-                time++;
+        RowDataTemplate rd = tableDataInfo.getRowDataTemplate();
 
-                String type = "varchar(" + object.getLength() + ")";
+        int time = 0;
+        for (ColumnData object : rd.getColumnDataList()) {
+            time++;
 
-                if (object.getLength() <= 0) {
-                    type = "TEXT";
-                }
-                if (object.isPrimaryKey()) {
-                    type = "INT PRIMARY KEY";
-                }
+            String type = "varchar(" + object.getLength() + ")";
 
-                append = object.getColumnName() + " " + type;
-
-                if (object.isAutoIncrement()) {
-                    append += " AUTO_INCREMENT";
-                }
-
-                if (!object.isNullable() && !object.isPrimaryKey()) {
-                    append += " NOT NULL";
-                }
-
-                if (time > 0 && time <= rd.getColumnDataList().size() - 1) {
-                    append += ',';
-                }
-
-                sql.append(append);
+            if (object.getLength() <= 0) {
+                type = "TEXT";
             }
+            if (object.isPrimaryKey()) {
+                type = "INT PRIMARY KEY";
+            }
+
+            append = object.getColumnName() + " " + type;
+
+            if (object.isAutoIncrement()) {
+                append += " AUTO_INCREMENT";
+            }
+
+            if (!object.isNullable() && !object.isPrimaryKey()) {
+                append += " NOT NULL";
+            }
+
+            if (time > 0 && time <= rd.getColumnDataList().size() - 1) {
+                append += ',';
+            }
+
+            sql.append(append);
         }
 
 
@@ -369,4 +406,24 @@ public abstract class DatabaseManager {
         return Universal.getMethods().getLogger();
     }
 
+    public Connection createConnection(DatabaseAuthInfo dataInfo) throws SQLException, ClassNotFoundException {
+        this.databaseAuthInfo = dataInfo;
+
+        try {
+            Class.forName(dataInfo.getMysqlDatabaseType().getSqlDriver());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            System.err.println("jdbc driver unavailable!");
+            throw e;
+        }
+
+        connection = DriverManager.getConnection(
+                databaseAuthInfo.getUrlToDB(),
+                databaseAuthInfo.getUsername(),
+                databaseAuthInfo.getPassword());
+
+
+
+        return connection;
+    }
 }
