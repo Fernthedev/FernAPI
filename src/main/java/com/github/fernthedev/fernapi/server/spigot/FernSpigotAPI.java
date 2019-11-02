@@ -10,6 +10,7 @@ import com.github.fernthedev.fernapi.server.spigot.network.SpigotNetworkHandler;
 import com.github.fernthedev.fernapi.server.spigot.pluginhandlers.VaultHandler;
 import com.github.fernthedev.fernapi.universal.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
+import com.github.fernthedev.fernapi.universal.data.network.vanish.VanishProxyCheck;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -38,7 +39,7 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
             vaultHandler.hook();
         }
 
-
+        Universal.getMessageHandler().registerMessageHandler(new VanishProxyCheck());
     }
 
     @Override

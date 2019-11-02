@@ -9,6 +9,7 @@ import com.github.fernthedev.fernapi.server.bungee.network.BungeeNetworkHandler;
 import com.github.fernthedev.fernapi.universal.ProxyAskPlaceHolder;
 import com.github.fernthedev.fernapi.universal.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
+import com.github.fernthedev.fernapi.universal.data.network.vanish.VanishProxyCheck;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -25,8 +26,9 @@ public class FernBungeeAPI extends Plugin implements FernAPIPlugin {
                 new BungeeCommandHandler(this),
                 new BungeeNetworkHandler());
         UUIDFetcher.setFetchManager(new UUIDBungee());
-        getProxy().getPluginManager().registerListener(this,messageHandler);
+        getProxy().getPluginManager().registerListener(this, messageHandler);
         Universal.getMessageHandler().registerMessageHandler(new ProxyAskPlaceHolder());
+        Universal.getMessageHandler().registerMessageHandler(new VanishProxyCheck());
     }
 
     @Override

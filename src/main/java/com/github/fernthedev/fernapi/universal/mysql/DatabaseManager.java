@@ -129,7 +129,7 @@ public abstract class DatabaseManager {
     public TableInfo getTable(String name, RowDataTemplate rowDataTemplate) {
         String sql = "SELECT * FROM " + name + ";";
 
-        ResultSet result = runSqlStatement(sql);
+        @NonNull ResultSet result = runSqlStatement(sql);
 
         TableInfo tableInfo = new TableInfo(name, rowDataTemplate);
 
@@ -322,7 +322,8 @@ public abstract class DatabaseManager {
             try {
                 return sqlRun(stmt, sql);
             } catch (Exception e) {
-                if(e instanceof SocketException || e.getCause() instanceof SocketException) {
+                if(e instanceof SocketException || e.getCause() instanceof SocketException || e instanceof SQLNonTransientConnectionException || e.getCause() instanceof SQLNonTransientConnectionException) {
+                    // Attempt reconnection if broken pipe
                     connection = createConnection(databaseAuthInfo);
                     return sqlRun(stmt, sql);
                 } else e.printStackTrace();

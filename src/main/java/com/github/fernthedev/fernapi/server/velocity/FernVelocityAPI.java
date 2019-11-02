@@ -9,19 +9,29 @@ import com.github.fernthedev.fernapi.server.velocity.network.VelocityNetworkHand
 import com.github.fernthedev.fernapi.universal.ProxyAskPlaceHolder;
 import com.github.fernthedev.fernapi.universal.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
+import com.github.fernthedev.fernapi.universal.data.network.vanish.VanishProxyCheck;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
+import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
+import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.Getter;
 import org.slf4j.Logger;
+
+import java.nio.file.Path;
 
 public class FernVelocityAPI implements FernAPIPlugin {
 
     private final VelocityMessageHandler messageHandler;
     @Getter
     protected ProxyServer server;
+
+    @Inject
+    @Getter
+    @DataDirectory
+    Path dataDirectory;
 
     @Getter
     protected Logger logger;
@@ -41,7 +51,7 @@ public class FernVelocityAPI implements FernAPIPlugin {
 
         UUIDFetcher.setFetchManager(new UUIDVelocity(this));
         Universal.getMessageHandler().registerMessageHandler(new ProxyAskPlaceHolder());
-
+        Universal.getMessageHandler().registerMessageHandler(new VanishProxyCheck());
     }
 
     @Subscribe

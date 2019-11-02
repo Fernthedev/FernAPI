@@ -1,6 +1,6 @@
 package com.github.fernthedev.fernapi.universal.data.network;
 
-import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
+import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;

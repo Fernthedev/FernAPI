@@ -1,7 +1,7 @@
 package com.github.fernthedev.fernapi.universal.data;
 
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
-import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
+import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

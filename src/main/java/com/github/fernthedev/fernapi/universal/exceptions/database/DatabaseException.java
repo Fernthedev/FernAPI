@@ -2,7 +2,7 @@ package com.github.fernthedev.fernapi.universal.exceptions.database;
 
 import java.sql.SQLException;
 
-public class DatabaseException extends SQLException {
+public class DatabaseException extends SQLException implements IDatabaseException {
     public DatabaseException(String s) {
         super(s);
     }
