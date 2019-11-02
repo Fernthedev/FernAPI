@@ -1,6 +1,6 @@
 package com.github.fernthedev.fernapi.universal.exceptions.database;
 
-public class DatabaseColumNotExistException extends DatabaseException {
+public class DatabaseColumNotExistException extends DatabaseException  {
     public DatabaseColumNotExistException(String s) {
         super(s);
     }

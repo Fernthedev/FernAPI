@@ -2,6 +2,7 @@ package com.github.fernthedev.fernapi.server.velocity.player;
 
 import com.github.fernthedev.fernapi.server.velocity.FernVelocityAPI;
 import com.github.fernthedev.fernapi.universal.Universal;
+import com.github.fernthedev.fernapi.universal.api.IFConsole;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
 import com.velocitypowered.api.command.CommandSource;
@@ -9,9 +10,7 @@ import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
 
-import java.util.Collection;
-
-public class VelocityFConsole implements com.github.fernthedev.fernapi.universal.api.CommandSender {
+public class VelocityFConsole extends IFConsole {
     private CommandSource commandSender;
 
     public VelocityFConsole(CommandSource commandSender) {
@@ -29,24 +28,8 @@ public class VelocityFConsole implements com.github.fernthedev.fernapi.universal
         return commandSender.hasPermission(permission);
     }
 
-    /**
-     * Set a permission node for this user.
-     *
-     * @param permission the node to set
-     * @param value      the value of the node
-     */
-    @Override
-    public void setPermission(String permission, boolean value) {
-    }
 
-    /**
-     * Get all Permissions which this CommandSender has
-     *
-     * @return a unmodifiable Collection of Strings which represent their
-     * permissions
-     */
-    @Override
-    public Collection<String> getPermissions() { return null; }
+
 
     @Override
     public void sendMessage(BaseMessage baseMessage) {

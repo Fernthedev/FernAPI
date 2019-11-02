@@ -1,5 +1,6 @@
 package com.github.fernthedev.fernapi.server.bungee.player;
 
+import com.github.fernthedev.fernapi.universal.api.IFConsole;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -8,7 +9,7 @@ import net.md_5.bungee.api.chat.*;
 
 import java.util.Collection;
 
-public class BungeeFConsole implements com.github.fernthedev.fernapi.universal.api.CommandSender {
+public class BungeeFConsole extends IFConsole {
     private CommandSender commandSender;
 
     public BungeeFConsole(CommandSender commandSender) {

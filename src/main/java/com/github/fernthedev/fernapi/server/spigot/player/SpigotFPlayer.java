@@ -3,11 +3,12 @@ package com.github.fernthedev.fernapi.server.spigot.player;
 import com.github.fernthedev.fernapi.server.spigot.pluginhandlers.VaultHandler;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
-import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
+import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import lombok.Getter;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.Plugin;
 
@@ -128,5 +129,12 @@ public class SpigotFPlayer extends IFPlayer {
 
     private BaseComponent[] message(String text) {
         return new ComponentBuilder(ChatColor.translateAlternateColorCodes('&',text)).create();
+    }
+
+    public boolean isVanished() {
+        for (MetadataValue meta : player.getMetadata("vanished")) {
+            if (meta.asBoolean()) return true;
+        }
+        return false;
     }
 }

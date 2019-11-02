@@ -11,11 +11,17 @@ import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.google.inject.Inject;
 import lombok.Getter;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
+import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedEvent;
 import org.spongepowered.api.plugin.Plugin;
+
+import java.nio.file.Path;
 
 // Imports for logger
 
@@ -25,8 +31,19 @@ public class FernSpongeAPI implements FernAPIPlugin {
 
     @Inject
     @Getter
-    private Logger logger;
+    protected Logger logger;
 
+    @Inject
+    @DefaultConfig(sharedRoot = true)
+    protected Path defaultConfig;
+
+    @Inject
+    @DefaultConfig(sharedRoot = true)
+    protected ConfigurationLoader<CommentedConfigurationNode> configManager;
+
+    @Inject
+    @ConfigDir(sharedRoot = false)
+    protected Path privateConfigDir;
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {

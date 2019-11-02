@@ -7,7 +7,6 @@ import lombok.NonNull;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PluginMessageHandler {
@@ -18,7 +17,7 @@ public abstract class PluginMessageHandler {
     /**
      * This is the channel name that will be registered incoming and outgoing
      * This is where you specify the channels you want to listen to
-     * Just make a new {@link ArrayList} with Channel instance instance and add an instance of the channel accordingly.
+     * Just make a new {@link java.util.ArrayList} with Channel instance instance and add an instance of the channel accordingly.
      * @see com.github.fernthedev.fernapi.universal.ProxyAskPlaceHolder as an example
      * @return The channels that will be incoming and outgoing
      */

@@ -2,7 +2,7 @@ package com.github.fernthedev.fernapi.server.velocity.player;
 
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
-import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
+import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.velocitypowered.api.proxy.Player;
 import lombok.Getter;
 import net.kyori.text.TextComponent;
