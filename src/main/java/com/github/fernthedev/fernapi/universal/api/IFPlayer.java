@@ -1,6 +1,5 @@
-package com.github.fernthedev.fernapi.universal.handlers;
+package com.github.fernthedev.fernapi.universal.api;
 
-import com.github.fernthedev.fernapi.universal.api.CommandSender;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +10,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 public abstract class IFPlayer implements CommandSender {
+    @Getter
     String name = null;
+
+    @Getter
     UUID uuid = null;
 
     public IFPlayer() {}
@@ -20,5 +22,7 @@ public abstract class IFPlayer implements CommandSender {
 
     public abstract InetSocketAddress getAddress();
 
+    public abstract long getPing();
 
+    public abstract String getCurrentServerName();
 }

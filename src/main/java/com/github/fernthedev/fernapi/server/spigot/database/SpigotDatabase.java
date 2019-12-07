@@ -1,8 +1,8 @@
 package com.github.fernthedev.fernapi.server.spigot.database;
 
 import com.github.fernthedev.fernapi.server.spigot.FernSpigotAPI;
-import com.github.fernthedev.fernapi.universal.DatabaseManager;
-import com.github.fernthedev.fernapi.universal.handlers.DatabaseHandler;
+import com.github.fernthedev.fernapi.universal.mysql.DatabaseManager;
+import com.github.fernthedev.fernapi.universal.mysql.DatabaseHandler;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -42,7 +42,8 @@ public class SpigotDatabase extends DatabaseHandler {
             }
         };
         scheduled = true;
-        task = runnable.runTaskAsynchronously(spigot);
+        // Multiply by ticks per second and seconds per minute.
+        task = runnable.runTaskTimerAsynchronously(spigot, 0, scheduleTime * 20 * 60);
     }
 
     @Override

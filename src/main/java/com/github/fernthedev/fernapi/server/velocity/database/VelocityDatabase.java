@@ -1,12 +1,13 @@
 package com.github.fernthedev.fernapi.server.velocity.database;
 
 import com.github.fernthedev.fernapi.server.velocity.FernVelocityAPI;
-import com.github.fernthedev.fernapi.universal.DatabaseManager;
-import com.github.fernthedev.fernapi.universal.handlers.DatabaseHandler;
+import com.github.fernthedev.fernapi.universal.mysql.DatabaseManager;
+import com.github.fernthedev.fernapi.universal.mysql.DatabaseHandler;
 import com.velocitypowered.api.scheduler.ScheduledTask;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.TimeUnit;
 
 public class VelocityDatabase extends DatabaseHandler {
     private FernVelocityAPI velocity;
@@ -34,7 +35,7 @@ public class VelocityDatabase extends DatabaseHandler {
             }
         };
         scheduled = true;
-        task = velocity.getServer().getScheduler().buildTask(velocity, runnable).schedule();
+        task = velocity.getServer().getScheduler().buildTask(velocity, runnable).repeat(scheduleTime, TimeUnit.MINUTES).schedule();
     }
 
     @Override

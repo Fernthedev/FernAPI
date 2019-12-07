@@ -1,22 +1,24 @@
 package com.github.fernthedev.fernapi.universal.examples;
 
-import com.github.fernthedev.fernapi.universal.DatabaseManager;
+import com.github.fernthedev.fernapi.universal.data.database.*;
+import com.github.fernthedev.fernapi.universal.mysql.DatabaseManager;
 import com.github.fernthedev.fernapi.universal.Universal;
-import com.github.fernthedev.fernapi.universal.data.database.DatabaseInfo;
-import com.github.fernthedev.fernapi.universal.data.database.RowData;
-import com.github.fernthedev.fernapi.universal.data.database.RowObject;
-import com.github.fernthedev.fernapi.universal.data.database.TableInfo;
 
 public class DatabaseTest extends DatabaseManager {
     private TableInfo tableInfo;
 
+    private static RowDataTemplate rowDataTemplate = new RowDataTemplate(
+            new ColumnData("thing", "test"),
+            new ColumnData("thing2", "testthing")
+    );
+
     public DatabaseTest(String username,String password,String port,String URLHost,String database) {
-        connect(new DatabaseInfo(username,password,port,URLHost,database));
+        connect(new DatabaseAuthInfo(username,password,port,URLHost,database));
     }
 
     public TableInfo getTableInfo() {
         if(tableInfo == null) {
-            tableInfo = new TableInfo("test_no");
+            tableInfo = new TableInfo("test_no", rowDataTemplate);
         }
 
         return tableInfo;
@@ -27,10 +29,10 @@ public class DatabaseTest extends DatabaseManager {
      * This is called after you attempt a connection
      *
      * @param connected Returns true if successful
-     * @see DatabaseManager#connect(DatabaseInfo)
+     * @see DatabaseManager#connect(DatabaseAuthInfo)
      */
     @Override
-    public void runAfterConnectAttempt(boolean connected) {
+    public void onConnectAttempt(boolean connected) {
         if(connected) {
             Universal.getMethods().getLogger().info("Connected successfully");
         }else{
@@ -40,21 +42,16 @@ public class DatabaseTest extends DatabaseManager {
 
     public void test() {
 
+        tableInfo = new TableInfo("test_no", rowDataTemplate);
 
+        RowData rowData = new RowData(new ColumnData("row1","value1"), new ColumnData("row2", "value2"));
 
-        tableInfo = new TableInfo("test_no");
+        insertIntoTable(tableInfo, rowData);
 
-        RowData rowData = new RowData(new RowObject("row1","value1"));
+        rowData = new RowData(new ColumnData("row1","value1nou"), new ColumnData("row2","value2nou"));
 
-        rowData.addData(new RowObject("row2","value2"));
+        insertIntoTable(tableInfo, rowData);
 
-        tableInfo.addTableInfo(rowData);
-
-        rowData = new RowData(new RowObject("row1","value1nou"));
-
-        rowData.addData(new RowObject("row2","value2nou"));
-
-        tableInfo.addTableInfo(rowData);
 
         createTable(tableInfo);
     }

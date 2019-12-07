@@ -1,13 +1,14 @@
 package com.github.fernthedev.fernapi.server.bungee.database;
 
 import com.github.fernthedev.fernapi.server.bungee.FernBungeeAPI;
-import com.github.fernthedev.fernapi.universal.DatabaseManager;
-import com.github.fernthedev.fernapi.universal.handlers.DatabaseHandler;
+import com.github.fernthedev.fernapi.universal.mysql.DatabaseManager;
+import com.github.fernthedev.fernapi.universal.mysql.DatabaseHandler;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.TimeUnit;
 
 public class BungeeDatabase extends DatabaseHandler {
     private FernBungeeAPI bungee;
@@ -35,7 +36,7 @@ public class BungeeDatabase extends DatabaseHandler {
             }
         };
         scheduled = true;
-        task = ProxyServer.getInstance().getScheduler().runAsync(bungee, runnable);
+        task = ProxyServer.getInstance().getScheduler().schedule(bungee, runnable, 0, scheduleTime, TimeUnit.MINUTES);
     }
 
     @Override

@@ -55,7 +55,7 @@ repositories {
 
 group = 'com.github.fernthedev'
 
-version = '1.7.3'
+version = '1.9b1'
 def developer = "FernTheDev"
 def MCVersion = "1.14.4"
 archivesBaseName = "FernAPI"
@@ -73,8 +73,9 @@ dependencies {
     compileOnly 'org.spongepowered:spongeapi:7.1.0'
     compileOnly 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
     annotationProcessor 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
-    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
-    compile 'com.github.Fernthedev:fern-configmanager:1.0' // Check github releases tag for the version.
+//    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
+    compile 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
+    compile 'com.github.Fernthedev:fern-configmanager:1.0.1' // Check github releases tag for the version.
 
     compileOnly ('com.github.Fernthedev:VaultAPI:7.0') {
         exclude group: 'org.bukkit'
@@ -83,6 +84,9 @@ dependencies {
 //
     compileOnly 'org.projectlombok:lombok:1.18.8'
     annotationProcessor 'org.projectlombok:lombok:1.18.8'
+
+
+//    implementation 'com.google.guava:guava:22.0'
 }
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
@@ -94,16 +98,43 @@ compileJava {
 
 
 
+// Must be BELOW subprojects{}
+task alljavadoc(type: Javadoc) {
+    source subprojects.collect { it.sourceSets.main.allJava }
+    classpath = files(subprojects.collect { it.sourceSets.main.compileClasspath })
+    destinationDir = file("${buildDir}/docs/javadoc")
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    from sourceSets.main.java
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+build.dependsOn sourcesJar
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
 
-            groupId = 'fernthedev'
-            artifactId = 'com.github.fernthedev.fernapi'
-            version = '1.1'
+            groupId = this.group;
+            artifactId = this.archivesBaseName
+            version = this.version
 
+            artifact sourcesJar {
+                classifier "sources"
+            }
+
+            artifact javadocJar {
+                classifier "javadoc"
+            }
         }
     }
 }
@@ -128,22 +159,6 @@ shadowJar {
     minimize()
 }
 
-// Must be BELOW subprojects{}
-task alljavadoc(type: Javadoc) {
-    source subprojects.collect { it.sourceSets.main.allJava }
-    classpath = files(subprojects.collect { it.sourceSets.main.compileClasspath })
-    destinationDir = file("${buildDir}/docs/javadoc")
-}
-
-task javadocJar(type: Jar, dependsOn: alljavadoc) {
-    classifier = 'javadoc'
-    from alljavadoc.destinationDir
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from subprojects.collect { it.sourceSets.main.allSource }
-}
 
 shadowJar.finalizedBy javadocJar
 shadowJar.finalizedBy sourcesJar

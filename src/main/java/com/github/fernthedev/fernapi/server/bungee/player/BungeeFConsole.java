@@ -1,5 +1,6 @@
 package com.github.fernthedev.fernapi.server.bungee.player;
 
+import com.github.fernthedev.fernapi.universal.api.IFConsole;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -8,7 +9,7 @@ import net.md_5.bungee.api.chat.*;
 
 import java.util.Collection;
 
-public class BungeeFConsole implements com.github.fernthedev.fernapi.universal.api.CommandSender {
+public class BungeeFConsole extends IFConsole {
     private CommandSender commandSender;
 
     public BungeeFConsole(CommandSender commandSender) {
@@ -53,22 +54,24 @@ public class BungeeFConsole implements com.github.fernthedev.fernapi.universal.a
 
         TextComponent fullMessage = new TextComponent(ChatColor.translateAlternateColorCodes('&',baseMessage.getParentText()));
 
-        for(BaseMessage be : baseMessage.getExtra()) {
-            TextComponent te = new TextComponent(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
+        if (baseMessage.getExtra() != null) {
+            for(BaseMessage be : baseMessage.getExtra()) {
+                TextComponent te = new TextComponent(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
 
-            if (be.getClickData() != null) {
-                te.setClickEvent(new ClickEvent(
-                        ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
-                        be.getClickData().getClickValue()));
+                if (be.getClickData() != null) {
+                    te.setClickEvent(new ClickEvent(
+                            ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
+                            be.getClickData().getClickValue()));
+                }
+
+                if (be.getHoverData() != null) {
+                    te.setHoverEvent(new HoverEvent(
+                            HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
+                            message(be.getHoverData().getHoverValue())));
+                }
+
+                fullMessage.addExtra(te);
             }
-
-            if (be.getHoverData() != null) {
-                te.setHoverEvent(new HoverEvent(
-                        HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
-                        message(be.getHoverData().getHoverValue())));
-            }
-
-            fullMessage.addExtra(te);
         }
 
         ProxyServer.getInstance().getConsole().sendMessage(fullMessage);

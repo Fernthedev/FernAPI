@@ -64,6 +64,9 @@ public class UUIDFetcher {
 
             PlayerUUID uuidResponse = gson.fromJson(fileData,PlayerUUID.class);
 
+            if (uuidResponse == null) {
+                return null;
+            }
 
             Universal.debug("The uuid for " + name + " is " + uuidResponse.getId());
 

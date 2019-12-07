@@ -3,7 +3,8 @@ package com.github.fernthedev.fernapi.server.sponge.player;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.chat.ClickData;
 import com.github.fernthedev.fernapi.universal.data.chat.HoverData;
-import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
+import com.github.fernthedev.fernapi.universal.api.IFPlayer;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.ClickAction;
@@ -61,17 +62,19 @@ public class SpongeFPlayer extends IFPlayer {
 
         Text.Builder text = Text.builder();
 
-        for(BaseMessage be : textMessage.getExtra()) {
-            Text.Builder te = TextSerializers.FORMATTING_CODE.deserialize(be.toPlainText()).toBuilder();
+        if (textMessage.getExtra() != null) {
+            for(BaseMessage be : textMessage.getExtra()) {
+                Text.Builder te = TextSerializers.FORMATTING_CODE.deserialize(be.toPlainText()).toBuilder();
 
-            if(be.getClickData() != null) {
-                te.onClick(parseAction(be.getClickData()));
-            }
+                if(be.getClickData() != null) {
+                    te.onClick(parseAction(be.getClickData()));
+                }
 
-            if(be.getHoverData() != null) {
-                te.onHover(parseAction(be.getHoverData()));
+                if(be.getHoverData() != null) {
+                    te.onHover(parseAction(be.getHoverData()));
+                }
+                text.append(te.build());
             }
-            text.append(te.build());
         }
 
         player.sendMessage(text.build());
@@ -105,6 +108,16 @@ public class SpongeFPlayer extends IFPlayer {
                 return TextActions.suggestCommand(value);
         }
         return null;
+    }
+
+    @Override
+    public long getPing() {
+        return player.getConnection().getLatency();
+    }
+
+    @Override
+    public String getCurrentServerName() {
+        return Sponge.getServer().getDefaultWorldName();
     }
 
     @Override

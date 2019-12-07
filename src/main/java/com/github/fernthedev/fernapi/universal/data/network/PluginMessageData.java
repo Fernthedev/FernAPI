@@ -1,6 +1,6 @@
 package com.github.fernthedev.fernapi.universal.data.network;
 
-import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
+import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -10,22 +10,42 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 @Getter
 @Setter
 public class PluginMessageData {
 
     protected Object sender;
-    protected String channelName; // channel we delivered or type
-    protected String server;
-    protected String subchannel;
 
-    protected String messageChannel;
+    @Deprecated
+    protected String bungeeChannelType = "Forward"; // channel we delivered or type
+
+    protected String server;
+    protected String subChannel;
+
+    protected Channel messageChannel;
 
     protected boolean useGson = false;
 
+    protected ByteArrayInputStream inputStream;
+    protected DataInputStream in;
+
+    protected ByteArrayOutputStream outputStream;
+    protected DataOutputStream out;
+
+
+
     protected List<String> extraData = new ArrayList<>();
+
+    /**
+     * Returns a new instance each time. Save it as a variable.
+     */
+    public Queue<String> getExtraDataQueue() {
+        return new LinkedList<>(extraData);
+    }
 
     protected IFPlayer player;
 
@@ -38,14 +58,45 @@ public class PluginMessageData {
 
     }
 
-    public PluginMessageData(@NonNull ByteArrayOutputStream outputStream,String channelName,String server,String subchannel,String messageChannel) {
+    /**
+     * @deprecated Use {@link PluginMessageData#PluginMessageData(ByteArrayOutputStream, String, String, Channel)}
+     */
+    @Deprecated
+    public PluginMessageData(@NonNull ByteArrayOutputStream outputStream, String bungeeChannelType, String server, String subChannel, String pluginChannel) {
         this.outputStream = outputStream;
         this.in = new DataInputStream(inputStream);
-        this.channelName = channelName;
+        this.bungeeChannelType = bungeeChannelType;
         this.server = server;
-        this.subchannel = subchannel;
-        this.messageChannel = messageChannel;
+        this.subChannel = subChannel;
+        this.messageChannel = Channel.createChannelFromString(pluginChannel, Channel.ChannelAction.BOTH);
     }
+
+    /**
+     * @deprecated Use {@link PluginMessageData#PluginMessageData(ByteArrayOutputStream, String, String, Channel)}
+     */
+    public PluginMessageData(@NonNull ByteArrayOutputStream outputStream, String server, String subChannel, String pluginChannel) {
+        this.outputStream = outputStream;
+        this.in = new DataInputStream(inputStream);
+        this.server = server;
+        this.subChannel = subChannel;
+        this.messageChannel = Channel.createChannelFromString(pluginChannel, Channel.ChannelAction.BOTH);
+    }
+
+    /**
+     *
+     * @param outputStream The stream with data
+     * @param server The server to send to. Use server name or "ALL"
+     * @param subChannel The SubChannel to send to.
+     * @param channel The Plugin channel
+     */
+    public PluginMessageData(@NonNull ByteArrayOutputStream outputStream, String server, String subChannel, Channel channel) {
+        this.outputStream = outputStream;
+        this.in = new DataInputStream(inputStream);
+        this.server = server;
+        this.subChannel = subChannel;
+        this.messageChannel = channel;
+    }
+
 
     /**
      * This will add extra dataInfo, you can also send an instance of this class through gson if you extend it.
@@ -55,11 +106,6 @@ public class PluginMessageData {
         extraData.add(s);
     }
 
-    protected ByteArrayInputStream inputStream;
-    protected DataInputStream in;
-
-    protected ByteArrayOutputStream outputStream;
-    protected DataOutputStream out;
 
 
 

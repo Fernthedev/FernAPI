@@ -8,7 +8,7 @@ import com.github.fernthedev.fernapi.universal.data.network.IPMessageHandler;
 import com.github.fernthedev.fernapi.universal.data.network.PluginMessageData;
 import com.github.fernthedev.fernapi.universal.exceptions.network.NoPlayersOnlineException;
 import com.github.fernthedev.fernapi.universal.exceptions.network.NotEnoughDataException;
-import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
+import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.handlers.PluginMessageHandler;
 import com.google.gson.Gson;
 import com.velocitypowered.api.event.Subscribe;
@@ -39,7 +39,7 @@ public class VelocityMessageHandler implements IPMessageHandler {
     public void onPluginMessage(PluginMessageEvent ev) {
         for (PluginMessageHandler pl : recievers) {
             for (Channel channel : pl.getChannels()) {
-                if (ev.getIdentifier().getId().equals(channel.getChannelName()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
+                if (ev.getIdentifier().getId().equals(channel.getFullChannelName()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
 
                     ByteArrayInputStream stream = new ByteArrayInputStream(ev.getData());
                     DataInputStream in = new DataInputStream(stream);
@@ -47,10 +47,9 @@ public class VelocityMessageHandler implements IPMessageHandler {
                     PluginMessageData data = new PluginMessageData(stream);
 
                     try {
-                        String channelName = in.readUTF(); // channel we delivered
+                        String bungeeChannelName = in.readUTF(); // channel we delivered
                         String server;
-                        String subchannel;
-                        String messageChannel;
+                        String subChannel;
                         boolean useGson;
 
                         if (in.available() > 0) {
@@ -60,20 +59,20 @@ public class VelocityMessageHandler implements IPMessageHandler {
                         }
 
                         if (in.available() > 0) {
-                            subchannel = in.readUTF();
+                            subChannel = in.readUTF();
                         } else {
-                            throw new NotEnoughDataException("The subchannel dataInfo was not sent");
+                            throw new NotEnoughDataException("The subChannel dataInfo was not sent");
                         }
 
-                        if(in.available() > 0) {
-                            messageChannel = in.readUTF();
-                        } else {
-                            throw new NotEnoughDataException("The message channel data info was not sent");
-                        }
+//                        if(in.available() > 0) {
+//                            messageChannel = in.readUTF();
+//                        } else {
+//                            throw new NotEnoughDataException("The message channel data info was not sent");
+//                        }
 
                         if(in.available() > 0) {
                             JSONPlayer ifPlayer = new Gson().fromJson(in.readUTF(),JSONPlayer.class);
-                            IFPlayer correctPlayer = Universal.convertObjectPlayerToFPlayer(Universal.convertFPlayerToPlayer(ifPlayer));
+                            IFPlayer correctPlayer = Universal.getMethods().getPlayerFromUUID(ifPlayer.getUuid());
                             data.setPlayer(correctPlayer);
                         }else {
                             throw new NotEnoughDataException("The player information dataInfo was not sent");
@@ -85,11 +84,11 @@ public class VelocityMessageHandler implements IPMessageHandler {
                             throw new NotEnoughDataException("The use gson boolean dataInfo was not sent");
                         }
 
-                        data.setChannelName(channelName);
-                        data.setMessageChannel(messageChannel);
+                        data.setBungeeChannelType(bungeeChannelName);
+                        data.setMessageChannel(channel);
                         data.setSender(ev.getSource());
                         data.setServer(server);
-                        data.setSubchannel(subchannel);
+                        data.setSubChannel(subChannel);
                         data.setUseGson(useGson);
 
                         if(useGson) {
@@ -97,6 +96,10 @@ public class VelocityMessageHandler implements IPMessageHandler {
                                 data = new Gson().fromJson(in.readUTF(), PluginMessageData.class);
                             } else {
                                 throw new NotEnoughDataException("The use gson json dataInfo was not sent");
+                            }
+                        } else {
+                            while(in.available() > 0) {
+                                data.addData(in.readUTF());
                             }
                         }
 
@@ -159,16 +162,16 @@ public class VelocityMessageHandler implements IPMessageHandler {
         DataOutputStream out = new DataOutputStream(stream);
 
         try {
-            out.writeUTF(data.getChannelName()); //TYPE
+            out.writeUTF(data.getBungeeChannelType()); //TYPE
             out.writeUTF(data.getServer()); //SERVER
-            out.writeUTF(data.getSubchannel()); //SUBCHANNEL
+            out.writeUTF(data.getSubChannel()); //SUBCHANNEL
 
-            out.writeUTF(data.getMessageChannel());
+            out.writeUTF(data.getMessageChannel().getFullChannelName());
 
             out.writeUTF(new Gson().toJson(new JSONPlayer(player.getUsername(),player.getUniqueId())));
 
             out.writeBoolean(data.isUseGson());
-            velocity.getLogger().info("Use gson status: " + data.isUseGson());
+            Universal.debug("Use gson status: " + data.isUseGson());
 
 
             if (data.isUseGson()) {
@@ -185,7 +188,7 @@ public class VelocityMessageHandler implements IPMessageHandler {
             e.printStackTrace();
         }
 
-        Channel channel = Channel.createChannelFromString(data.getMessageChannel(), Channel.ChannelAction.BOTH);
+        Channel channel = Channel.createChannelFromString(data.getMessageChannel().getFullChannelName(), Channel.ChannelAction.BOTH);
         ChannelIdentifier channelIdentifier = MinecraftChannelIdentifier.create(channel.getNamespace(), channel.getChannelName());
 
         player.getCurrentServer().get().getServer().sendPluginMessage(channelIdentifier, stream.toByteArray());

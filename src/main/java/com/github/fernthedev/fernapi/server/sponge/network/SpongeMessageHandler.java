@@ -6,7 +6,7 @@ import com.github.fernthedev.fernapi.universal.data.JSONPlayer;
 import com.github.fernthedev.fernapi.universal.data.network.*;
 import com.github.fernthedev.fernapi.universal.exceptions.network.NoPlayersOnlineException;
 import com.github.fernthedev.fernapi.universal.exceptions.network.NotEnoughDataException;
-import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
+import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.handlers.PluginMessageHandler;
 import com.google.gson.Gson;
 import org.spongepowered.api.Game;
@@ -31,18 +31,22 @@ public class SpongeMessageHandler implements IPMessageHandler {
     Task task;
     private static FernSpongeAPI sponge;
 
-    private Map<Channel,PluginMessageHandler> channelPluginMessageHandlerHashMap = new HashMap<>();
+    private Map<Channel, PluginMessageHandler> channelPluginMessageHandlerHashMap = new HashMap<>();
 
+    /**
+     * Needs to be rewritten.
+     * @param pluginMessageHandler
+     */
     @Override
     public void registerMessageHandler(PluginMessageHandler pluginMessageHandler) {
         recievers.add(pluginMessageHandler);
         for(Channel channelPlugin : pluginMessageHandler.getChannels()) {
-            ChannelBinding.RawDataChannel channele = game.getChannelRegistrar().getOrCreateRaw(sponge,channelPlugin.getChannelName());
+            ChannelBinding.RawDataChannel spongeChannel = game.getChannelRegistrar().getOrCreateRaw(sponge, channelPlugin.getFullChannelName());
 
-            channele.addListener(Platform.Type.SERVER, (data, connection, side) -> {
+            spongeChannel.addListener(Platform.Type.SERVER, (data, connection, side) -> {
                 for(PluginMessageHandler pl : recievers) {
                     for(Channel channel : pl.getChannels()) {
-                        if (channelPlugin.getChannelName().equals(channel.getChannelName()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
+                        if (channelPlugin.getFullChannelName().equals(channel.getFullChannelName()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
 
                             Player player = null;
                             ChannelBuf in = data;
@@ -53,7 +57,6 @@ public class SpongeMessageHandler implements IPMessageHandler {
                                 String type = in.readUTF(); //TYPE
                                 String server;
                                 String subchannel;
-                                String messageChannel;
                                 boolean useGson;
 
                                 if (in.available() > 0) {
@@ -68,16 +71,16 @@ public class SpongeMessageHandler implements IPMessageHandler {
                                     throw new NotEnoughDataException("The subchannel dataInfo was not sent");
                                 }
 
-                                if (in.available() > 0) {
-                                    messageChannel = in.readUTF();
-                                } else {
-                                    throw new NotEnoughDataException("The message channel dataInfo was not sent");
-                                }
+//                                if (in.available() > 0) {
+//                                    messageChannel = in.readUTF();
+//                                } else {
+//                                    throw new NotEnoughDataException("The message channel dataInfo was not sent");
+//                                }
 
                                 if(in.available() > 0) {
                                     JSONPlayer player1 = new Gson().fromJson(in.readUTF(),JSONPlayer.class);
                                     if(Sponge.getServer().getPlayer(player1.getUuid()).isPresent()) {
-                                        pdata.setPlayer(Universal.convertObjectPlayerToFPlayer(Sponge.getServer().getPlayer(player1.getUuid()).get()));
+                                        pdata.setPlayer(Universal.getMethods().getPlayerFromUUID(player1.getUuid()));
                                         player = Sponge.getServer().getPlayer(player1.getUuid()).get();
                                     }
 
@@ -93,11 +96,11 @@ public class SpongeMessageHandler implements IPMessageHandler {
                                     throw new NotEnoughDataException("The use gson boolean dataInfo was not sent");
                                 }
 
-                                pdata.setChannelName(type);
+                                pdata.setBungeeChannelType(type);
                                 pdata.setServer(server);
-                                pdata.setMessageChannel(messageChannel);
+                                pdata.setMessageChannel(channel);
                                 pdata.setSender(player);
-                                pdata.setSubchannel(subchannel);
+                                pdata.setSubChannel(subchannel);
                                 pdata.setUseGson(useGson);
 
                                 if(useGson) {
@@ -106,21 +109,25 @@ public class SpongeMessageHandler implements IPMessageHandler {
                                     } else {
                                         throw new NotEnoughDataException("The use gson json dataInfo was not sent");
                                     }
+                                } else {
+                                    while(in.available() > 0) {
+                                        pdata.addData(in.readUTF());
+                                    }
                                 }
 
 
-                            }catch (IOException ee) {
+                            } catch (IOException ee) {
                                 ee.printStackTrace();
                             }
 
 
-                            pl.onMessageReceived(pdata,channel);
+                            pl.onMessageReceived(pdata, channel);
                             break;
                         }
                     }
                 }
             });
-            channelPluginMessageHandlerHashMap.put(channelPlugin,pluginMessageHandler);
+            channelPluginMessageHandlerHashMap.put(channelPlugin, pluginMessageHandler);
         }
     }
 
@@ -163,11 +170,11 @@ public class SpongeMessageHandler implements IPMessageHandler {
 
 
         Consumer<ChannelBuf> channelBuf = out -> {
-            out.writeUTF(data.getChannelName()); //TYPE
+            out.writeUTF(data.getBungeeChannelType()); //TYPE
             out.writeUTF(data.getServer()); //SERVER
-            out.writeUTF(data.getSubchannel()); //SUBCHANNEL
+            out.writeUTF(data.getSubChannel()); //SUBCHANNEL
 
-            out.writeUTF(data.getMessageChannel());
+            out.writeUTF(data.getMessageChannel().getFullChannelName());
 
             out.writeUTF(new Gson().toJson(new JSONPlayer(player.getName(), player.getUniqueId())));
 
@@ -183,7 +190,7 @@ public class SpongeMessageHandler implements IPMessageHandler {
         };
 
 
-        ChannelBinding.RawDataChannel channele = game.getChannelRegistrar().getOrCreateRaw(sponge,data.getMessageChannel());
+        ChannelBinding.RawDataChannel channele = game.getChannelRegistrar().getOrCreateRaw(sponge, data.getMessageChannel().getFullChannelName());
 
         channele.sendTo(player,channelBuf);
 

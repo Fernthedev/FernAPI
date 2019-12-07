@@ -7,6 +7,8 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public abstract class FernCommand extends Command {
@@ -41,6 +43,23 @@ public abstract class FernCommand extends Command {
 
     protected void sendMessage(CommandSender player, String message) {
         player.sendMessage(message(message));
+    }
+
+
+    /**
+     * Allows you to make autocomplete only suggest based off what is written
+     * @param arg The argument currently used
+     * @param possibilities All of the possibilities
+     * @return The auto-complete possibilities
+     */
+    public List<String> search(String arg, List<String> possibilities) {
+        List<String> newPos = new ArrayList<>();
+        possibilities.forEach(s -> {
+            if(s.startsWith(arg) || s.contains(arg)) {
+                newPos.add(s);
+            }
+        });
+        return newPos;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.github.fernthedev.fernapi.server.sponge.player;
 
-import com.github.fernthedev.fernapi.universal.api.CommandSender;
+import com.github.fernthedev.fernapi.universal.api.IFConsole;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.chat.ClickData;
 import com.github.fernthedev.fernapi.universal.data.chat.HoverData;
@@ -13,9 +13,8 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 
-public class SpongeFConsole implements CommandSender {
+public class SpongeFConsole extends IFConsole {
     private CommandSource src;
 
     public SpongeFConsole(CommandSource src) {
@@ -33,44 +32,24 @@ public class SpongeFConsole implements CommandSender {
         return src.hasPermission(permission);
     }
 
-    /**
-     * Set a permission node for this user.
-     *
-     * @param permission the node to set
-     * @param value      the value of the node
-     */
-    @Override
-    public void setPermission(String permission, boolean value) {
-        return;
-    }
-
-    /**
-     * Get all Permissions which this CommandSender has
-     *
-     * @return a unmodifiable Collection of Strings which represent their
-     * permissions
-     */
-    @Override
-    public Collection<String> getPermissions() {
-        return null;
-    }
-
     @Override
     public void sendMessage(BaseMessage textMessage) {
 
         Text.Builder text = Text.builder();
 
-        for(BaseMessage be : textMessage.getExtra()) {
-            Text.Builder te = TextSerializers.FORMATTING_CODE.deserialize(be.toPlainText()).toBuilder();
+        if (textMessage.getExtra() != null) {
+            for(BaseMessage be : textMessage.getExtra()) {
+                Text.Builder te = TextSerializers.FORMATTING_CODE.deserialize(be.toPlainText()).toBuilder();
 
-            if(be.getClickData() != null) {
-                te.onClick(parseAction(be.getClickData()));
-            }
+                if(be.getClickData() != null) {
+                    te.onClick(parseAction(be.getClickData()));
+                }
 
-            if(be.getHoverData() != null) {
-                te.onHover(parseAction(be.getHoverData()));
+                if(be.getHoverData() != null) {
+                    te.onHover(parseAction(be.getHoverData()));
+                }
+                text.append(te.build());
             }
-            text.append(te.build());
         }
 
         src.sendMessage(text.build());

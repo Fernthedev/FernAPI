@@ -2,7 +2,7 @@ package com.github.fernthedev.fernapi.server.velocity.player;
 
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
-import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
+import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.velocitypowered.api.proxy.Player;
 import lombok.Getter;
 import net.kyori.text.TextComponent;
@@ -58,22 +58,24 @@ public class VelocityFPlayer extends IFPlayer{
     public void sendMessage(BaseMessage baseMessage) {
         TextComponent fullMessage = TextComponent.of(ChatColor.translateAlternateColorCodes('&',baseMessage.getParentText()));
 
-        for(BaseMessage be : baseMessage.getExtra()) {
-            TextComponent te = TextComponent.of(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
+        if (baseMessage.getExtra() != null) {
+            for(BaseMessage be : baseMessage.getExtra()) {
+                TextComponent te = TextComponent.of(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
 
-            if (be.getClickData() != null) {
-                te.clickEvent(ClickEvent.of(
-                        ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
-                        be.getClickData().getClickValue()));
+                if (be.getClickData() != null) {
+                    te.clickEvent(ClickEvent.of(
+                            ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
+                            be.getClickData().getClickValue()));
+                }
+
+                if (be.getHoverData() != null) {
+                    te.hoverEvent(HoverEvent.of(
+                            HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
+                            message(be.getHoverData().getHoverValue())));
+                }
+
+                fullMessage.append(te);
             }
-
-            if (be.getHoverData() != null) {
-                te.hoverEvent(HoverEvent.of(
-                        HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
-                        message(be.getHoverData().getHoverValue())));
-            }
-
-            fullMessage.append(te);
         }
 
         player.sendMessage(fullMessage);
@@ -82,6 +84,16 @@ public class VelocityFPlayer extends IFPlayer{
     @Override
     public InetSocketAddress getAddress() {
         return player.getRemoteAddress();
+    }
+
+    @Override
+    public long getPing() {
+        return player.getPing();
+    }
+
+    @Override
+    public String getCurrentServerName() {
+        return player.getCurrentServer().get().getServerInfo().getName();
     }
 
     private TextComponent message(String text) {

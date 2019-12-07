@@ -1,13 +1,23 @@
 package com.github.fernthedev.fernapi.universal.data.database;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
+import lombok.ToString;
 
-public class RowObject {
+/**
+ * The column is a piece of data.
+ */
+@ToString
+public class ColumnData {
 
     @Getter
-    private String row;
+    @NonNull
+    private String columnName;
 
+    /**
+     * Will return null if it is SQL NULL
+     */
     @Getter
     private String value;
 
@@ -30,13 +40,13 @@ public class RowObject {
     @Setter
     private boolean primaryKey;
 
-    public RowObject( String row, String value) {
-        this.row = row;
+    public ColumnData(@NonNull String columnName, String value) {
+        this.columnName = columnName;
         this.value = value;
     }
 
-    public RowObject(String row, String value,int length) {
-        this(row,value);
+    public ColumnData(@NonNull String columnName, String value, int length) {
+        this(columnName,value);
         this.length = length;
     }
 

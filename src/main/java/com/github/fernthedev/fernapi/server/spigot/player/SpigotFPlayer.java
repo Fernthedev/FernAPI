@@ -3,14 +3,16 @@ package com.github.fernthedev.fernapi.server.spigot.player;
 import com.github.fernthedev.fernapi.server.spigot.pluginhandlers.VaultHandler;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
-import com.github.fernthedev.fernapi.universal.handlers.IFPlayer;
+import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import lombok.Getter;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.Plugin;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.HashMap;
@@ -79,22 +81,24 @@ public class SpigotFPlayer extends IFPlayer {
 
         TextComponent fullMessage = new TextComponent(ChatColor.translateAlternateColorCodes('&',baseMessage.getParentText()));
 
-        for(BaseMessage be : baseMessage.getExtra()) {
-            TextComponent te = new TextComponent(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
+        if (baseMessage.getExtra() != null) {
+            for(BaseMessage be : baseMessage.getExtra()) {
+                TextComponent te = new TextComponent(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
 
-            if (be.getClickData() != null) {
-                te.setClickEvent(new ClickEvent(
-                        ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
-                        be.getClickData().getClickValue()));
+                if (be.getClickData() != null) {
+                    te.setClickEvent(new ClickEvent(
+                            ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
+                            be.getClickData().getClickValue()));
+                }
+
+                if (be.getHoverData() != null) {
+                    te.setHoverEvent(new HoverEvent(
+                            HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
+                            message(be.getHoverData().getHoverValue())));
+                }
+
+                fullMessage.addExtra(te);
             }
-
-            if (be.getHoverData() != null) {
-                te.setHoverEvent(new HoverEvent(
-                        HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
-                        message(be.getHoverData().getHoverValue())));
-            }
-
-            fullMessage.addExtra(te);
         }
 
         player.spigot().sendMessage(fullMessage);
@@ -107,7 +111,30 @@ public class SpigotFPlayer extends IFPlayer {
         return player.getAddress();
     }
 
+    @Override
+    public long getPing() {
+        try {
+            Object entityPlayer = player.getClass().getMethod("getHandle").invoke(player);
+            return (int) entityPlayer.getClass().getField("ping").get(entityPlayer);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    @Override
+    public String getCurrentServerName() {
+        return player.getServer().getName();
+    }
+
     private BaseComponent[] message(String text) {
         return new ComponentBuilder(ChatColor.translateAlternateColorCodes('&',text)).create();
+    }
+
+    public boolean isVanished() {
+        for (MetadataValue meta : player.getMetadata("vanished")) {
+            if (meta.asBoolean()) return true;
+        }
+        return false;
     }
 }
