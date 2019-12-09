@@ -1,5 +1,6 @@
-package com.github.fernthedev.fernapi.universal;
+package com.github.fernthedev.fernapi.universal.util;
 
+import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
 import com.github.fernthedev.fernapi.universal.handlers.UUIDFetchManager;
 import com.google.gson.Gson;
@@ -19,8 +20,16 @@ public class UUIDFetcher {
 
     private static int requests = 0;
 
-    private static UUIDFetchManager fetchManager;
+    private static UUIDFetchManager fetchManager = new UUIDFetchManager();
 
+    /**
+     * @deprecated It is now deprecated because it is no longer needed to use specific-interface
+     * uuid fetchers with the use of universal schedulers now.
+     *
+     *
+     * @param fetchManager
+     */
+    @Deprecated
     public static void setFetchManager(UUIDFetchManager fetchManager) {
         UUIDFetcher.fetchManager = fetchManager;
     }
@@ -29,9 +38,9 @@ public class UUIDFetcher {
         UUIDFetcher.requests = requests;
     }
 
-    public static Map<String,PlayerUUID> playerUUIDCache = new HashMap<>();
-    public static Map<String,PlayerName> playerNameCache = new HashMap<>();
-    public static Map<String,List<PlayerHistory>> playerHistoryCache = new HashMap<>();
+    public static final Map<String,PlayerUUID> playerUUIDCache = new HashMap<>();
+    public static final Map<String,PlayerName> playerNameCache = new HashMap<>();
+    public static final Map<String,List<PlayerHistory>> playerHistoryCache = new HashMap<>();
 
 
 
@@ -43,8 +52,8 @@ public class UUIDFetcher {
     private UUIDFetcher() { }
 
     public static String getUUID(String name) {
-        if(fetchManager.getUUIDFromPlayer(name) != null ) {
-            return fetchManager.getUUIDFromPlayer(name).toString();
+        if(Universal.getMethods().getUUIDFromPlayer(name) != null ) {
+            return Universal.getMethods().getUUIDFromPlayer(name).toString();
         }
 
         // Get Gson object
@@ -83,8 +92,8 @@ public class UUIDFetcher {
 
     public static String getName(@NonNull String uuid) {
         try {
-            if (fetchManager.getNameFromPlayer(UUID.fromString(uuid)) != null) {
-                return fetchManager.getNameFromPlayer(UUID.fromString(uuid));
+            if (Universal.getMethods().getNameFromPlayer(UUID.fromString(uuid)) != null) {
+                return Universal.getMethods().getNameFromPlayer(UUID.fromString(uuid));
             }
         }catch (Exception e) {
             throw new FernRuntimeException("Unable to find name, perhaps the UUID is invalid?",e);
@@ -294,7 +303,7 @@ public class UUIDFetcher {
     }
 
     private static void print(Object log) {
-        Universal.debug("[com.github.fernthedev.fernapi.universal.UUIDFetcher] " + log);
+        Universal.debug("[com.github.fernthedev.fernapi.universal.util.UUIDFetcher] " + log);
     }
 
     protected static void debug(Object log) {

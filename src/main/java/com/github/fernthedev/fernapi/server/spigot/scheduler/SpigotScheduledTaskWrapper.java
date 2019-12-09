@@ -1,17 +1,14 @@
-package com.github.fernthedev.fernapi.server.velocity.interfaces;
+package com.github.fernthedev.fernapi.server.spigot.scheduler;
 
 import com.github.fernthedev.fernapi.universal.data.ScheduleTaskWrapper;
-import com.velocitypowered.api.scheduler.ScheduledTask;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.UUID;
 
-public class VelocityScheduledTaskWrapper extends ScheduleTaskWrapper<ScheduledTask, UUID> {
+public class SpigotScheduledTaskWrapper extends ScheduleTaskWrapper<BukkitRunnable, Integer> {
 
-    protected Runnable runnable;
 
-    public VelocityScheduledTaskWrapper(Runnable runnable, ScheduledTask task) {
+    public SpigotScheduledTaskWrapper(BukkitRunnable task) {
         super(task);
-        this.runnable = runnable;
     }
 
     /**
@@ -20,8 +17,8 @@ public class VelocityScheduledTaskWrapper extends ScheduleTaskWrapper<ScheduledT
      * @return this tasks ID
      */
     @Override
-    public UUID getId() {
-        return null;
+    public Integer getId() {
+        return scheduleTask.getTaskId();
     }
 
     /**
@@ -31,7 +28,7 @@ public class VelocityScheduledTaskWrapper extends ScheduleTaskWrapper<ScheduledT
      */
     @Override
     public Runnable getTask() {
-        return runnable;
+        return scheduleTask;
     }
 
     /**

@@ -1,13 +1,12 @@
-package com.github.fernthedev.fernapi.server.spigot.interfaces;
+package com.github.fernthedev.fernapi.server.bungee.scheduler;
 
 import com.github.fernthedev.fernapi.universal.data.ScheduleTaskWrapper;
-import org.bukkit.scheduler.BukkitRunnable;
+import net.md_5.bungee.api.scheduler.ScheduledTask;
+
+public class BungeeScheduledTaskWrapper extends ScheduleTaskWrapper<ScheduledTask, Integer> {
 
 
-public class SpigotScheduledTaskWrapper extends ScheduleTaskWrapper<BukkitRunnable, Integer> {
-
-
-    public SpigotScheduledTaskWrapper(BukkitRunnable task) {
+    public BungeeScheduledTaskWrapper(ScheduledTask task) {
         super(task);
     }
 
@@ -18,7 +17,7 @@ public class SpigotScheduledTaskWrapper extends ScheduleTaskWrapper<BukkitRunnab
      */
     @Override
     public Integer getId() {
-        return scheduleTask.getTaskId();
+        return scheduleTask.getId();
     }
 
     /**
@@ -28,7 +27,7 @@ public class SpigotScheduledTaskWrapper extends ScheduleTaskWrapper<BukkitRunnab
      */
     @Override
     public Runnable getTask() {
-        return scheduleTask;
+        return scheduleTask.getTask();
     }
 
     /**

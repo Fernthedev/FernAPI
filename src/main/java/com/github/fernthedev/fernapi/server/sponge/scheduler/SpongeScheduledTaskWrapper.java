@@ -1,13 +1,17 @@
-package com.github.fernthedev.fernapi.server.bungee.interfaces;
+package com.github.fernthedev.fernapi.server.sponge.scheduler;
 
 import com.github.fernthedev.fernapi.universal.data.ScheduleTaskWrapper;
-import net.md_5.bungee.api.scheduler.ScheduledTask;
+import org.spongepowered.api.scheduler.Task;
 
-public class BungeeScheduledTaskWrapper extends ScheduleTaskWrapper<ScheduledTask, Integer> {
+import java.util.UUID;
 
+public class SpongeScheduledTaskWrapper extends ScheduleTaskWrapper<Task, UUID> {
 
-    public BungeeScheduledTaskWrapper(ScheduledTask task) {
+    protected Runnable runnable;
+
+    public SpongeScheduledTaskWrapper(Runnable runnable, Task task) {
         super(task);
+        this.runnable = runnable;
     }
 
     /**
@@ -16,8 +20,8 @@ public class BungeeScheduledTaskWrapper extends ScheduleTaskWrapper<ScheduledTas
      * @return this tasks ID
      */
     @Override
-    public Integer getId() {
-        return scheduleTask.getId();
+    public UUID getId() {
+        return scheduleTask.getUniqueId();
     }
 
     /**
@@ -27,7 +31,7 @@ public class BungeeScheduledTaskWrapper extends ScheduleTaskWrapper<ScheduledTas
      */
     @Override
     public Runnable getTask() {
-        return scheduleTask.getTask();
+        return runnable;
     }
 
     /**

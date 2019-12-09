@@ -1,4 +1,4 @@
-package com.github.fernthedev.fernapi.universal;
+package com.github.fernthedev.fernapi.universal.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

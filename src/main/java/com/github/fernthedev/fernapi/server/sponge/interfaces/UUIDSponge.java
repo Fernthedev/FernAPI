@@ -1,17 +1,17 @@
 package com.github.fernthedev.fernapi.server.sponge.interfaces;
 
 import com.github.fernthedev.fernapi.server.sponge.FernSpongeAPI;
-import com.github.fernthedev.fernapi.universal.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.handlers.UUIDFetchManager;
+import com.github.fernthedev.fernapi.universal.util.UUIDFetcher;
 import org.spongepowered.api.scheduler.Task;
 
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static com.github.fernthedev.fernapi.universal.UUIDFetcher.*;
+import static com.github.fernthedev.fernapi.universal.util.UUIDFetcher.*;
 
-public class UUIDSponge implements UUIDFetchManager {
+@Deprecated
+public class UUIDSponge extends UUIDFetchManager {
 
     private FernSpongeAPI sponge;
 
@@ -67,13 +67,5 @@ public class UUIDSponge implements UUIDFetchManager {
 
     }
 
-    @Override
-    public String getNameFromPlayer(UUID uuid) {
-        return null;
-    }
 
-    @Override
-    public UUID getUUIDFromPlayer(String name) {
-        return null;
-    }
 }

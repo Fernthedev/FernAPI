@@ -1,18 +1,18 @@
 package com.github.fernthedev.fernapi.server.spigot.interfaces;
 
-import com.github.fernthedev.fernapi.universal.UUIDFetcher;
+import com.github.fernthedev.fernapi.universal.util.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.handlers.UUIDFetchManager;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static com.github.fernthedev.fernapi.universal.UUIDFetcher.*;
+import static com.github.fernthedev.fernapi.universal.util.UUIDFetcher.*;
 
-public class UUIDSpigot implements UUIDFetchManager {
+@Deprecated
+public class UUIDSpigot extends UUIDFetchManager {
 
     private BukkitTask requestBukkitRunnable;
 
@@ -50,15 +50,7 @@ public class UUIDSpigot implements UUIDFetchManager {
                 TimeUnit.HOURS.toSeconds(1) *20);
     }
 
-    @Override
-    public String getNameFromPlayer(UUID uuid) {
-        return null;
-    }
 
-    @Override
-    public UUID getUUIDFromPlayer(String name) {
-        return null;
-    }
 
     public void stopTimerRequest() {
         if(requestBukkitRunnable != null) {

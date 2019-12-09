@@ -1,7 +1,7 @@
 package com.github.fernthedev.fernapi.server.bungee.interfaces;
 
 import com.github.fernthedev.fernapi.universal.handlers.UUIDFetchManager;
-import com.github.fernthedev.fernapi.universal.UUIDFetcher;
+import com.github.fernthedev.fernapi.universal.util.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -10,14 +10,13 @@ import net.md_5.bungee.api.scheduler.ScheduledTask;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static com.github.fernthedev.fernapi.universal.UUIDFetcher.*;
+import static com.github.fernthedev.fernapi.universal.util.UUIDFetcher.*;
 
-public class UUIDBungee implements UUIDFetchManager {
+@Deprecated
+public class UUIDBungee extends UUIDFetchManager {
     private static ScheduledTask requestTask;
 
     private static ScheduledTask banHourTask;
-
-
 
     public void runTimerRequest() {
         debug("Server is bungee");

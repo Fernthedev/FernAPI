@@ -1,17 +1,19 @@
-package com.github.fernthedev.fernapi.server.sponge.interfaces;
+package com.github.fernthedev.fernapi.server.velocity.scheduler;
 
 import com.github.fernthedev.fernapi.universal.data.ScheduleTaskWrapper;
-import org.spongepowered.api.scheduler.Task;
+import com.velocitypowered.api.scheduler.ScheduledTask;
 
 import java.util.UUID;
 
-public class SpongeScheduledTaskWrapper extends ScheduleTaskWrapper<Task, UUID> {
+public class VelocityScheduledTaskWrapper extends ScheduleTaskWrapper<ScheduledTask, UUID> {
 
     protected Runnable runnable;
+    protected UUID uuid;
 
-    public SpongeScheduledTaskWrapper(Runnable runnable, Task task) {
+    public VelocityScheduledTaskWrapper(Runnable runnable, ScheduledTask task, UUID uuid) {
         super(task);
         this.runnable = runnable;
+        this.uuid = uuid;
     }
 
     /**
@@ -21,7 +23,7 @@ public class SpongeScheduledTaskWrapper extends ScheduleTaskWrapper<Task, UUID> 
      */
     @Override
     public UUID getId() {
-        return scheduleTask.getUniqueId();
+        return uuid;
     }
 
     /**

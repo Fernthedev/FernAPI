@@ -1,17 +1,17 @@
 package com.github.fernthedev.fernapi.server.velocity.interfaces;
 
 import com.github.fernthedev.fernapi.server.velocity.FernVelocityAPI;
-import com.github.fernthedev.fernapi.universal.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.handlers.UUIDFetchManager;
+import com.github.fernthedev.fernapi.universal.util.UUIDFetcher;
 import com.velocitypowered.api.scheduler.ScheduledTask;
 
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static com.github.fernthedev.fernapi.universal.UUIDFetcher.*;
+import static com.github.fernthedev.fernapi.universal.util.UUIDFetcher.*;
 
-public class UUIDVelocity implements UUIDFetchManager {
+@Deprecated
+public class UUIDVelocity extends UUIDFetchManager {
     private static ScheduledTask requestTask;
 
     private static ScheduledTask banHourTask;
@@ -52,21 +52,6 @@ public class UUIDVelocity implements UUIDFetchManager {
 
     }
 
-    @Override
-    public String getNameFromPlayer(UUID uuid) {
-        if(api.getServer().getPlayer(uuid).isPresent() && api.getServer().getPlayer(uuid).get().isActive()) {
-            return api.getServer().getPlayer(uuid).get().getUsername();
-        }
-        return null;
-    }
-
-    @Override
-    public UUID getUUIDFromPlayer(String name) {
-        if(api.getServer().getPlayer(name).isPresent() && api.getServer().getPlayer(name).get().isActive()) {
-            return api.getServer().getPlayer(name).get().getUniqueId();
-        }
-        return null;
-    }
 
     public void stopTimerRequest() {
         if(requestTask != null) {
@@ -78,9 +63,7 @@ public class UUIDVelocity implements UUIDFetchManager {
         if(banHourTask != null)
         banHourTask.cancel();
 
-
     }
-
 
 
     private static void print(Object log) {

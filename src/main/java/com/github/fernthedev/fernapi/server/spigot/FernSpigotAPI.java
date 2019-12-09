@@ -8,7 +8,7 @@ import com.github.fernthedev.fernapi.server.spigot.network.PlaceHolderAPI.PlaceH
 import com.github.fernthedev.fernapi.server.spigot.network.SpigotMessageHandler;
 import com.github.fernthedev.fernapi.server.spigot.network.SpigotNetworkHandler;
 import com.github.fernthedev.fernapi.server.spigot.pluginhandlers.VaultHandler;
-import com.github.fernthedev.fernapi.universal.UUIDFetcher;
+import com.github.fernthedev.fernapi.universal.util.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.network.vanish.VanishProxyCheck;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;

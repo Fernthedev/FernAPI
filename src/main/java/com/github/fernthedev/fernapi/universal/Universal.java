@@ -27,6 +27,7 @@ public class Universal {
     private static DatabaseHandler db;
     private static CommandHandler comhand;
     private static NetworkHandler nh;
+    private static IScheduler sh;
 
     private static FernAPIPlugin plugin;
 
@@ -35,7 +36,7 @@ public class Universal {
         return instance == null ? instance = new Universal() : instance;
     }
 
-    public void setup(@NonNull MethodInterface methodInterface, FernAPIPlugin aplugin, IChatHandler chatHandler, IPMessageHandler messageHandler, DatabaseHandler databaseHandler, CommandHandler commandHandler, NetworkHandler networkHandler) {
+    public void setup(@NonNull MethodInterface methodInterface, FernAPIPlugin aplugin, IChatHandler chatHandler, IPMessageHandler messageHandler, DatabaseHandler databaseHandler, CommandHandler commandHandler, NetworkHandler networkHandler, IScheduler iScheduler) {
         methodInterface.getLogger().info("Registered interface");
         setup = true;
         mi = methodInterface;
@@ -45,11 +46,12 @@ public class Universal {
         comhand = commandHandler;
         plugin = aplugin;
         nh = networkHandler;
+        sh = iScheduler;
 
     }
 
 
-    public static void checkNull() {
+    protected static void checkNull() {
         if(mi == null || !setup) {
             try {
                 throw new IncorrectSetupException("You have not setup the API correctly. Check this for more info: https://github.com/Fernthedev/FernAPI/blob/master/error/incorrectsetup.md",new NullPointerException());
@@ -133,6 +135,11 @@ public class Universal {
     public static CommandHandler getCommandHandler() {
         checkNull();
         return comhand;
+    }
+
+    public static IScheduler getScheduler() {
+        checkNull();
+        return sh;
     }
 
     public static FernAPIPlugin getPlugin() {

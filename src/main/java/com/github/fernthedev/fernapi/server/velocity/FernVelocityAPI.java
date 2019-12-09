@@ -7,7 +7,7 @@ import com.github.fernthedev.fernapi.server.velocity.interfaces.UUIDVelocity;
 import com.github.fernthedev.fernapi.server.velocity.network.VelocityMessageHandler;
 import com.github.fernthedev.fernapi.server.velocity.network.VelocityNetworkHandler;
 import com.github.fernthedev.fernapi.universal.ProxyAskPlaceHolder;
-import com.github.fernthedev.fernapi.universal.UUIDFetcher;
+import com.github.fernthedev.fernapi.universal.util.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.network.vanish.VanishProxyCheck;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;

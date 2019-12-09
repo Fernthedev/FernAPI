@@ -1,13 +1,11 @@
 package com.github.fernthedev.fernapi.server.sponge;
 
-import com.github.fernthedev.fernapi.server.sponge.interfaces.SpongeScheduledTaskWrapper;
 import com.github.fernthedev.fernapi.server.sponge.player.SpongeFConsole;
 import com.github.fernthedev.fernapi.server.sponge.player.SpongeFPlayer;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.CommandSender;
-import com.github.fernthedev.fernapi.universal.data.ScheduleTaskWrapper;
-import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
+import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
 import com.github.fernthedev.fernapi.universal.handlers.ServerType;
 import lombok.NonNull;
@@ -15,11 +13,12 @@ import lombok.RequiredArgsConstructor;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
 
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -91,32 +90,15 @@ public class SpongeInterface implements MethodInterface {
         return sponge.privateConfigDir.toFile();
     }
 
-    /**
-     * Schedules a task to be executed asynchronously after the specified delay
-     * is up.
-     *  @param task  the task to run
-     * @param delay the delay before this task will be executed
-     * @param unit  the unit in which the delay will be measured
-     * @return
-     */
     @Override
-    public ScheduleTaskWrapper runSchedule(Runnable task, long delay, TimeUnit unit) {
-        return new SpongeScheduledTaskWrapper(task, Sponge.getScheduler().createAsyncExecutor(sponge).schedule(task, delay, unit).getTask());
+    public String getNameFromPlayer(UUID uuid) {
+        Optional<Player> p = Sponge.getGame().getServer().getPlayer(uuid);
+        return p.map(User::getName).orElse(null);
     }
 
-    /**
-     * Schedules a task to be executed asynchronously after the specified delay
-     * is up. The scheduled task will continue running at the specified
-     * interval. The interval will not begin to count down until the last task
-     * invocation is complete.
-     *  @param task   the task to run
-     * @param delay  the delay before this task will be executed
-     * @param period the interval before subsequent executions of this task
-     * @param unit   the unit in which the delay and period will be measured
-     * @return
-     */
     @Override
-    public ScheduleTaskWrapper runSchedule(Runnable task, long delay, long period, TimeUnit unit) {
-        return new SpongeScheduledTaskWrapper(task, Sponge.getScheduler().createAsyncExecutor(sponge).scheduleAtFixedRate(task, delay, period, unit).getTask());
+    public UUID getUUIDFromPlayer(String name) {
+        Optional<Player> p = Sponge.getGame().getServer().getPlayer(name);
+        return p.map(User::getUniqueId).orElse(null);
     }
 }

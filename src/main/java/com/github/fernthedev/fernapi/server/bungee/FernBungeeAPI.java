@@ -7,7 +7,7 @@ import com.github.fernthedev.fernapi.server.bungee.interfaces.UUIDBungee;
 import com.github.fernthedev.fernapi.server.bungee.network.BungeeMessageHandler;
 import com.github.fernthedev.fernapi.server.bungee.network.BungeeNetworkHandler;
 import com.github.fernthedev.fernapi.universal.ProxyAskPlaceHolder;
-import com.github.fernthedev.fernapi.universal.UUIDFetcher;
+import com.github.fernthedev.fernapi.universal.util.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.network.vanish.VanishProxyCheck;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
@@ -37,9 +37,6 @@ public class FernBungeeAPI extends Plugin implements FernAPIPlugin {
         getProxy().getScheduler().cancel(this);
     }
 
-    @Override
-    public void cancelTask(int id) {
-        getProxy().getScheduler().cancel(id);
-    }
+
 
 }

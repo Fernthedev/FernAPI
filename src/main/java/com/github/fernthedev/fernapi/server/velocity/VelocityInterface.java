@@ -1,13 +1,11 @@
 package com.github.fernthedev.fernapi.server.velocity;
 
-import com.github.fernthedev.fernapi.server.velocity.interfaces.VelocityScheduledTaskWrapper;
 import com.github.fernthedev.fernapi.server.velocity.player.VelocityFConsole;
 import com.github.fernthedev.fernapi.server.velocity.player.VelocityFPlayer;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.CommandSender;
-import com.github.fernthedev.fernapi.universal.data.ScheduleTaskWrapper;
-import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
+import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
 import com.github.fernthedev.fernapi.universal.handlers.ServerType;
 import com.velocitypowered.api.command.CommandSource;
@@ -17,7 +15,6 @@ import lombok.NonNull;
 import java.io.File;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -98,32 +95,19 @@ public class VelocityInterface implements MethodInterface {
         return fernVelocityAPI.getDataDirectory().toFile();
     }
 
-    /**
-     * Schedules a task to be executed asynchronously after the specified delay
-     * is up.
-     *  @param task  the task to run
-     * @param delay the delay before this task will be executed
-     * @param unit  the unit in which the delay will be measured
-     * @return
-     */
     @Override
-    public ScheduleTaskWrapper runSchedule(Runnable task, long delay, TimeUnit unit) {
-        return new VelocityScheduledTaskWrapper(task, fernVelocityAPI.getServer().getScheduler().buildTask(fernVelocityAPI, task).delay(delay, unit).schedule());
+    public String getNameFromPlayer(UUID uuid) {
+        if(fernVelocityAPI.getServer().getPlayer(uuid).isPresent() && fernVelocityAPI.getServer().getPlayer(uuid).get().isActive()) {
+            return fernVelocityAPI.getServer().getPlayer(uuid).get().getUsername();
+        }
+        return null;
     }
 
-    /**
-     * Schedules a task to be executed asynchronously after the specified delay
-     * is up. The scheduled task will continue running at the specified
-     * interval. The interval will not begin to count down until the last task
-     * invocation is complete.
-     *  @param task   the task to run
-     * @param delay  the delay before this task will be executed
-     * @param period the interval before subsequent executions of this task
-     * @param unit   the unit in which the delay and period will be measured
-     * @return
-     */
     @Override
-    public ScheduleTaskWrapper runSchedule(Runnable task, long delay, long period, TimeUnit unit) {
-        return new VelocityScheduledTaskWrapper(task, fernVelocityAPI.getServer().getScheduler().buildTask(fernVelocityAPI, task).delay(delay, unit).repeat(period, unit).schedule());
+    public UUID getUUIDFromPlayer(String name) {
+        if(fernVelocityAPI.getServer().getPlayer(name).isPresent() && fernVelocityAPI.getServer().getPlayer(name).get().isActive()) {
+            return fernVelocityAPI.getServer().getPlayer(name).get().getUniqueId();
+        }
+        return null;
     }
 }
