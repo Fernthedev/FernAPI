@@ -1,13 +1,12 @@
 package com.github.fernthedev.fernapi.server.bungee.interfaces;
 
+import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.handlers.UUIDFetchManager;
 import com.github.fernthedev.fernapi.universal.util.UUIDFetcher;
-import com.github.fernthedev.fernapi.universal.Universal;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.fernthedev.fernapi.universal.util.UUIDFetcher.*;
@@ -41,21 +40,7 @@ public class UUIDBungee extends UUIDFetchManager {
 
     }
 
-    @Override
-    public String getNameFromPlayer(UUID uuid) {
-        if(ProxyServer.getInstance().getPlayer(uuid) != null && ProxyServer.getInstance().getPlayer(uuid).isConnected()) {
-            return ProxyServer.getInstance().getPlayer(uuid).getName();
-        }
-        return null;
-    }
 
-    @Override
-    public UUID getUUIDFromPlayer(String name) {
-        if(ProxyServer.getInstance().getPlayer(name) != null && ProxyServer.getInstance().getPlayer(name).isConnected()) {
-            return ProxyServer.getInstance().getPlayer(name).getUniqueId();
-        }
-        return null;
-    }
 
     public void stopTimerRequest() {
         if(requestTask != null) {

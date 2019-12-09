@@ -54,12 +54,12 @@ public class UUIDSpigot extends UUIDFetchManager {
 
     public void stopTimerRequest() {
         if(requestBukkitRunnable != null) {
-            Universal.getMethods().getInstance().cancelTask(requestBukkitRunnable.getTaskId());
+            Universal.getScheduler().cancelTask(requestBukkitRunnable.getTaskId());
         }
     }
 
     public void stopHourTask() {
-        if(banBukkitRunnable != null) Universal.getMethods().getInstance().cancelTask(banBukkitRunnable.getTaskId());
+        if(banBukkitRunnable != null) Universal.getScheduler().cancelTask(banBukkitRunnable.getTaskId());
     }
 
 
@@ -68,7 +68,7 @@ public class UUIDSpigot extends UUIDFetchManager {
         Universal.getMethods().getLogger().info("[" + Universal.getMethods().getServerType() + "] [UUIDFetcher] " + log);
     }
 
-    private static void debug(Object log) {
+    private static void debug(String log) {
         Universal.debug("[" + Universal.getMethods().getServerType() + "] [UUIDFetcher] " + log);
     }
 }

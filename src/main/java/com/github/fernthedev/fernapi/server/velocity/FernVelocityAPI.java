@@ -3,11 +3,10 @@ package com.github.fernthedev.fernapi.server.velocity;
 import com.github.fernthedev.fernapi.server.velocity.chat.VelocityChatHandler;
 import com.github.fernthedev.fernapi.server.velocity.command.VelocityCommandHandler;
 import com.github.fernthedev.fernapi.server.velocity.database.VelocityDatabase;
-import com.github.fernthedev.fernapi.server.velocity.interfaces.UUIDVelocity;
 import com.github.fernthedev.fernapi.server.velocity.network.VelocityMessageHandler;
 import com.github.fernthedev.fernapi.server.velocity.network.VelocityNetworkHandler;
+import com.github.fernthedev.fernapi.server.velocity.scheduler.VelocityScheduler;
 import com.github.fernthedev.fernapi.universal.ProxyAskPlaceHolder;
-import com.github.fernthedev.fernapi.universal.util.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.network.vanish.VanishProxyCheck;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
@@ -47,9 +46,10 @@ public class FernVelocityAPI implements FernAPIPlugin {
                 messageHandler,
                 new VelocityDatabase(this),
                 new VelocityCommandHandler(this),
-                new VelocityNetworkHandler());
+                new VelocityNetworkHandler(),
+                new VelocityScheduler());
 
-        UUIDFetcher.setFetchManager(new UUIDVelocity(this));
+//        UUIDFetcher.setFetchManager(new UUIDVelocity(this));
         Universal.getMessageHandler().registerMessageHandler(new ProxyAskPlaceHolder());
         Universal.getMessageHandler().registerMessageHandler(new VanishProxyCheck());
     }
@@ -64,11 +64,6 @@ public class FernVelocityAPI implements FernAPIPlugin {
     @Subscribe
     public void onProxyStop(ProxyShutdownEvent event) {
         Universal.getInstance().onDisable();
-    }
-
-    @Override
-    public void cancelTask(int id) {
-        getLogger().warn("FernAPI currently does not support cancelling tasks using IDs on Velocity due to it's limited scheduling API.");
     }
 
 }

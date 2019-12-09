@@ -8,6 +8,7 @@ import com.github.fernthedev.fernapi.server.spigot.network.PlaceHolderAPI.PlaceH
 import com.github.fernthedev.fernapi.server.spigot.network.SpigotMessageHandler;
 import com.github.fernthedev.fernapi.server.spigot.network.SpigotNetworkHandler;
 import com.github.fernthedev.fernapi.server.spigot.pluginhandlers.VaultHandler;
+import com.github.fernthedev.fernapi.server.spigot.scheduler.SpigotScheduler;
 import com.github.fernthedev.fernapi.universal.util.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.network.vanish.VanishProxyCheck;
@@ -29,8 +30,9 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
                 new SpigotChatHandler(),
                 new SpigotMessageHandler(this),
                 new SpigotDatabase(this),new SpigotCommandHandler(),
-                new SpigotNetworkHandler());
-        UUIDFetcher.setFetchManager(new UUIDSpigot());
+                new SpigotNetworkHandler(),
+                new SpigotScheduler(this));
+//        UUIDFetcher.setFetchManager(new UUIDSpigot());
 
         Universal.getMessageHandler().registerMessageHandler(new PlaceHolderAPIResponder(this));
         if(Bukkit.getPluginManager().isPluginEnabled("Vault")) {
@@ -48,8 +50,5 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
         getServer().getScheduler().cancelTasks(this);
     }
 
-    @Override
-    public void cancelTask(int id) {
-        getServer().getScheduler().cancelTask(id);
-    }
+
 }

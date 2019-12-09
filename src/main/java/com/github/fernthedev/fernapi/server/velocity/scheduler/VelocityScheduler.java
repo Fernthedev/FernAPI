@@ -20,7 +20,9 @@ public class VelocityScheduler implements IScheduler<VelocityScheduledTaskWrappe
 
     @Override
     public void cancelAllTasks() {
-
+        for (VelocityScheduledTaskWrapper task : taskWrapperMap.values()) {
+            task.cancel();
+        }
     }
 
     /**

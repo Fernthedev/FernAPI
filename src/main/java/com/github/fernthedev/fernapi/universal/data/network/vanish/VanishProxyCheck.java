@@ -36,7 +36,7 @@ public class VanishProxyCheck extends PluginMessageHandler {
     public void setTimeout(long timeout, TimeUnit timeUnit) {
         VanishProxyCheck vanishProxyCheck = this;
 
-        Universal.getMethods().runSchedule(() -> {
+        Universal.getScheduler().runSchedule(() -> {
             if (instances.contains(vanishProxyCheck)) {
                 vanishProxyCheck.vanishRunnable.run(player, false, true);
                 instances.remove(vanishProxyCheck);

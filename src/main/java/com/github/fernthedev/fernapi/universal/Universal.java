@@ -4,7 +4,6 @@ import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.network.IPMessageHandler;
 import com.github.fernthedev.fernapi.universal.exceptions.setup.IncorrectSetupException;
 import com.github.fernthedev.fernapi.universal.handlers.*;
-import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
 import com.github.fernthedev.fernapi.universal.mysql.DatabaseHandler;
 import lombok.NonNull;
 
