@@ -26,7 +26,7 @@ public class VelocityMessageHandler implements IPMessageHandler {
     private FernVelocityAPI velocity;
 
     public List<PluginMessageHandler> getRecievers() {
-        return recievers;
+        return receivers;
     }
 
     public VelocityMessageHandler(FernVelocityAPI fernVelocityAPI) {
@@ -37,7 +37,7 @@ public class VelocityMessageHandler implements IPMessageHandler {
 
     @Subscribe
     public void onPluginMessage(PluginMessageEvent ev) {
-        for (PluginMessageHandler pl : recievers) {
+        for (PluginMessageHandler pl : receivers) {
             for (Channel channel : pl.getChannels()) {
                 if (ev.getIdentifier().getId().equals(channel.getFullChannelName()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
 
@@ -84,7 +84,7 @@ public class VelocityMessageHandler implements IPMessageHandler {
                             throw new NotEnoughDataException("The use gson boolean dataInfo was not sent");
                         }
 
-                        data.setBungeeChannelType(bungeeChannelName);
+                        data.setProxyChannelType(bungeeChannelName);
                         data.setMessageChannel(channel);
                         data.setSender(ev.getSource());
                         data.setServer(server);
@@ -119,7 +119,7 @@ public class VelocityMessageHandler implements IPMessageHandler {
 
     @Override
     public void registerMessageHandler(PluginMessageHandler pluginMessageHandler) {
-        recievers.add(pluginMessageHandler);
+        receivers.add(pluginMessageHandler);
         for(Channel channel : pluginMessageHandler.getChannels()) {
             MinecraftChannelIdentifier channelIdentifier = MinecraftChannelIdentifier.create(channel.getNamespace(), channel.getChannelName());
             velocity.getServer().getChannelRegistrar().register(channelIdentifier);
@@ -162,7 +162,7 @@ public class VelocityMessageHandler implements IPMessageHandler {
         DataOutputStream out = new DataOutputStream(stream);
 
         try {
-            out.writeUTF(data.getBungeeChannelType()); //TYPE
+            out.writeUTF(data.getProxyChannelType()); //TYPE
             out.writeUTF(data.getServer()); //SERVER
             out.writeUTF(data.getSubChannel()); //SUBCHANNEL
 

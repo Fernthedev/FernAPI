@@ -39,12 +39,12 @@ public class SpongeMessageHandler implements IPMessageHandler {
      */
     @Override
     public void registerMessageHandler(PluginMessageHandler pluginMessageHandler) {
-        recievers.add(pluginMessageHandler);
+        receivers.add(pluginMessageHandler);
         for(Channel channelPlugin : pluginMessageHandler.getChannels()) {
             ChannelBinding.RawDataChannel spongeChannel = game.getChannelRegistrar().getOrCreateRaw(sponge, channelPlugin.getFullChannelName());
 
             spongeChannel.addListener(Platform.Type.SERVER, (data, connection, side) -> {
-                for(PluginMessageHandler pl : recievers) {
+                for(PluginMessageHandler pl : receivers) {
                     for(Channel channel : pl.getChannels()) {
                         if (channelPlugin.getFullChannelName().equals(channel.getFullChannelName()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
 
@@ -96,7 +96,7 @@ public class SpongeMessageHandler implements IPMessageHandler {
                                     throw new NotEnoughDataException("The use gson boolean dataInfo was not sent");
                                 }
 
-                                pdata.setBungeeChannelType(type);
+                                pdata.setProxyChannelType(type);
                                 pdata.setServer(server);
                                 pdata.setMessageChannel(channel);
                                 pdata.setSender(player);
@@ -170,7 +170,7 @@ public class SpongeMessageHandler implements IPMessageHandler {
 
 
         Consumer<ChannelBuf> channelBuf = out -> {
-            out.writeUTF(data.getBungeeChannelType()); //TYPE
+            out.writeUTF(data.getProxyChannelType()); //TYPE
             out.writeUTF(data.getServer()); //SERVER
             out.writeUTF(data.getSubChannel()); //SUBCHANNEL
 

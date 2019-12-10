@@ -23,10 +23,10 @@ public interface IPMessageHandler {
      */
     void sendPluginData(IFPlayer player, PluginMessageData data);
 
-    List<PluginMessageHandler> recievers = new ArrayList<>();
+    List<PluginMessageHandler> receivers = new ArrayList<>();
 
-    static List<PluginMessageHandler> getRecievers() {
-        return recievers;
+    static List<PluginMessageHandler> getReceivers() {
+        return receivers;
     }
 
 

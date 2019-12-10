@@ -28,7 +28,7 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
 
     @Override
     public void registerMessageHandler(PluginMessageHandler pluginMessageHandler) {
-        recievers.add(pluginMessageHandler);
+        receivers.add(pluginMessageHandler);
         for(Channel channel : pluginMessageHandler.getChannels()) {
             try {
                 if (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH) {
@@ -82,7 +82,7 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
 
 
         try {
-            out.writeUTF(data.getBungeeChannelType()); //TYPE
+            out.writeUTF(data.getProxyChannelType()); //TYPE
             out.writeUTF(data.getServer()); //SERVER
             out.writeUTF(data.getSubChannel()); //SUBCHANNEL
 
@@ -130,7 +130,7 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
      */
     @Override
     public void onPluginMessageReceived(String channelName, Player player, byte[] message) {
-        for(PluginMessageHandler pl : recievers) {
+        for(PluginMessageHandler pl : receivers) {
             for(Channel channel : pl.getChannels()) {
 //                System.out.println(channelName + " " + channel.getFullChannelName() + " " + channelName.equals(channel.getFullChannelName()) );
                 if (channelName.equals(channel.getFullChannelName()) && (channel.getChannelAction() == Channel.ChannelAction.INCOMING || channel.getChannelAction() == Channel.ChannelAction.BOTH)) {
@@ -183,7 +183,7 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
                             throw new NotEnoughDataException("The use gson boolean dataInfo was not sent");
                         }
 
-                        data.setBungeeChannelType(type);
+                        data.setProxyChannelType(type);
                         data.setServer(server);
 //                        data.setMessageChannel(Channel.createChannelFromString(messageChannel, Channel.ChannelAction.BOTH));
                         data.setMessageChannel(channel);

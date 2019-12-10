@@ -5,7 +5,9 @@ import com.github.fernthedev.fernapi.universal.data.network.IPMessageHandler;
 import com.github.fernthedev.fernapi.universal.exceptions.setup.IncorrectSetupException;
 import com.github.fernthedev.fernapi.universal.handlers.*;
 import com.github.fernthedev.fernapi.universal.mysql.DatabaseHandler;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 
 import java.util.UUID;
 
@@ -18,6 +20,8 @@ public class Universal {
 
     private static Universal instance = null;
 
+    @Getter
+    @Setter
     private static boolean debug = false;
 
     private static MethodInterface mi;
@@ -60,9 +64,7 @@ public class Universal {
         }
     }
 
-    public static void setDebug(boolean debug) {
-        Universal.debug = debug;
-    }
+
 
     public static void debug(Object message) {
         if(debug) {

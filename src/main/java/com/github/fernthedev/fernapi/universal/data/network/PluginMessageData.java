@@ -20,10 +20,29 @@ public class PluginMessageData {
 
     protected Object sender;
 
+
+    protected String proxyChannelType = "Forward"; // channel we delivered or type
+
+    /**
+     * No need to define the bungee channel type
+     */
     @Deprecated
-    protected String bungeeChannelType = "Forward"; // channel we delivered or type
+    public void setProxyChannelType(String proxyChannelType) {
+        this.proxyChannelType = proxyChannelType;
+    }
 
     protected String server;
+
+
+    public void setServer(String server) {
+        this.server = server;
+    }
+
+    public PluginMessageData setServer(IServerInfo server) {
+        this.server = server.getName();
+        return this;
+    }
+
     protected String subChannel;
 
     protected Channel messageChannel;
@@ -62,10 +81,10 @@ public class PluginMessageData {
      * @deprecated Use {@link PluginMessageData#PluginMessageData(ByteArrayOutputStream, String, String, Channel)}
      */
     @Deprecated
-    public PluginMessageData(@NonNull ByteArrayOutputStream outputStream, String bungeeChannelType, String server, String subChannel, String pluginChannel) {
+    public PluginMessageData(@NonNull ByteArrayOutputStream outputStream, String proxyChannelType, String server, String subChannel, String pluginChannel) {
         this.outputStream = outputStream;
         this.in = new DataInputStream(inputStream);
-        this.bungeeChannelType = bungeeChannelType;
+        this.proxyChannelType = proxyChannelType;
         this.server = server;
         this.subChannel = subChannel;
         this.messageChannel = Channel.createChannelFromString(pluginChannel, Channel.ChannelAction.BOTH);
@@ -95,6 +114,17 @@ public class PluginMessageData {
         this.server = server;
         this.subChannel = subChannel;
         this.messageChannel = channel;
+    }
+
+    /**
+     *
+     * @param outputStream The stream with data
+     * @param server The server to send to. Use server name or "ALL"
+     * @param subChannel The SubChannel to send to.
+     * @param channel The Plugin channel
+     */
+    public PluginMessageData(@NonNull ByteArrayOutputStream outputStream, IServerInfo server, String subChannel, Channel channel) {
+        this(outputStream, server.getName(), subChannel, channel);
     }
 
 

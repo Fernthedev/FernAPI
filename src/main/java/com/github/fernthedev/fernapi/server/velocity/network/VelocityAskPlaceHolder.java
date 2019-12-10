@@ -196,7 +196,7 @@ public class VelocityAskPlaceHolder extends PluginMessageHandler {
             DataInputStream in = new DataInputStream(stream);
 
             try {
-                String channelName = data.getBungeeChannelType(); // channel we delivered
+                String channelName = data.getProxyChannelType(); // channel we delivered
                 String server = data.getServer(); //Just incase
                 String subchannel = data.getSubChannel(); //The channel of our custom desire
 
@@ -251,7 +251,7 @@ public class VelocityAskPlaceHolder extends PluginMessageHandler {
 
     /*
     @SuppressWarnings("Unused")
-    public void sendToBukkit(String channel, String message, ServerInfo server) {
+    public void sendToBukkit(String channel, String message, IServerInfo server) {
         ByteArrayOutputStream inputStream = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(inputStream);
         try {
