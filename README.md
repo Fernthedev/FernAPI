@@ -2,6 +2,7 @@
 This plugin is compiled in 1.14.4, but should work regaurdless of your plugin's version unless it uses outdated libraries or other means of change.
 
 This API allows for use of code that should work accross all server platforms. It aims to allow developers to create better plugins without having incosistency across platforms and ease their workflow and project workspaces.
+This API also contains some useful features such as a MySQL Java Wrapper and some useful code for commands such as argument auto-complete helper methods and a UUID fetcher with other features not mentioned.
 
 [![Release](https://jitpack.io/v/Fernthedev/FernAPI.svg)](https://jitpack.io/#Fernthedev/FernAPI)
 [![CircleCI](https://circleci.com/gh/Fernthedev/FernAPI.svg?style=svg)](https://circleci.com/gh/Fernthedev/FernAPI)
