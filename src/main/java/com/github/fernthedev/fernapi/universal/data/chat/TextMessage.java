@@ -1,7 +1,6 @@
 package com.github.fernthedev.fernapi.universal.data.chat;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import java.util.regex.Pattern;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class TextMessage extends BaseMessage {
 
     private static final Pattern url = Pattern.compile( "^(?:(https?)://)?([-\\w_\\.]{2,}\\.[a-z]{2,4})(/\\S*)?$" );
@@ -18,8 +16,11 @@ public class TextMessage extends BaseMessage {
     /**
      * The text of the component that will be displayed to the client
      */
-    private String text;
+    private String text = "";
 
+    public TextMessage() {
+        this("");
+    }
 
     public TextMessage(String text) {
         this.text = text;
