@@ -2,9 +2,8 @@ package com.github.fernthedev.fernapi.server.spigot.player;
 
 import com.github.fernthedev.fernapi.server.spigot.pluginhandlers.VaultHandler;
 import com.github.fernthedev.fernapi.universal.Universal;
-import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
-import lombok.Getter;
+import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -18,13 +17,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class SpigotFPlayer extends IFPlayer {
-    @Getter
-    private Player player;
+public class SpigotFPlayer extends IFPlayer<Player> {
 
     public SpigotFPlayer(Player player) {
-        super(player.getName(),player.getUniqueId());
-        this.player = player;
+        super(player == null ? null : player.getName(),player == null ? null : player.getUniqueId(), player);
     }
 
     /**

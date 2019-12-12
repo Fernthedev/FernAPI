@@ -1,10 +1,9 @@
 package com.github.fernthedev.fernapi.server.velocity.player;
 
+import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
-import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.velocitypowered.api.proxy.Player;
-import lombok.Getter;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.ClickEvent;
 import net.kyori.text.event.HoverEvent;
@@ -12,13 +11,10 @@ import net.kyori.text.event.HoverEvent;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 
-public class VelocityFPlayer extends IFPlayer{
-    @Getter
-    private Player player;
+public class VelocityFPlayer extends IFPlayer<Player> {
 
     public VelocityFPlayer(Player player) {
-        super(player.getUsername(), player.getUniqueId());
-        this.player = player;
+        super(player == null ? null : player.getUsername(),player == null ? null : player.getUniqueId(), player);
     }
 
     /**

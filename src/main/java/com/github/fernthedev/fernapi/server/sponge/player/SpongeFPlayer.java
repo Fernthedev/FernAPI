@@ -17,8 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 
-public class SpongeFPlayer extends IFPlayer {
-    private Player player;
+public class SpongeFPlayer extends IFPlayer<Player> {
 
     public SpongeFPlayer(Player player) {
         this.player = player;

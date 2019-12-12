@@ -11,10 +11,10 @@ import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
-public class JSONPlayer extends IFPlayer {
+public class JSONPlayer extends IFPlayer<Object> {
 
     public JSONPlayer(String name, UUID uuid) {
-        super(name,uuid);
+        super(name, uuid, null);
     }
 
     /**

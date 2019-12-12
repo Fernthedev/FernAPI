@@ -9,12 +9,15 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @Getter
-public abstract class IFPlayer implements CommandSender {
+public abstract class IFPlayer<T> implements CommandSender {
     @Getter
-    String name = null;
+    protected String name = null;
 
     @Getter
-    UUID uuid = null;
+    protected UUID uuid = null;
+
+    @Getter
+    protected T player;
 
     public IFPlayer() {}
 
@@ -25,4 +28,16 @@ public abstract class IFPlayer implements CommandSender {
     public abstract long getPing();
 
     public abstract String getCurrentServerName();
+
+    /**
+     * Returns true if all data is null
+     * If player is null but name and uuid aren't, this returns false
+     * @return
+     */
+    public boolean isNull() {
+        boolean isPlayer = player == null; // Player must be null
+        boolean isDataNull = name == null || uuid == null; // Name and UUID both must be null
+
+        return isPlayer && isDataNull;
+    }
 }

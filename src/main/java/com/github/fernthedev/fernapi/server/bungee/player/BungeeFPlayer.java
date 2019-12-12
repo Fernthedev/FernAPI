@@ -1,8 +1,8 @@
 package com.github.fernthedev.fernapi.server.bungee.player;
 
-import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
-import lombok.Getter;
+import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
+import lombok.NonNull;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -10,13 +10,10 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 
-public class BungeeFPlayer extends IFPlayer {
-    @Getter
-    private ProxiedPlayer player;
+public class BungeeFPlayer extends IFPlayer<ProxiedPlayer> {
 
     public BungeeFPlayer(ProxiedPlayer player) {
-        super(player.getName(),player.getUniqueId());
-        this.player = player;
+        super(player == null ? null : player.getName(),player == null ? null : player.getUniqueId(), player);
     }
 
     /**
@@ -53,8 +50,12 @@ public class BungeeFPlayer extends IFPlayer {
     }
 
     @Override
-    public void sendMessage(BaseMessage baseMessage) {
-        TextComponent fullMessage = new TextComponent(ChatColor.translateAlternateColorCodes('&',baseMessage.getParentText()));
+    public void sendMessage(@NonNull BaseMessage baseMessage) {
+        String text = baseMessage.getParentText();
+
+        if (text == null) text = "";
+
+        TextComponent fullMessage = new TextComponent(ChatColor.translateAlternateColorCodes('&', baseMessage.getParentText()));
 
         if (baseMessage.getExtra() != null) {
             for(BaseMessage be : baseMessage.getExtra()) {
