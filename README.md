@@ -29,8 +29,9 @@ This API also contains some useful features such as a MySQL Java Wrapper and som
 
 ```xml
 <dependency>
-    <groupId>com.github.Fernthedev</groupId>
-    <artifactId>FernAPI</artifactId>
+    <groupId>com.github.Fernthedev.FernAPI</groupId>
+    <artifactId>all</artifactId> <!-- Since 1.9b6+: Use name of server platform, or 'all' to include all platforms. Eg. spigot, bungee, sponge, velocity. You may even import the core to implement your own API, though it isn't recommended -->
+
     <!-- Tag can be found in releases at github repository -->
     <version>Tag</version>
 </dependency>
@@ -47,7 +48,8 @@ repositories {
 ```gradle
 dependencies {
 //Tag can be found in releases at github repository
-        implementation 'com.github.Fernthedev:FernAPI:Tag'
+// Since 1.9b6+: Use name of server platform, or 'all' to include all platforms. Eg. spigot, bungee, sponge, velocity. You may even import the core to implement your own API, though it isn't recommended
+        implementation 'com.github.Fernthedev.FernAPI:all:Tag'
 }
 ```
 
