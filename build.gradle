@@ -4,162 +4,202 @@ buildscript {
         maven {
             url "https://plugins.gradle.org/m2/"
         }
+
     }
 
     dependencies {
         classpath "com.github.jengelman.gradle.plugins:shadow:4.0.4"
     }
 }
+
 plugins {
     id 'java'
-    id 'net.nemerosa.versioning' version '2.6.1'
-    id 'org.spongepowered.plugin' version '0.9.0'
 }
-
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'maven-publish'
-
-
-repositories {
-    maven {
-        name = 'spigotmc-repo'
-        url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
-    }
-
-    maven {
-        name = 'sonatype'
-        url = 'https://oss.sonatype.org/content/groups/public/'
-    }
+//
+//apply plugin: 'java'
+//apply plugin: 'maven'
+//apply plugin: 'com.github.johnrengelman.shadow'
+//apply plugin: 'maven-publish'
 
 
-    maven {
-        name = 'placeholderapi'
-        url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/'
-    }
+archivesBaseName = "FernAPI"
 
-    maven {
-        name 'velocity'
-        url 'https://repo.velocitypowered.com/snapshots/'
-    }
-
-    flatDir {
-        dirs 'libs'
-    }
-
-    jcenter()
-    maven { url "https://jitpack.io" }
-    mavenCentral()
-}
-
-group = 'com.github.fernthedev'
-
-version = '1.9b4'
 def developer = "FernTheDev"
 def MCVersion = "1.14.4"
-archivesBaseName = "FernAPI"
-description = 'An API for universal code'
-
-compileJava.options.encoding = 'UTF-8'
-
-dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    compileOnly 'com.google.code.gson:gson:2.6.2'
-    //compileOnly 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT'
-    compileOnly 'org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT' // The Spigot API with no shadowing. Requires the OSS repo.
-    compileOnly 'net.md-5:bungeecord-api:1.14-SNAPSHOT'
-    compileOnly group: 'me.clip', name: 'placeholderapi', version: '2.9.2'
-    compileOnly 'org.spongepowered:spongeapi:7.1.0'
-    compileOnly 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
-    annotationProcessor 'com.velocitypowered:velocity-api:1.0.0-SNAPSHOT'
-//    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
-    compile 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
-    compile 'com.github.Fernthedev:fern-configmanager:1.0.1' // Check github releases tag for the version.
-
-    compileOnly ('com.github.Fernthedev:VaultAPI:7.0') {
-        exclude group: 'org.bukkit'
-    }
-    
-//
-    compileOnly 'org.projectlombok:lombok:1.18.8'
-    annotationProcessor 'org.projectlombok:lombok:1.18.8'
 
 
-//    implementation 'com.google.guava:guava:22.0'
-}
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
 }
 
-// This may not be required, but has solved issues in the past
+
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'com.github.johnrengelman.shadow'
+    apply plugin: 'maven-publish'
+
+    group = 'com.github.Fernthedev'
+    version = '1.9b5-modules'
+    description = 'An API for universal code'
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+
+        jcenter()
+        maven { url "https://jitpack.io" }
+        mavenCentral()
+        mavenLocal()
+    }
 
 
+    dependencies {
+        implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-// Must be BELOW subprojects{}
-task alljavadoc(type: Javadoc) {
-    source subprojects.collect { it.sourceSets.main.allJava }
-    classpath = files(subprojects.collect { it.sourceSets.main.compileClasspath })
-    destinationDir = file("${buildDir}/docs/javadoc")
-}
+        compileOnly 'org.projectlombok:lombok:1.18.8'
+        annotationProcessor 'org.projectlombok:lombok:1.18.8'
+    }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    from sourceSets.main.java
-}
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    from javadoc.destinationDir
-}
+    sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+    compileJava {
+        sourceCompatibility = targetCompatibility = '1.8'
+    }
 
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
+    shadowJar {
+        minimize()
+    }
 
-build.dependsOn sourcesJar
+    compileJava.options.encoding = 'UTF-8'
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
+    task alljavadoc(type: Javadoc) {
+        source subprojects.collect { it.sourceSets.main.allJava }
+        classpath = files(subprojects.collect { it.sourceSets.main.compileClasspath })
+        destinationDir = file("${buildDir}/docs/javadoc")
+    }
 
-            groupId = this.group;
-            artifactId = this.archivesBaseName
-            version = this.version
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        from sourceSets.main.java
+    }
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        from javadoc.destinationDir
+    }
 
-            artifact sourcesJar {
-                classifier "sources"
-            }
+    artifacts {
+        archives javadocJar
+        archives sourcesJar
+    }
 
-            artifact javadocJar {
-                classifier "javadoc"
+    build.dependsOn sourcesJar
+
+    afterEvaluate {
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    from components.java
+
+
+                    artifactId = "$rootProject.name-$project.name"
+
+
+                    artifact sourcesJar {
+                        classifier("sources")
+                    }
+
+                    artifact javadocJar {
+                        classifier "javadoc"
+                    }
+
+                }
             }
         }
     }
+
+    configurations {
+        shade
+        compile.extendsFrom shade
+    }
+
+    jar.dependsOn(shadowJar)
+
+    shadowJar.finalizedBy javadocJar
+    shadowJar.finalizedBy sourcesJar
 }
 
-configurations {
-    shade
-    compile.extendsFrom shade
-}
-
-jar.dependsOn(shadowJar)
-
-sponge {
-    plugin {
-        id = 'fernapi'
-        meta {
-            url = 'https://github.com/Fernthedev/FernAPI/'
-        }
+configure(subprojects.findAll {it.name != 'core'}) {
+    dependencies {
+        compile project(':core')
     }
 }
 
-shadowJar {
-    minimize()
-}
+//
+//repositories {
+//    maven {
+//        name = 'spigotmc-repo'
+//        url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
+//    }
+//
+//    maven {
+//        name = 'sonatype'
+//        url = 'https://oss.sonatype.org/content/groups/public/'
+//    }
+//
+//
+//    maven {
+//        name = 'placeholderapi'
+//        url = 'http://repo.extendedclip.com/content/repositories/placeholderapi/'
+//    }
+//
+//    maven {
+//        name 'velocity'
+//        url 'https://repo.velocitypowered.com/snapshots/'
+//    }
+//
+//    flatDir {
+//        dirs 'libs'
+//    }
+//
+//    jcenter()
+//    maven { url "https://jitpack.io" }
+//    mavenCentral()
+//}
 
 
-shadowJar.finalizedBy javadocJar
-shadowJar.finalizedBy sourcesJar
+
+
+
+
+
+//
+//dependencies {
+//    implementation fileTree(include: ['*.jar'], dir: 'libs')
+//    compileOnly 'com.google.code.gson:gson:2.6.2'
+//    //compileOnly 'org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT'
+//    compileOnly 'org.spigotmc:spigot-api:1.14.4-R0.1-SNAPSHOT' // The Spigot API with no shadowing. Requires the OSS repo.
+//    compileOnly 'net.md-5:bungeecord-api:1.14-SNAPSHOT'
+//    compileOnly group: 'me.clip', name: 'placeholderapi', version: '2.9.2'
+//    compileOnly 'org.spongepowered:spongeapi:7.1.0'
+//    compileOnly 'com.velocitypowered:velocity-api:1.1.0-SNAPSHOT'
+//    annotationProcessor 'com.velocitypowered:velocity-api:1.1.0-SNAPSHOT'
+////    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
+//    compile 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
+//    compile 'com.github.Fernthedev:fern-configmanager:1.1.2' // Check github releases tag for the version.
+//
+//    compileOnly ('com.github.Fernthedev:VaultAPI:7.0') {
+//        exclude group: 'org.bukkit'
+//    }
+//    // 2. Use Guava types in your public API:
+//    compile("com.google.guava:guava:28.1-jre")
+////
+//    compileOnly 'org.projectlombok:lombok:1.18.8'
+//    annotationProcessor 'org.projectlombok:lombok:1.18.8'
+//
+//
+////    implementation 'com.google.guava:guava:22.0'
+//}
+
+
 
