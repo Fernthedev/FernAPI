@@ -81,18 +81,18 @@ For maven: https://maven.apache.org/plugins/maven-shade-plugin/usage.html
 
 [ve] = Velocity (Should work)
 
-[u] = All of the above, in other words universal
+[u] = All of the above, in other words com.github.fernthedev.fernapi.com.github.fernthedev.fernapi.universal
 
 - [UUID Fetch](#uuid-fetch) [u] [ve]
 - [ChatAPI](#chatapi) [u] [vat]
   - Clickable text
   - Hover message
   - Color code support
-- [List sorter (Sorter Class, check methods)](https://github.com/Fernthedev/FernAPI/blob/master/src/main/java/com/github/fernthedev/fernapi/universal/Sorter.java) [u]
+- [List sorter (Sorter Class, check methods)](https://github.com/Fernthedev/FernAPI/blob/master/src/main/java/com/github/fernthedev/fernapi/com.github.fernthedev.fernapi.com.github.fernthedev.fernapi.universal/Sorter.java) [u]
 - [Bungee/Spigot/Sponge/Velocity plugin messaging](#bungeespigotspongevelocity-plugin-messaging-must-implement-pluginmessagehandler) [u*] [vat]
     - *Sponge has not been fully tested, please feel free to report any bugs at issues at repo.
 - [MySQL](#mysql) [u] [vat]
-- [Universal Commands](#universal-commands) [u] [vet]
+- [Universal Commands](#com.github.fernthedev.fernapi.com.github.fernthedev.fernapi.universal-commands) [u] [vet]
 
 ## Usage:
 Main class should extend one of these classes respectively.
@@ -230,7 +230,7 @@ Universal.getMessageHandler().sendPluginData(fplayer,data);
 ```
 
 ### MySQL
-Example usage can be found [here](https://github.com/Fernthedev/FernAPI/blob/master/src/main/java/com/github/fernthedev/fernapi/universal/examples)
+Example usage can be found [here](https://github.com/Fernthedev/FernAPI/blob/master/src/main/java/com/github/fernthedev/fernapi/com.github.fernthedev.fernapi.com.github.fernthedev.fernapi.universal/examples)
 
 Use the DatabaseManager class for managing tables, and TableInfo for grabbing the data.
 RowData class contains a list of ColumnData which contains the data.
