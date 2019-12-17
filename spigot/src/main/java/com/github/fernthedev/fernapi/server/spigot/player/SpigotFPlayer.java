@@ -127,6 +127,7 @@ public class SpigotFPlayer extends IFPlayer<Player> {
         return new ComponentBuilder(ChatColor.translateAlternateColorCodes('&',text)).create();
     }
 
+    @Override
     public boolean isVanished() {
         for (MetadataValue meta : player.getMetadata("vanished")) {
             if (meta.asBoolean()) return true;

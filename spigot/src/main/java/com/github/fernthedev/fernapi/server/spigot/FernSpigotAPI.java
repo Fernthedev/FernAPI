@@ -3,15 +3,13 @@ package com.github.fernthedev.fernapi.server.spigot;
 import com.github.fernthedev.fernapi.server.spigot.chat.SpigotChatHandler;
 import com.github.fernthedev.fernapi.server.spigot.command.SpigotCommandHandler;
 import com.github.fernthedev.fernapi.server.spigot.database.SpigotDatabase;
-import com.github.fernthedev.fernapi.server.spigot.interfaces.UUIDSpigot;
 import com.github.fernthedev.fernapi.server.spigot.network.PlaceHolderAPI.PlaceHolderAPIResponder;
 import com.github.fernthedev.fernapi.server.spigot.network.SpigotMessageHandler;
 import com.github.fernthedev.fernapi.server.spigot.network.SpigotNetworkHandler;
 import com.github.fernthedev.fernapi.server.spigot.pluginhandlers.VaultHandler;
 import com.github.fernthedev.fernapi.server.spigot.scheduler.SpigotScheduler;
-import com.github.fernthedev.fernapi.universal.util.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.Universal;
-import com.github.fernthedev.fernapi.universal.data.network.vanish.VanishProxyCheck;
+import com.github.fernthedev.fernapi.universal.util.network.vanish.VanishProxyCheck;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -41,7 +39,7 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
             vaultHandler.hook();
         }
 
-        Universal.getMessageHandler().registerMessageHandler(new VanishProxyCheck());
+        Universal.getMessageHandler().registerMessageHandler(new VanishProxyCheck(this));
     }
 
     @Override

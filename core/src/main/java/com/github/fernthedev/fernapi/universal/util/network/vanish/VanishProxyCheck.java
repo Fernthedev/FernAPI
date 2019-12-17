@@ -1,17 +1,18 @@
-package com.github.fernthedev.fernapi.universal.data.network.vanish;
+package com.github.fernthedev.fernapi.universal.util.network.vanish;
 
 import com.github.fernthedev.fernapi.universal.Channels;
-import com.github.fernthedev.fernapi.universal.ProxyAskPlaceHolder;
+import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
+import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.network.Channel;
 import com.github.fernthedev.fernapi.universal.data.network.PluginMessageData;
 import com.github.fernthedev.fernapi.universal.handlers.PluginMessageHandler;
 import com.github.fernthedev.fernapi.universal.handlers.ServerType;
+import com.github.fernthedev.fernapi.universal.util.ProxyAskPlaceHolder;
 import lombok.NonNull;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -20,8 +21,10 @@ import java.util.concurrent.TimeUnit;
 
 public class VanishProxyCheck extends PluginMessageHandler {
 
+    private static Object o;
+
     private VanishRunnable vanishRunnable;
-    private IFPlayer player;
+    private IFPlayer<?> player;
 
     private static List<VanishProxyCheck> instances = new ArrayList<>();
 
@@ -37,7 +40,7 @@ public class VanishProxyCheck extends PluginMessageHandler {
 
         Universal.getScheduler().runSchedule(() -> {
             if (instances.contains(vanishProxyCheck)) {
-                vanishProxyCheck.vanishRunnable.run(player, false, true);
+                vanishRunnable.run(player, false, true);
                 instances.remove(vanishProxyCheck);
 
             }
@@ -45,18 +48,30 @@ public class VanishProxyCheck extends PluginMessageHandler {
     }
 
 
-    public VanishProxyCheck() {
+    /** Call for getting an instance for registering
+     *
+     * @param plugin
+     */
+    public VanishProxyCheck(FernAPIPlugin plugin) {
+        if (o != null) throw new FernRuntimeException("VanishProxyCheck is already registered");
+
+        o = new Object();
         Universal.getMethods().getLogger().info("Registered VanishProxyCheck Listener");
     }
 
-    public VanishProxyCheck(@NonNull IFPlayer player, @NonNull VanishRunnable vanishRunnable) {
+    /**
+     * Use for getting vanish
+     * @param player the player
+     * @param vanishRunnable the code to run
+     */
+    public VanishProxyCheck(@NonNull IFPlayer<?> player, @NonNull VanishRunnable vanishRunnable) {
         this.vanishRunnable = vanishRunnable;
         this.player = player;
         instances.add(this);
         uuid = UUID.randomUUID();
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        DataOutputStream out = new DataOutputStream(stream);
+//        DataOutputStream out = new DataOutputStream(stream);
 
         PluginMessageData data = new PluginMessageData(stream, player.getCurrentServerName(), Channels.VANISH_SUBCHANNEL, Channels.VANISH_CHANNEL);
 
@@ -101,26 +116,24 @@ public class VanishProxyCheck extends PluginMessageHandler {
             System.out.println(vanished + " vanished");
 
             for (VanishProxyCheck vanishProxyCheck : instances) {
-                if(vanishProxyCheck.uuid.toString().equalsIgnoreCase(uuidCheck.toString())) {
-                    Universal.getScheduler().runAsync(() -> vanishProxyCheck.vanishRunnable.run(vanishProxyCheck.player, vanished, false));
+                if(vanishProxyCheck.uuid.equals(uuidCheck)) {
+                    Universal.getScheduler().runAsync(() -> vanishRunnable.run(vanishProxyCheck.player, vanished, false));
 
                     instances.remove(vanishProxyCheck);
                     return;
                 }
             }
         }
-        if (Universal.getMethods().getServerType() == ServerType.BUKKIT) {
+    }
 
-            IFPlayer<?> ifPlayer = data.getPlayer();
-
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
-            PluginMessageData dataReturn = new PluginMessageData(stream, "ALL", Channels.VANISH_SUBCHANNEL, Channels.VANISH_CHANNEL);
-
-            dataReturn.addData(uuidCheck.toString());
-            dataReturn.addData(String.valueOf(ifPlayer.isVanished(false)));
-
-            Universal.getMessageHandler().sendPluginData(dataReturn);
+    /**
+     * Synchronise to await message response
+     * @param millis The amount of time to wait
+     * @throws InterruptedException
+     */
+    public void awaitVanishResponse(int millis) throws InterruptedException {
+        while (instances.contains(this)) {
+            Thread.sleep(millis);
         }
     }
 

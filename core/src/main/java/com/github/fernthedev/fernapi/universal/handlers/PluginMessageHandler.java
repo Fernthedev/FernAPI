@@ -3,6 +3,7 @@ package com.github.fernthedev.fernapi.universal.handlers;
 import com.github.fernthedev.fernapi.universal.data.network.Channel;
 import com.github.fernthedev.fernapi.universal.data.network.PluginMessageData;
 import com.github.fernthedev.fernapi.universal.exceptions.network.NotEnoughDataException;
+import com.github.fernthedev.fernapi.universal.util.ProxyAskPlaceHolder;
 import lombok.NonNull;
 
 import java.io.DataInputStream;
@@ -18,7 +19,7 @@ public abstract class PluginMessageHandler {
      * This is the channel name that will be registered incoming and outgoing
      * This is where you specify the channels you want to listen to
      * Just make a new {@link java.util.ArrayList} with Channel instance instance and add an instance of the channel accordingly.
-     * @see com.github.fernthedev.fernapi.universal.ProxyAskPlaceHolder as an example
+     * @see ProxyAskPlaceHolder as an example
      * @return The channels that will be incoming and outgoing
      */
     @NonNull

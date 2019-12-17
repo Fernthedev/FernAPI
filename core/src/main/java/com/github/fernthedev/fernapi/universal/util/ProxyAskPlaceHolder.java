@@ -1,5 +1,7 @@
-package com.github.fernthedev.fernapi.universal;
+package com.github.fernthedev.fernapi.universal.util;
 
+import com.github.fernthedev.fernapi.universal.Channels;
+import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
 import com.github.fernthedev.fernapi.universal.data.network.Channel;
@@ -14,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ProxyAskPlaceHolder extends PluginMessageHandler {
 
-    private IFPlayer player;
+    private IFPlayer<?> player;
     private String placeHolderValue;
 
     public static final String PLACEHOLDER_NOT_FOUND = "NoPlaceHolderFound";

@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -53,7 +54,7 @@ public class VelocityServerInfo implements RegisteredServer, IServerInfo {
      * @return an unmodifiable collection of all players on this server
      */
     @Override
-    public Collection<IFPlayer> getPlayers() {
+    public List<? extends IFPlayer<?>> getPlayers() {
         return serverInfo.getPlayersConnected()
                 .stream().map(player -> Universal.getMethods().convertPlayerObjectToFPlayer(player))
                 .collect(Collectors.toList());

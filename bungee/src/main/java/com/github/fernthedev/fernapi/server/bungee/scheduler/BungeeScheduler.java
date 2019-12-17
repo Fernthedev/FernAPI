@@ -41,10 +41,11 @@ public class BungeeScheduler implements IScheduler<BungeeScheduledTaskWrapper, I
      * Runs the given runnable in async
      *
      * @param runnable the runnable
+     * @return
      */
     @Override
-    public void runAsync(Runnable runnable) {
-        fernBungeeAPI.getProxy().getScheduler().runAsync(fernBungeeAPI, runnable);
+    public BungeeScheduledTaskWrapper runAsync(Runnable runnable) {
+        return new BungeeScheduledTaskWrapper(fernBungeeAPI.getProxy().getScheduler().runAsync(fernBungeeAPI, runnable));
     }
 
     /**

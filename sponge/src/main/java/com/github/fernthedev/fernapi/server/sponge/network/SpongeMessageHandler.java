@@ -148,10 +148,10 @@ public class SpongeMessageHandler implements IPMessageHandler {
     }
 
     @Override
-    public void sendPluginData(IFPlayer fplayer, PluginMessageData data) {
+    public void sendPluginData(IFPlayer<?> fplayer, PluginMessageData data) {
         Player player;
         if (fplayer != null) {
-            player = (Player) Universal.convertFPlayerToPlayer(fplayer);
+            player = (Player) Universal.getMethods().convertFPlayerToPlayer(fplayer);
         } else {
             player = getRandomPlayer();
         }

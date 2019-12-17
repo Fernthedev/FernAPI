@@ -138,10 +138,10 @@ public class VelocityMessageHandler implements IPMessageHandler {
      * @param data The dataInfo to be sent, player will be specified added automatically
      */
     @Override
-    public void sendPluginData(IFPlayer fplayer, @NonNull PluginMessageData data) {
+    public void sendPluginData(IFPlayer<?> fplayer, @NonNull PluginMessageData data) {
         Player player;
         if (fplayer != null) {
-            player = (Player) Universal.convertFPlayerToPlayer(fplayer);
+            player = (Player) Universal.getMethods().convertFPlayerToPlayer(fplayer);
         } else {
             player = getRandomPlayer();
         }

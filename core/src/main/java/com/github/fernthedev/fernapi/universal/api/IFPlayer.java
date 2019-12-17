@@ -1,7 +1,9 @@
 package com.github.fernthedev.fernapi.universal.api;
 
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
-import com.github.fernthedev.fernapi.universal.exceptions.FernDebugException;
+import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
+import com.github.fernthedev.fernapi.universal.exceptions.network.PluginTimeoutException;
+import com.github.fernthedev.fernapi.universal.util.network.vanish.VanishProxyCheck;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -42,8 +44,18 @@ public abstract class IFPlayer<T> implements CommandSender {
         return isPlayer && isDataNull;
     }
 
-    // TODO: Finish method
-    public boolean isVanished(Object fal) {
-        throw new FernDebugException("Not done yet");
+    public boolean isVanished() {
+        final boolean[] vanished = new boolean[1];
+        try {
+            new VanishProxyCheck(this, (player, isVanished, timedOut) -> {
+                if (timedOut) throw new PluginTimeoutException("The vanish check timed out. The server must have FernAPI enabled and registered");
+
+                vanished[0] = isVanished;
+            }).awaitVanishResponse(20);
+        } catch (InterruptedException e) {
+            throw new FernRuntimeException("Interrupted", e);
+        }
+
+        return vanished[0];
     }
 }

@@ -7,7 +7,7 @@ import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.InetSocketAddress;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Class used to represent a server to connect to.
@@ -39,7 +39,7 @@ public interface IServerInfo {
      *
      * @return an unmodifiable collection of all players on this server
      */
-    default Collection<IFPlayer> getPlayers() {
+    default List<? extends IFPlayer<?>> getPlayers() {
         return Universal.getMethods().getPlayers();
     }
 

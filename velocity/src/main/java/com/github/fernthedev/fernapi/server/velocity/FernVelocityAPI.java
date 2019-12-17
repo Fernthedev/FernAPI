@@ -6,9 +6,9 @@ import com.github.fernthedev.fernapi.server.velocity.database.VelocityDatabase;
 import com.github.fernthedev.fernapi.server.velocity.network.VelocityMessageHandler;
 import com.github.fernthedev.fernapi.server.velocity.network.VelocityNetworkHandler;
 import com.github.fernthedev.fernapi.server.velocity.scheduler.VelocityScheduler;
-import com.github.fernthedev.fernapi.universal.ProxyAskPlaceHolder;
+import com.github.fernthedev.fernapi.universal.util.ProxyAskPlaceHolder;
 import com.github.fernthedev.fernapi.universal.Universal;
-import com.github.fernthedev.fernapi.universal.data.network.vanish.VanishProxyCheck;
+import com.github.fernthedev.fernapi.universal.util.network.vanish.VanishProxyCheck;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
@@ -51,7 +51,7 @@ public class FernVelocityAPI implements FernAPIPlugin {
 
 //        UUIDFetcher.setFetchManager(new UUIDVelocity(this));
         Universal.getMessageHandler().registerMessageHandler(new ProxyAskPlaceHolder());
-        Universal.getMessageHandler().registerMessageHandler(new VanishProxyCheck());
+        Universal.getMessageHandler().registerMessageHandler(new VanishProxyCheck(this));
     }
 
     @Subscribe

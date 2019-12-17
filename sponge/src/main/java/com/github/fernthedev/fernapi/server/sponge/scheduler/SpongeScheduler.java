@@ -45,8 +45,9 @@ public class SpongeScheduler implements IScheduler<SpongeScheduledTaskWrapper, U
      * @param runnable the runnable
      */
     @Override
-    public void runAsync(Runnable runnable) {
-        new Thread(runnable).start();
+    public SpongeScheduledTaskWrapper runAsync(Runnable runnable) {
+        Task t = Task.builder().async().execute(runnable).submit(sponge);
+        return new SpongeScheduledTaskWrapper(runnable, t);
     }
 
     /**

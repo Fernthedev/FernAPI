@@ -49,8 +49,15 @@ public class SpigotScheduler implements IScheduler<SpigotScheduledTaskWrapper, I
      * @param runnable the runnable
      */
     @Override
-    public void runAsync(Runnable runnable) {
-        fernSpigotAPI.getServer().getScheduler().runTaskAsynchronously(fernSpigotAPI, runnable);
+    public SpigotScheduledTaskWrapper runAsync(Runnable runnable) {
+        BukkitRunnable bukkitRunnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                runnable.run();
+            }
+        };
+        bukkitRunnable.runTaskAsynchronously(fernSpigotAPI);
+        return new SpigotScheduledTaskWrapper(bukkitRunnable);
     }
 
     /**

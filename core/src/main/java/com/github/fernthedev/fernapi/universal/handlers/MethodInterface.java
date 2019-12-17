@@ -9,7 +9,13 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-public interface MethodInterface {
+/**
+ *
+ * @param <PlayerType> The player type the server uses
+ */
+public interface MethodInterface<PlayerType> {
+
+
 
     Logger getLogger();
 
@@ -17,17 +23,17 @@ public interface MethodInterface {
 
     FernAPIPlugin getInstance();
 
-    IFPlayer convertPlayerObjectToFPlayer(Object player);
+    <P> IFPlayer<P> convertPlayerObjectToFPlayer(P player);
 
-    Object convertFPlayerToPlayer(IFPlayer ifPlayer);
+    <P> P convertFPlayerToPlayer(IFPlayer<P> ifPlayer);
 
     CommandSender convertCommandSenderToAPISender(@NonNull Object commandSender);
 
-    IFPlayer getPlayerFromName(String name);
+    IFPlayer<PlayerType> getPlayerFromName(String name);
 
-    IFPlayer getPlayerFromUUID(UUID uuid);
+    IFPlayer<PlayerType> getPlayerFromUUID(UUID uuid);
 
-    List<IFPlayer> getPlayers();
+    List<IFPlayer<PlayerType>> getPlayers();
 
     File getDataFolder();
 

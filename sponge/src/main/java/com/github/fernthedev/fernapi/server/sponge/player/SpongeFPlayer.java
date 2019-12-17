@@ -1,9 +1,11 @@
 package com.github.fernthedev.fernapi.server.sponge.player;
 
+import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.chat.ClickData;
 import com.github.fernthedev.fernapi.universal.data.chat.HoverData;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
+import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -117,6 +119,11 @@ public class SpongeFPlayer extends IFPlayer<Player> {
     @Override
     public String getCurrentServerName() {
         return Sponge.getServer().getDefaultWorldName();
+    }
+
+    @Override
+    public boolean isVanished() {
+        throw new FernRuntimeException("This method does not work on Sponge yet. Use Universal.getMethods().getServerType() to check for Sponge");
     }
 
     @Override

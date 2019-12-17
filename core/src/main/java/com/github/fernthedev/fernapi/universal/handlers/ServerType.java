@@ -4,7 +4,8 @@ public enum ServerType {
     BUNGEE,
     BUKKIT,
     VELOCITY,
-    SPONGE;
+    SPONGE,
+    OTHER;
 
     public boolean isProxy() {
         return this == BUNGEE || this == VELOCITY;

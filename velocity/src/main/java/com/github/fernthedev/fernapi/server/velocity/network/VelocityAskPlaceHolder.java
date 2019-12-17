@@ -3,7 +3,7 @@ package com.github.fernthedev.fernapi.server.velocity.network;
 
 import com.github.fernthedev.fernapi.server.velocity.FernVelocityAPI;
 import com.github.fernthedev.fernapi.universal.Channels;
-import com.github.fernthedev.fernapi.universal.ProxyAskPlaceHolder;
+import com.github.fernthedev.fernapi.universal.util.ProxyAskPlaceHolder;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
 import com.github.fernthedev.fernapi.universal.data.network.Channel;
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Deprecated
 public class VelocityAskPlaceHolder extends PluginMessageHandler {
 
-    private IFPlayer player;
+    private IFPlayer<?> player;
     private String placeHolderValue;
 
     boolean checked;
@@ -92,7 +92,7 @@ public class VelocityAskPlaceHolder extends PluginMessageHandler {
         this.runnable = messageRunnable;
         instances.add(this);
 
-        Universal.getMessageHandler().sendPluginData(Universal.convertObjectPlayerToFPlayer(player),data);
+        Universal.getMessageHandler().sendPluginData(Universal.getMethods().convertPlayerObjectToFPlayer(player), data);
 
        // getLogger().info("Runnable has now been initialized");
     }

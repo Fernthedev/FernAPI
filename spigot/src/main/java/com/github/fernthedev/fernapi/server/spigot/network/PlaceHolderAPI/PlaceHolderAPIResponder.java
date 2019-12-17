@@ -2,7 +2,7 @@ package com.github.fernthedev.fernapi.server.spigot.network.PlaceHolderAPI;
 
 import com.github.fernthedev.fernapi.server.spigot.FernSpigotAPI;
 import com.github.fernthedev.fernapi.universal.Channels;
-import com.github.fernthedev.fernapi.universal.ProxyAskPlaceHolder;
+import com.github.fernthedev.fernapi.universal.util.ProxyAskPlaceHolder;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.network.Channel;
 import com.github.fernthedev.fernapi.universal.data.network.PluginMessageData;

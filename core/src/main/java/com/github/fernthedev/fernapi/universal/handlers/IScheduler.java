@@ -22,7 +22,7 @@ public interface IScheduler<TaskWrapper extends ScheduleTaskWrapper<?,?>,IDType>
      * Runs the given runnable in async
      * @param runnable the runnable
      */
-    void runAsync(Runnable runnable);
+    TaskWrapper runAsync(Runnable runnable);
 
     /**
      * Schedules a task to be executed asynchronously after the specified delay

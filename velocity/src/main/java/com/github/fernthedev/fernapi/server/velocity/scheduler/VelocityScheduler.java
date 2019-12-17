@@ -47,8 +47,11 @@ public class VelocityScheduler implements IScheduler<VelocityScheduledTaskWrappe
      * @param runnable the runnable
      */
     @Override
-    public void runAsync(Runnable runnable) {
-        new Thread(runnable).start();
+    public VelocityScheduledTaskWrapper runAsync(Runnable runnable) {
+        UUID uuid = UUID.randomUUID();
+        VelocityScheduledTaskWrapper taskWrapper = new VelocityScheduledTaskWrapper(runnable, fernVelocityAPI.getServer().getScheduler().buildTask(fernVelocityAPI, runnable).schedule(), uuid);
+        taskWrapperMap.put(uuid, taskWrapper);
+        return taskWrapper;
     }
 
     /**

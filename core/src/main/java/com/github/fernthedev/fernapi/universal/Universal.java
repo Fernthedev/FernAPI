@@ -2,6 +2,7 @@ package com.github.fernthedev.fernapi.universal;
 
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.network.IPMessageHandler;
+import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
 import com.github.fernthedev.fernapi.universal.exceptions.setup.IncorrectSetupException;
 import com.github.fernthedev.fernapi.universal.handlers.*;
 import com.github.fernthedev.fernapi.universal.mysql.DatabaseHandler;
@@ -24,13 +25,13 @@ public class Universal {
     @Setter
     private static boolean debug = false;
 
-    private static MethodInterface mi;
+    private static MethodInterface<?> mi;
     private static IChatHandler ch;
     private static IPMessageHandler mh;
     private static DatabaseHandler db;
     private static CommandHandler comhand;
     private static NetworkHandler nh;
-    private static IScheduler sh;
+    private static IScheduler<?,?> sh;
 
     private static FernAPIPlugin plugin;
 
@@ -39,7 +40,12 @@ public class Universal {
         return instance == null ? instance = new Universal() : instance;
     }
 
-    public void setup(@NonNull MethodInterface methodInterface, FernAPIPlugin aplugin, IChatHandler chatHandler, IPMessageHandler messageHandler, DatabaseHandler databaseHandler, CommandHandler commandHandler, NetworkHandler networkHandler, IScheduler iScheduler) {
+    public void setup(@NonNull MethodInterface<?> methodInterface, FernAPIPlugin aplugin,
+                      IChatHandler chatHandler, IPMessageHandler messageHandler, DatabaseHandler databaseHandler,
+                      CommandHandler commandHandler, NetworkHandler networkHandler, IScheduler<?,?> iScheduler) {
+        if (setup) throw new FernRuntimeException("The interface has already been registered.");
+
+
         methodInterface.getLogger().info("Registered interface");
         setup = true;
         mi = methodInterface;
@@ -72,43 +78,7 @@ public class Universal {
         }
     }
 
-    /**
-     * Shortcut to getMethods()
-     * This shortcut might me removed in later versions, attempt to avoid it
-     */
-    @Deprecated
-    public static IFPlayer convertObjectPlayerToFPlayer(Object player) {
-        return getMethods().convertPlayerObjectToFPlayer(player);
-    }
-
-    /**
-     * Shortcut to getMethods()
-     * This shortcut might me removed in later versions, attempt to avoid it
-     */
-    @Deprecated
-    public static Object convertFPlayerToPlayer(@NonNull IFPlayer ifPlayer) {
-        return getMethods().convertFPlayerToPlayer(ifPlayer);
-    }
-
-    /**
-     * Shortcut to getMethods()
-     * This shortcut might me removed in later versions, attempt to avoid it
-     */
-    @Deprecated
-    public static IFPlayer getPlayerFromName(String name) {
-        return getMethods().getPlayerFromName(name);
-    }
-
-    /**
-     * Shortcut to getMethods()
-     * This shortcut might me removed in later versions, attempt to avoid it
-     */
-    @Deprecated
-    public static IFPlayer getPlayerFromUUID(UUID uuid) {
-        return getMethods().getPlayerFromUUID(uuid);
-    }
-
-    public static MethodInterface getMethods() {
+    public static MethodInterface<?> getMethods() {
         checkNull();
         return mi;
     }
