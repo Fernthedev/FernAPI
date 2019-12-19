@@ -1,6 +1,5 @@
 package com.github.fernthedev.fernapi.server.sponge.network;
 
-import com.github.fernthedev.fernapi.server.sponge.interfaces.SpongeServerInfo;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import com.github.fernthedev.fernapi.universal.handlers.NetworkHandler;

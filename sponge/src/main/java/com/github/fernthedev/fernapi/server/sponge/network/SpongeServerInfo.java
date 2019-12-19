@@ -1,4 +1,4 @@
-package com.github.fernthedev.fernapi.server.sponge.interfaces;
+package com.github.fernthedev.fernapi.server.sponge.network;
 
 import com.github.fernthedev.fernapi.universal.api.CommandSender;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
