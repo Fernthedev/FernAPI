@@ -15,10 +15,10 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
 
-    api project(':bungee')
-    api project(':spigot')
-    api project(":sponge")
-    api project(":velocity")
+    compile project(':bungee')
+    compile project(':spigot')
+    compile project(":sponge")
+    compile project(":velocity")
 }
 
 compileKotlin {
