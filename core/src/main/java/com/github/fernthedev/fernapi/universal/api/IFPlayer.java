@@ -1,6 +1,7 @@
 package com.github.fernthedev.fernapi.universal.api;
 
-import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
+import com.github.fernthedev.fernapi.universal.Universal;
+import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
 import com.github.fernthedev.fernapi.universal.exceptions.network.PluginTimeoutException;
 import com.github.fernthedev.fernapi.universal.util.network.vanish.VanishProxyCheck;
@@ -24,13 +25,15 @@ public abstract class IFPlayer<T> implements CommandSender {
 
     public IFPlayer() {}
 
-    public abstract void sendMessage(BaseMessage textMessage);
-
     public abstract InetSocketAddress getAddress();
 
     public abstract long getPing();
 
     public abstract String getCurrentServerName();
+
+    public IServerInfo getServerInfo() {
+        return Universal.getNetworkHandler().getServer(getCurrentServerName());
+    }
 
     /**
      * Returns true if all data is null

@@ -1,4 +1,4 @@
-package com.github.fernthedev.fernapi.server.spigot.interfaces;
+package com.github.fernthedev.fernapi.server.spigot.network;
 
 import com.github.fernthedev.fernapi.universal.api.CommandSender;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;

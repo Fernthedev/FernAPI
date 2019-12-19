@@ -14,11 +14,6 @@ public abstract class BaseMessage {
     @Setter(AccessLevel.NONE)
     BaseMessage parent;
 
-    @Setter(AccessLevel.NONE)
-    @Getter
-    String parentText;
-
-
 
     /**
      * The color of this component and any child components (unless overridden)
@@ -63,6 +58,51 @@ public abstract class BaseMessage {
     @Nullable
     private List<BaseMessage> extra;
 
+    public BaseMessage setColor(ChatColor color) {
+        this.color = color;
+        return this;
+    }
+
+    public BaseMessage setBold(Boolean bold) {
+        this.bold = bold;
+        return this;
+    }
+
+    public BaseMessage setItalic(Boolean italic) {
+        this.italic = italic;
+        return this;
+    }
+
+    public BaseMessage setUnderlined(Boolean underlined) {
+        this.underlined = underlined;
+        return this;
+    }
+
+    public BaseMessage setStrikethrough(Boolean strikethrough) {
+        this.strikethrough = strikethrough;
+        return this;
+    }
+
+    public BaseMessage setObfuscated(Boolean obfuscated) {
+        this.obfuscated = obfuscated;
+        return this;
+    }
+
+    public BaseMessage setInsertion(String insertion) {
+        this.insertion = insertion;
+        return this;
+    }
+
+    public BaseMessage setClickData(ClickData clickData) {
+        this.clickData = clickData;
+        return this;
+    }
+
+    public BaseMessage setHoverData(HoverData hoverData) {
+        this.hoverData = hoverData;
+        return this;
+    }
+
     /**
      * The action to preform when this component (and child components) are
      * clicked
@@ -78,23 +118,141 @@ public abstract class BaseMessage {
 
     BaseMessage(BaseMessage old)
     {
-        setColor( old.getColorRaw() );
-        setBold( old.isBoldRaw() );
-        setItalic( old.isItalicRaw() );
-        setUnderlined( old.isUnderlinedRaw() );
-        setStrikethrough( old.isStrikethroughRaw() );
-        setObfuscated( old.isObfuscatedRaw() );
-        setInsertion( old.getInsertion() );
-        setClickData( old.getClickData() );
-        setHoverData( old.getHoverData() );
+        copyFormatting( old, FormatRetention.ALL, true );
+
         if ( old.getExtra() != null )
         {
-            for ( BaseMessage component : old.getExtra() )
+            for ( BaseMessage extra : old.getExtra() )
             {
-                addExtra( component.duplicate() );
+                addExtra( extra.duplicate() );
             }
         }
     }
+
+    /**
+     * Retains only the specified formatting.
+     *
+     * @param retention the formatting to retain
+     */
+    public void retain(FormatRetention retention)
+    {
+        if ( retention == FormatRetention.FORMATTING || retention == FormatRetention.NONE )
+        {
+            setClickData( null );
+            setHoverData( null );
+        }
+        if ( retention == FormatRetention.EVENTS || retention == FormatRetention.NONE )
+        {
+            setColor( null );
+            setBold( null );
+            setItalic( null );
+            setUnderlined( null );
+            setStrikethrough( null );
+            setObfuscated( null );
+            setInsertion( null );
+        }
+    }
+
+
+    /**
+     * Copies the events and formatting of a BaseComponent. Already set
+     * formatting will be replaced.
+     *
+     * @param component the component to copy from
+     */
+    public void copyFormatting(BaseMessage component)
+    {
+        copyFormatting( component, FormatRetention.ALL, true );
+    }
+
+    /**
+     * Copies the events and formatting of a BaseComponent.
+     *
+     * @param component the component to copy from
+     * @param replace if already set formatting should be replaced by the new
+     * component
+     */
+    public void copyFormatting(BaseMessage component, boolean replace)
+    {
+        copyFormatting( component, FormatRetention.ALL, replace );
+    }
+
+    /**
+     * Copies the specified formatting of a BaseComponent.
+     *
+     * @param component the component to copy from
+     * @param retention the formatting to copy
+     * @param replace if already set formatting should be replaced by the new
+     * component
+     */
+    public void copyFormatting(BaseMessage component, FormatRetention retention, boolean replace)
+    {
+        if ( retention == FormatRetention.EVENTS || retention == FormatRetention.ALL )
+        {
+            if ( replace || clickData == null )
+            {
+                setClickData( component.getClickData() );
+            }
+            if ( replace || hoverData == null )
+            {
+                setHoverData( component.getHoverData() );
+            }
+        }
+        if ( retention == FormatRetention.FORMATTING || retention == FormatRetention.ALL )
+        {
+            if ( replace || color == null )
+            {
+                setColor( component.getColorRaw() );
+            }
+            if ( replace || bold == null )
+            {
+                setBold( component.isBoldRaw() );
+            }
+            if ( replace || italic == null )
+            {
+                setItalic( component.isItalicRaw() );
+            }
+            if ( replace || underlined == null )
+            {
+                setUnderlined( component.isUnderlinedRaw() );
+            }
+            if ( replace || strikethrough == null )
+            {
+                setStrikethrough( component.isStrikethroughRaw() );
+            }
+            if ( replace || obfuscated == null )
+            {
+                setObfuscated( component.isObfuscatedRaw() );
+            }
+            if ( replace || insertion == null )
+            {
+                setInsertion( component.getInsertion() );
+            }
+        }
+    }
+
+
+//    BaseMessage(BaseMessage old)
+//    {
+//        new RuntimeException("Basemessage copy constructor ");
+//        parent = old.parent;
+//        setColor( old.getColorRaw() );
+//        setBold( old.isBoldRaw() );
+//        setItalic( old.isItalicRaw() );
+//        setUnderlined( old.isUnderlinedRaw() );
+//        setStrikethrough( old.isStrikethroughRaw() );
+//        setObfuscated( old.isObfuscatedRaw() );
+//        setInsertion( old.getInsertion() );
+//        setClickData( old.getClickData() );
+//        setHoverData( old.getHoverData() );
+//        if ( old.getExtra() != null )
+//        {
+//            for ( BaseMessage component : old.getExtra() )
+//            {
+//                addExtra( component.duplicate() );
+//            }
+//        }
+//    }
 
     /**
      * Clones the BaseMessage and returns the clone.
@@ -330,14 +488,18 @@ public abstract class BaseMessage {
      *
      * @param component the component to append
      */
-    public void addExtra(BaseMessage component)
+    public BaseMessage addExtra(BaseMessage component)
     {
         if ( extra == null )
         {
             extra = new ArrayList<>();
         }
+        new RuntimeException("Add extra called " +
+                "\nthis" + this.toString() +
+                "\ncomponent" + component.toString()).printStackTrace();
         component.parent = this;
         extra.add( component );
+        return this;
     }
 
     /**
@@ -400,5 +562,29 @@ public abstract class BaseMessage {
         }
     }
 
+
+    public static enum FormatRetention
+    {
+
+        /**
+         * Specify that we do not want to retain anything from the previous
+         * component.
+         */
+        NONE,
+        /**
+         * Specify that we want the formatting retained from the previous
+         * component.
+         */
+        FORMATTING,
+        /**
+         * Specify that we want the events retained from the previous component.
+         */
+        EVENTS,
+        /**
+         * Specify that we want to retain everything from the previous
+         * component.
+         */
+        ALL
+    }
 
 }

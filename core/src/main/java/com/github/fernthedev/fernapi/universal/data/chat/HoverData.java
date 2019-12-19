@@ -1,15 +1,16 @@
 package com.github.fernthedev.fernapi.universal.data.chat;
 
 public class HoverData {
-    private String hoverValue;
+    private BaseMessage hoverValue;
     private Action action;
 
-    public HoverData(Action action, String hoverValue) {
+    public HoverData(Action action, BaseMessage hoverValue) {
         this.hoverValue = hoverValue;
         this.action = action;
+
     }
 
-    public String getHoverValue() {
+    public BaseMessage getHoverValue() {
         return hoverValue;
     }
 
@@ -17,7 +18,7 @@ public class HoverData {
         return action;
     }
 
-    public static enum Action {
+    public enum Action {
         SHOW_TEXT,
         SHOW_ACHIEVEMENT,
     }

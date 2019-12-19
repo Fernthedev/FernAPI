@@ -2,7 +2,6 @@ package com.github.fernthedev.fernapi.server.spigot;
 
 import com.github.fernthedev.fernapi.server.spigot.player.SpigotFConsole;
 import com.github.fernthedev.fernapi.server.spigot.player.SpigotFPlayer;
-import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.CommandSender;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
@@ -18,7 +17,8 @@ import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class SpigotInterface implements MethodInterface {
+public class SpigotInterface implements MethodInterface<Player> {
+
     private FernSpigotAPI fernSpigotAPI;
     SpigotInterface(FernSpigotAPI fernSpigotAPI) {
         this.fernSpigotAPI = fernSpigotAPI;
@@ -40,18 +40,18 @@ public class SpigotInterface implements MethodInterface {
     }
 
     @Override
-    public IFPlayer convertPlayerObjectToFPlayer(Object player) {
-        return new SpigotFPlayer((Player) player);
+    public <P> IFPlayer<P> convertPlayerObjectToFPlayer(P player) {
+        return (IFPlayer<P>) new SpigotFPlayer((Player) player);
+//        return new SpigotFPlayer((Player) player);
     }
 
     @Override
-    public Player convertFPlayerToPlayer(IFPlayer ifPlayer) {
+    public <P> P convertFPlayerToPlayer(IFPlayer<P> ifPlayer) {
         if(ifPlayer instanceof SpigotFPlayer) {
-            return ((SpigotFPlayer) ifPlayer).getPlayer();
+            return ifPlayer.getPlayer();
         }
 
-        return Bukkit.getPlayer(ifPlayer.getUuid());
-
+        return (P) Bukkit.getPlayer(ifPlayer.getUuid());
     }
 
     @Override
@@ -68,18 +68,19 @@ public class SpigotInterface implements MethodInterface {
     }
 
     @Override
-    public IFPlayer getPlayerFromName(String name) {
+    public IFPlayer<Player> getPlayerFromName(String name) {
         return convertPlayerObjectToFPlayer(fernSpigotAPI.getServer().getPlayer(name));
     }
 
     @Override
-    public IFPlayer getPlayerFromUUID(UUID uuid) {
+    public IFPlayer<Player> getPlayerFromUUID(UUID uuid) {
         return convertPlayerObjectToFPlayer(fernSpigotAPI.getServer().getPlayer(uuid));
     }
 
     @Override
-    public List<IFPlayer> getPlayers() {
-        return Bukkit.getOnlinePlayers().stream().map(proxiedPlayer -> Universal.getMethods().convertPlayerObjectToFPlayer(proxiedPlayer)).collect(Collectors.toList());
+    public List<IFPlayer<Player>> getPlayers() {
+        return Bukkit.getOnlinePlayers().stream().map(player -> (Player) player) // Cast all player interfaces to just players
+                .map(this::convertPlayerObjectToFPlayer).collect(Collectors.toList()); // Convert players to wrapped IFPLayer
     }
 
     @Override

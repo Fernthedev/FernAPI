@@ -74,28 +74,30 @@ public class SpigotFPlayer extends IFPlayer<Player> {
 
     @Override
     public void sendMessage(BaseMessage baseMessage) {
+//
+//        TextComponent fullMessage = new TextComponent(ChatColor.translateAlternateColorCodes('&',baseMessage.getParentText()));
+//
+//        if (baseMessage.getExtra() != null) {
+//            for(BaseMessage be : baseMessage.getExtra()) {
+//                TextComponent te = new TextComponent(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
+//
+//                if (be.getClickData() != null) {
+//                    te.setClickEvent(new ClickEvent(
+//                            ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
+//                            be.getClickData().getClickValue()));
+//                }
+//
+//                if (be.getHoverData() != null) {
+//                    te.setHoverEvent(new HoverEvent(
+//                            HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
+//                            message(be.getHoverData().getHoverValue())));
+//                }
+//
+//                fullMessage.addExtra(te);
+//            }
+//        }
 
-        TextComponent fullMessage = new TextComponent(ChatColor.translateAlternateColorCodes('&',baseMessage.getParentText()));
-
-        if (baseMessage.getExtra() != null) {
-            for(BaseMessage be : baseMessage.getExtra()) {
-                TextComponent te = new TextComponent(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
-
-                if (be.getClickData() != null) {
-                    te.setClickEvent(new ClickEvent(
-                            ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
-                            be.getClickData().getClickValue()));
-                }
-
-                if (be.getHoverData() != null) {
-                    te.setHoverEvent(new HoverEvent(
-                            HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
-                            message(be.getHoverData().getHoverValue())));
-                }
-
-                fullMessage.addExtra(te);
-            }
-        }
+        BaseComponent fullMessage = (BaseComponent) Universal.getChatHandler().parseComponent(baseMessage);
 
         player.spigot().sendMessage(fullMessage);
 

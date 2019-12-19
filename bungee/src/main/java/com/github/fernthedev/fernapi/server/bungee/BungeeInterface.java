@@ -2,7 +2,6 @@ package com.github.fernthedev.fernapi.server.bungee;
 
 import com.github.fernthedev.fernapi.server.bungee.player.BungeeFConsole;
 import com.github.fernthedev.fernapi.server.bungee.player.BungeeFPlayer;
-import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.CommandSender;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
@@ -18,7 +17,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class BungeeInterface implements MethodInterface {
+public class BungeeInterface implements MethodInterface<ProxiedPlayer> {
     private FernBungeeAPI fernBungeeAPI;
 
     BungeeInterface(FernBungeeAPI fernBungeeAPI) {
@@ -41,17 +40,17 @@ public class BungeeInterface implements MethodInterface {
     }
 
     @Override
-    public IFPlayer convertPlayerObjectToFPlayer(Object player) {
-        return new BungeeFPlayer((ProxiedPlayer) player);
+    public <P> IFPlayer<P> convertPlayerObjectToFPlayer(P player) {
+        return (IFPlayer<P>) new BungeeFPlayer((ProxiedPlayer) player);
     }
 
     @Override
-    public ProxiedPlayer convertFPlayerToPlayer(IFPlayer ifPlayer) {
+    public <P> P convertFPlayerToPlayer(IFPlayer<P> ifPlayer) {
         if(ifPlayer instanceof BungeeFPlayer) {
-            return ((BungeeFPlayer) ifPlayer).getPlayer();
+            return ifPlayer.getPlayer();
         }
 
-        return ProxyServer.getInstance().getPlayer(ifPlayer.getUuid());
+        return (P) ProxyServer.getInstance().getPlayer(ifPlayer.getUuid());
     }
 
     @Override
@@ -68,20 +67,20 @@ public class BungeeInterface implements MethodInterface {
     }
 
     @Override
-    public IFPlayer getPlayerFromName(String name) {
+    public IFPlayer<ProxiedPlayer> getPlayerFromName(String name) {
         return convertPlayerObjectToFPlayer(fernBungeeAPI.getProxy().getPlayer(name));
     }
 
     @Override
-    public IFPlayer getPlayerFromUUID(UUID uuid) {
+    public IFPlayer<ProxiedPlayer> getPlayerFromUUID(UUID uuid) {
         return convertPlayerObjectToFPlayer(fernBungeeAPI.getProxy().getPlayer(uuid));
     }
 
 
 
     @Override
-    public List<IFPlayer> getPlayers() {
-        return ProxyServer.getInstance().getPlayers().stream().map(proxiedPlayer -> Universal.getMethods().convertPlayerObjectToFPlayer(proxiedPlayer)).collect(Collectors.toList());
+    public List<IFPlayer<ProxiedPlayer>> getPlayers() {
+        return ProxyServer.getInstance().getPlayers().stream().map(this::convertPlayerObjectToFPlayer).collect(Collectors.toList());
     }
 
     @Override

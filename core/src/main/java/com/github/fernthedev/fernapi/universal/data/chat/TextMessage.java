@@ -24,7 +24,6 @@ public class TextMessage extends BaseMessage {
 
     public TextMessage(String text) {
         this.text = text;
-        this.parentText = text;
     }
 
     /**
@@ -36,6 +35,7 @@ public class TextMessage extends BaseMessage {
     public TextMessage(TextMessage TextMessage)
     {
         super( TextMessage );
+        parent = null;
         setText( TextMessage.getText() );
     }
 
@@ -51,10 +51,11 @@ public class TextMessage extends BaseMessage {
         setExtra(new ArrayList<>(Arrays.asList(extras)) );
     }
 
+
     /**
-     * Creates a duplicate of this TextMessage.
+     * Creates a duplicate of this TextComponent.
      *
-     * @return the duplicate of this TextMessage.
+     * @return the duplicate of this TextComponent.
      */
     @Override
     public BaseMessage duplicate()
@@ -68,16 +69,6 @@ public class TextMessage extends BaseMessage {
         builder.append( text );
         super.toPlainText( builder );
     }
-
-    @Override
-    public String getParentText() {
-        if(parent != null) {
-            return parent.parentText;
-        }
-
-        return text;
-    }
-
 
     @Override
     protected void toLegacyText(StringBuilder builder)

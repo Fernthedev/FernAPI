@@ -24,9 +24,21 @@ public abstract class DatabaseHandler {
     @Getter
     protected int scheduleTime = 15;
 
-    protected Map<DatabaseAuthInfo,DatabaseManager> databaseManagerMap = new HashMap<>();
+    protected Map<DatabaseAuthInfo, DatabaseManager> databaseManagerMap = new HashMap<>();
 
+    protected Runnable getScheduleRunnable() {
+        return () -> {
+            try {
+                openConnectionOnAll();
 
+                for (DatabaseManager databaseManager : databaseManagerMap.values()) {
+                    databaseManager.getConnection().createStatement();
+                }
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+            }
+        };
+    }
 
     protected abstract void setupSchedule();
 
@@ -67,7 +79,7 @@ public abstract class DatabaseHandler {
             Class.forName(dataInfo.getMysqlDatabaseType().getSqlDriver());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            System.err.println("jdbc driver unavailable!");
+            Universal.getMethods().getLogger().severe("jdbc driver unavailable!");
             throw e;
         }
 

@@ -1,12 +1,10 @@
 package com.github.fernthedev.fernapi.server.velocity.player;
 
+import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
-import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.text.TextComponent;
-import net.kyori.text.event.ClickEvent;
-import net.kyori.text.event.HoverEvent;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
@@ -52,27 +50,29 @@ public class VelocityFPlayer extends IFPlayer<Player> {
 
     @Override
     public void sendMessage(BaseMessage baseMessage) {
-        TextComponent fullMessage = TextComponent.of(ChatColor.translateAlternateColorCodes('&',baseMessage.getParentText()));
+//        TextComponent fullMessage = TextComponent.of(ChatColor.translateAlternateColorCodes('&',baseMessage.getParentText()));
+//
+//        if (baseMessage.getExtra() != null) {
+//            for(BaseMessage be : baseMessage.getExtra()) {
+//                TextComponent te = TextComponent.of(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
+//
+//                if (be.getClickData() != null) {
+//                    te.clickEvent(ClickEvent.of(
+//                            ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
+//                            be.getClickData().getClickValue()));
+//                }
+//
+//                if (be.getHoverData() != null) {
+//                    te.hoverEvent(HoverEvent.of(
+//                            HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
+//                            message(be.getHoverData().getHoverValue())));
+//                }
+//
+//                fullMessage.append(te);
+//            }
+//        }
+        TextComponent fullMessage = (TextComponent) Universal.getChatHandler().parseComponent(baseMessage);
 
-        if (baseMessage.getExtra() != null) {
-            for(BaseMessage be : baseMessage.getExtra()) {
-                TextComponent te = TextComponent.of(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
-
-                if (be.getClickData() != null) {
-                    te.clickEvent(ClickEvent.of(
-                            ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
-                            be.getClickData().getClickValue()));
-                }
-
-                if (be.getHoverData() != null) {
-                    te.hoverEvent(HoverEvent.of(
-                            HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
-                            message(be.getHoverData().getHoverValue())));
-                }
-
-                fullMessage.append(te);
-            }
-        }
 
         player.sendMessage(fullMessage);
     }
@@ -90,9 +90,5 @@ public class VelocityFPlayer extends IFPlayer<Player> {
     @Override
     public String getCurrentServerName() {
         return player.getCurrentServer().get().getServerInfo().getName();
-    }
-
-    private TextComponent message(String text) {
-        return TextComponent.of(ChatColor.translateAlternateColorCodes('&',text));
     }
 }

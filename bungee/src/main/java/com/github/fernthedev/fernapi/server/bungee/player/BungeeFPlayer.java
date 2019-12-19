@@ -1,5 +1,6 @@
 package com.github.fernthedev.fernapi.server.bungee.player;
 
+import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import lombok.NonNull;
@@ -51,31 +52,33 @@ public class BungeeFPlayer extends IFPlayer<ProxiedPlayer> {
 
     @Override
     public void sendMessage(@NonNull BaseMessage baseMessage) {
-        String text = baseMessage.getParentText();
+//        String text = baseMessage.getParentText();
+//
+//        if (text == null) text = "";
+//
+//        TextComponent fullMessage = new TextComponent(ChatColor.translateAlternateColorCodes('&', baseMessage.getParentText()));
+//
+//        if (baseMessage.getExtra() != null) {
+//            for(BaseMessage be : baseMessage.getExtra()) {
+//                TextComponent te = new TextComponent(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
+//
+//                if (be.getClickData() != null) {
+//                    te.setClickEvent(new ClickEvent(
+//                            ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
+//                            be.getClickData().getClickValue()));
+//                }
+//
+//                if (be.getHoverData() != null) {
+//                    te.setHoverEvent(new HoverEvent(
+//                            HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
+//                            new ComponentBuilder(be.getHoverData().getHoverValue()).create()));
+//                }
+//
+//                fullMessage.addExtra(te);
+//            }
+//        }
 
-        if (text == null) text = "";
-
-        TextComponent fullMessage = new TextComponent(ChatColor.translateAlternateColorCodes('&', baseMessage.getParentText()));
-
-        if (baseMessage.getExtra() != null) {
-            for(BaseMessage be : baseMessage.getExtra()) {
-                TextComponent te = new TextComponent(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
-
-                if (be.getClickData() != null) {
-                    te.setClickEvent(new ClickEvent(
-                            ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
-                            be.getClickData().getClickValue()));
-                }
-
-                if (be.getHoverData() != null) {
-                    te.setHoverEvent(new HoverEvent(
-                            HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
-                            message(be.getHoverData().getHoverValue())));
-                }
-
-                fullMessage.addExtra(te);
-            }
-        }
+        BaseComponent fullMessage = (BaseComponent) Universal.getChatHandler().parseComponent(baseMessage);
 
         player.sendMessage(fullMessage);
     }

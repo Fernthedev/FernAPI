@@ -1,4 +1,4 @@
-package com.github.fernthedev.fernapi.server.bungee.interfaces;
+package com.github.fernthedev.fernapi.server.bungee.network;
 
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.CommandSender;

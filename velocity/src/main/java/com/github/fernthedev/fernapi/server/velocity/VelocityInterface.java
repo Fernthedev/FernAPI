@@ -2,7 +2,6 @@ package com.github.fernthedev.fernapi.server.velocity;
 
 import com.github.fernthedev.fernapi.server.velocity.player.VelocityFConsole;
 import com.github.fernthedev.fernapi.server.velocity.player.VelocityFPlayer;
-import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.CommandSender;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
@@ -14,11 +13,12 @@ import lombok.NonNull;
 
 import java.io.File;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class VelocityInterface implements MethodInterface {
+public class VelocityInterface implements MethodInterface<Player> {
     private FernVelocityAPI fernVelocityAPI;
 
     VelocityInterface(FernVelocityAPI fernVelocityAPI) {
@@ -42,18 +42,18 @@ public class VelocityInterface implements MethodInterface {
     }
 
     @Override
-    public IFPlayer convertPlayerObjectToFPlayer(Object player) {
-        return new VelocityFPlayer((Player) player);
+    public <P> IFPlayer<P> convertPlayerObjectToFPlayer(P player) {
+        return (IFPlayer<P>) new VelocityFPlayer((Player) player);
     }
 
     @Override
-    public Player convertFPlayerToPlayer(IFPlayer ifPlayer) {
+    public <P> P convertFPlayerToPlayer(IFPlayer<P> ifPlayer) {
         if(ifPlayer instanceof VelocityFPlayer) {
-            return ((VelocityFPlayer) ifPlayer).getPlayer();
+            return ifPlayer.getPlayer();
         }
 
         if (fernVelocityAPI.getServer().getPlayer(ifPlayer.getUuid()).isPresent()) {
-            return fernVelocityAPI.getServer().getPlayer(ifPlayer.getUuid()).get();
+            return (P) fernVelocityAPI.getServer().getPlayer(ifPlayer.getUuid()).get();
         } else throw new IllegalStateException("Player is not on server. UUID: " + ifPlayer.getUuid());
     }
 
@@ -71,18 +71,22 @@ public class VelocityInterface implements MethodInterface {
     }
 
     @Override
-    public IFPlayer getPlayerFromName(String name) {
-        return convertPlayerObjectToFPlayer(fernVelocityAPI.getServer().getPlayer(name));
+    public IFPlayer<Player> getPlayerFromName(String name) {
+        try {
+            return convertPlayerObjectToFPlayer(fernVelocityAPI.getServer().getPlayer(name).get());
+        } catch (NoSuchElementException e) {
+            return null;
+        }
     }
 
     @Override
-    public IFPlayer getPlayerFromUUID(UUID uuid) {
-        return convertPlayerObjectToFPlayer(fernVelocityAPI.getServer().getPlayer(uuid));
+    public IFPlayer<Player> getPlayerFromUUID(UUID uuid) {
+        return convertPlayerObjectToFPlayer(fernVelocityAPI.getServer().getPlayer(uuid).get());
     }
 
     @Override
-    public List<IFPlayer> getPlayers() {
-        return fernVelocityAPI.getServer().getAllPlayers().stream().map(proxiedPlayer -> Universal.getMethods().convertPlayerObjectToFPlayer(proxiedPlayer)).collect(Collectors.toList());
+    public List<IFPlayer<Player>> getPlayers() {
+        return fernVelocityAPI.getServer().getAllPlayers().stream().map(this::convertPlayerObjectToFPlayer).collect(Collectors.toList());
     }
 
     @Override

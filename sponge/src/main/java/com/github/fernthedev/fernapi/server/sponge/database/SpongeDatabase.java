@@ -1,12 +1,9 @@
 package com.github.fernthedev.fernapi.server.sponge.database;
 
 import com.github.fernthedev.fernapi.server.sponge.FernSpongeAPI;
-import com.github.fernthedev.fernapi.universal.mysql.DatabaseManager;
 import com.github.fernthedev.fernapi.universal.mysql.DatabaseHandler;
 import org.spongepowered.api.scheduler.Task;
 
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.concurrent.TimeUnit;
 
 public class SpongeDatabase extends DatabaseHandler {
@@ -28,20 +25,20 @@ public class SpongeDatabase extends DatabaseHandler {
             scheduled = false;
         }
 
-        Runnable runnable = () -> {
-            try {
-                openConnectionOnAll();
-
-                for(DatabaseManager databaseManager : databaseManagerMap.values()) {
-                    Statement statement = databaseManager.getConnection().createStatement();
-                }
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-            }
-        };
+//        Runnable runnable = () -> {
+//            try {
+//                openConnectionOnAll();
+//
+//                for(DatabaseManager databaseManager : databaseManagerMap.values()) {
+//                    Statement statement = databaseManager.getConnection().createStatement();
+//                }
+//            } catch (ClassNotFoundException | SQLException e) {
+//                e.printStackTrace();
+//            }
+//        };
 
         scheduled = true;
-        refreshTask = scheduler.execute(runnable).interval(scheduleTime, TimeUnit.MINUTES).async().submit(spigot);
+        refreshTask = scheduler.execute(getScheduleRunnable()).interval(scheduleTime, TimeUnit.MINUTES).async().submit(spigot);
     }
 
     @Override

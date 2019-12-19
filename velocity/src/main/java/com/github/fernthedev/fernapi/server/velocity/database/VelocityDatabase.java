@@ -1,12 +1,9 @@
 package com.github.fernthedev.fernapi.server.velocity.database;
 
 import com.github.fernthedev.fernapi.server.velocity.FernVelocityAPI;
-import com.github.fernthedev.fernapi.universal.mysql.DatabaseManager;
 import com.github.fernthedev.fernapi.universal.mysql.DatabaseHandler;
 import com.velocitypowered.api.scheduler.ScheduledTask;
 
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.concurrent.TimeUnit;
 
 public class VelocityDatabase extends DatabaseHandler {
@@ -23,19 +20,19 @@ public class VelocityDatabase extends DatabaseHandler {
             task.cancel();
             scheduled = false;
         }
-        Runnable runnable = () -> {
-            try {
-                openConnectionOnAll();
-
-                for(DatabaseManager databaseManager : databaseManagerMap.values()) {
-                    Statement statement = databaseManager.getConnection().createStatement();
-                }
-            } catch(ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-            }
-        };
+//        Runnable runnable = () -> {
+//            try {
+//                openConnectionOnAll();
+//
+//                for(DatabaseManager databaseManager : databaseManagerMap.values()) {
+//                    Statement statement = databaseManager.getConnection().createStatement();
+//                }
+//            } catch(ClassNotFoundException | SQLException e) {
+//                e.printStackTrace();
+//            }
+//        };
         scheduled = true;
-        task = velocity.getServer().getScheduler().buildTask(velocity, runnable).repeat(scheduleTime, TimeUnit.MINUTES).schedule();
+        task = velocity.getServer().getScheduler().buildTask(velocity, getScheduleRunnable()).repeat(scheduleTime, TimeUnit.MINUTES).schedule();
     }
 
     @Override

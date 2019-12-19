@@ -7,8 +7,6 @@ import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
 import com.velocitypowered.api.command.CommandSource;
 import net.kyori.text.TextComponent;
-import net.kyori.text.event.ClickEvent;
-import net.kyori.text.event.HoverEvent;
 
 public class VelocityFConsole extends IFConsole {
     private CommandSource commandSender;
@@ -33,28 +31,29 @@ public class VelocityFConsole extends IFConsole {
 
     @Override
     public void sendMessage(BaseMessage baseMessage) {
-
-        TextComponent fullMessage = TextComponent.of(ChatColor.translateAlternateColorCodes('&',baseMessage.getParentText()));
-
-        if (baseMessage.getExtra() != null) {
-            for(BaseMessage be : baseMessage.getExtra()) {
-                TextComponent te = TextComponent.of(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
-
-                if (be.getClickData() != null) {
-                    te.clickEvent(ClickEvent.of(
-                            ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
-                            be.getClickData().getClickValue()));
-                }
-
-                if (be.getHoverData() != null) {
-                    te.hoverEvent(HoverEvent.of(
-                            HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
-                            message(be.getHoverData().getHoverValue())));
-                }
-
-                fullMessage.append(te);
-            }
-        }
+//
+//        TextComponent fullMessage = TextComponent.of(ChatColor.translateAlternateColorCodes('&',baseMessage.getParentText()));
+//
+//        if (baseMessage.getExtra() != null) {
+//            for(BaseMessage be : baseMessage.getExtra()) {
+//                TextComponent te = TextComponent.of(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
+//
+//                if (be.getClickData() != null) {
+//                    te.clickEvent(ClickEvent.of(
+//                            ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
+//                            be.getClickData().getClickValue()));
+//                }
+//
+//                if (be.getHoverData() != null) {
+//                    te.hoverEvent(HoverEvent.of(
+//                            HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
+//                            message(be.getHoverData().getHoverValue())));
+//                }
+//
+//                fullMessage.append(te);
+//            }
+//        }
+        TextComponent fullMessage = (TextComponent) Universal.getChatHandler().parseComponent(baseMessage);
         FernVelocityAPI api = (FernVelocityAPI) Universal.getMethods().getInstance();
         api.getServer().getConsoleCommandSource().sendMessage(fullMessage);
     }

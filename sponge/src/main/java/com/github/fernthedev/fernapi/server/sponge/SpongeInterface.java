@@ -22,13 +22,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class SpongeInterface implements MethodInterface {
+public class SpongeInterface implements MethodInterface<Player> {
     @NonNull
     private FernSpongeAPI sponge;
 
     @Override
     public java.util.logging.Logger getLogger() {
-        sponge.getLogger().warn("Java Logger does not exist in Sponge.");
+        Universal.debug("Java Logger does not exist in Sponge.");
         return (java.util.logging.Logger) sponge.getLogger();
     }
 
@@ -43,8 +43,8 @@ public class SpongeInterface implements MethodInterface {
     }
 
     @Override
-    public IFPlayer convertPlayerObjectToFPlayer(Object player) {
-        return new SpongeFPlayer((Player) player);
+    public <P> IFPlayer<P> convertPlayerObjectToFPlayer(P player) {
+        return (IFPlayer<P>) new SpongeFPlayer((Player) player);
     }
 
     @Override
@@ -66,18 +66,19 @@ public class SpongeInterface implements MethodInterface {
     }
 
     @Override
-    public IFPlayer getPlayerFromName(String name) {
-        return convertPlayerObjectToFPlayer(Sponge.getServer().getPlayer(name));
+    public IFPlayer<Player> getPlayerFromName(String name) {
+
+        return convertPlayerObjectToFPlayer(Sponge.getServer().getPlayer(name).get());
     }
 
     @Override
-    public IFPlayer getPlayerFromUUID(UUID uuid) {
-        return convertPlayerObjectToFPlayer(Sponge.getServer().getPlayer(uuid));
+    public IFPlayer<Player> getPlayerFromUUID(UUID uuid) {
+        return convertPlayerObjectToFPlayer(Sponge.getServer().getPlayer(uuid).get());
     }
 
     @Override
-    public List<IFPlayer> getPlayers() {
-        return Sponge.getServer().getOnlinePlayers().stream().map(proxiedPlayer -> Universal.getMethods().convertPlayerObjectToFPlayer(proxiedPlayer)).collect(Collectors.toList());
+    public List<IFPlayer<Player>> getPlayers() {
+        return Sponge.getServer().getOnlinePlayers().stream().map(this::convertPlayerObjectToFPlayer).collect(Collectors.toList());
     }
 
     @Override

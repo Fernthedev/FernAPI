@@ -1,7 +1,9 @@
 package com.github.fernthedev.fernapi.universal.handlers;
 
-public interface IChatHandler {
+import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 
+public interface IChatHandler<NewMessage> {
 
+    NewMessage parseComponent(BaseMessage baseMessage);
 
 }

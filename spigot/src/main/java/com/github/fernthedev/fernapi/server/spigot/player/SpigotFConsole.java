@@ -1,7 +1,9 @@
 package com.github.fernthedev.fernapi.server.spigot.player;
 
+import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFConsole;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
+import net.md_5.bungee.api.chat.BaseComponent;
 
 public class SpigotFConsole extends IFConsole {
     private org.bukkit.command.CommandSender commandSender;
@@ -23,6 +25,8 @@ public class SpigotFConsole extends IFConsole {
 
     @Override
     public void sendMessage(BaseMessage message) {
+        BaseComponent baseComponent = (BaseComponent) Universal.getChatHandler().parseComponent(message);
 
+        commandSender.spigot().sendMessage(baseComponent);
     }
 }

@@ -1,8 +1,8 @@
 package com.github.fernthedev.fernapi.server.velocity.interfaces;
 
+import com.github.fernthedev.fernapi.server.velocity.player.VelocityFPlayer;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.CommandSender;
-import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
@@ -54,9 +54,10 @@ public class VelocityServerInfo implements RegisteredServer, IServerInfo {
      * @return an unmodifiable collection of all players on this server
      */
     @Override
-    public List<? extends IFPlayer<?>> getPlayers() {
+    public List<VelocityFPlayer> getPlayers() {
         return serverInfo.getPlayersConnected()
                 .stream().map(player -> Universal.getMethods().convertPlayerObjectToFPlayer(player))
+                .map(playerIFPlayer -> (VelocityFPlayer) playerIFPlayer)
                 .collect(Collectors.toList());
     }
 

@@ -32,14 +32,14 @@
       <option name="url" value="https://jitpack.io" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="sponge-repo" />
+      <option name="name" value="sponge-repo" />
+      <option name="url" value="https://repo.spongepowered.org/maven" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="velocity" />
       <option name="name" value="velocity" />
       <option name="url" value="https://repo.velocitypowered.com/snapshots/" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="sponge" />
-      <option name="name" value="sponge" />
-      <option name="url" value="https://repo.spongepowered.org/maven" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="spigotmc-repo" />

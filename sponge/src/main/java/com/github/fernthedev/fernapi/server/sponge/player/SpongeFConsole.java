@@ -1,5 +1,6 @@
 package com.github.fernthedev.fernapi.server.sponge.player;
 
+import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFConsole;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.chat.ClickData;
@@ -35,54 +36,56 @@ public class SpongeFConsole extends IFConsole {
     @Override
     public void sendMessage(BaseMessage textMessage) {
 
-        Text.Builder text = Text.builder();
+//        Text.Builder text = Text.builder();
+//
+//        if (textMessage.getExtra() != null) {
+//            for(BaseMessage be : textMessage.getExtra()) {
+//                Text.Builder te = TextSerializers.FORMATTING_CODE.deserialize(be.toPlainText()).toBuilder();
+//
+//                if(be.getClickData() != null) {
+//                    te.onClick(parseAction(be.getClickData()));
+//                }
+//
+//                if(be.getHoverData() != null) {
+//                    te.onHover(parseAction(be.getHoverData()));
+//                }
+//                text.append(te.build());
+//            }
+//        }
 
-        if (textMessage.getExtra() != null) {
-            for(BaseMessage be : textMessage.getExtra()) {
-                Text.Builder te = TextSerializers.FORMATTING_CODE.deserialize(be.toPlainText()).toBuilder();
+        Text text = (Text) Universal.getChatHandler().parseComponent(textMessage);
 
-                if(be.getClickData() != null) {
-                    te.onClick(parseAction(be.getClickData()));
-                }
-
-                if(be.getHoverData() != null) {
-                    te.onHover(parseAction(be.getHoverData()));
-                }
-                text.append(te.build());
-            }
-        }
-
-        src.sendMessage(text.build());
+        src.sendMessage(text);
     }
 
-    private HoverAction parseAction(HoverData hoverData) throws UnsupportedOperationException {
-        String value = TextSerializers.FORMATTING_CODE.deserialize(hoverData.getHoverValue()).toPlain();
-
-        if (hoverData.getAction() == HoverData.Action.SHOW_TEXT) {
-            return TextActions.showText(Text.builder(value).toText());
-        }
-        throw new UnsupportedOperationException("The hover action you attempted to use is currently not possible to use with Sponge side, it is recommended to use Sponge-Specific code for this checking for the ServerType from Universal.getMethods()");
-    }
-
-    private ClickAction parseAction(ClickData clickData) {
-        String value = TextSerializers.FORMATTING_CODE.deserialize(clickData.getClickValue()).toPlain();
-
-        switch (clickData.getAction()) {
-            case OPEN_URL:
-                try {
-                    return TextActions.openUrl(new URL(value));
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case CHANGE_PAGE:
-                return TextActions.changePage(Integer.parseInt(value));
-            case RUN_COMMAND:
-                return TextActions.runCommand(value);
-            case SUGGEST_COMMAND:
-                return TextActions.suggestCommand(value);
-        }
-        return null;
-    }
+//    private HoverAction parseAction(HoverData hoverData) throws UnsupportedOperationException {
+//        String value = TextSerializers.FORMATTING_CODE.deserialize(hoverData.getHoverValue()).toPlain();
+//
+//        if (hoverData.getAction() == HoverData.Action.SHOW_TEXT) {
+//            return TextActions.showText(Text.builder(value).toText());
+//        }
+//        throw new UnsupportedOperationException("The hover action you attempted to use is currently not possible to use with Sponge side, it is recommended to use Sponge-Specific code for this checking for the ServerType from Universal.getMethods()");
+//    }
+//
+//    private ClickAction parseAction(ClickData clickData) {
+//        String value = TextSerializers.FORMATTING_CODE.deserialize(clickData.getClickValue()).toPlain();
+//
+//        switch (clickData.getAction()) {
+//            case OPEN_URL:
+//                try {
+//                    return TextActions.openUrl(new URL(value));
+//                } catch (MalformedURLException e) {
+//                    e.printStackTrace();
+//                }
+//                break;
+//            case CHANGE_PAGE:
+//                return TextActions.changePage(Integer.parseInt(value));
+//            case RUN_COMMAND:
+//                return TextActions.runCommand(value);
+//            case SUGGEST_COMMAND:
+//                return TextActions.suggestCommand(value);
+//        }
+//        return null;
+//    }
 
 }

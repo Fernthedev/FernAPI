@@ -1,6 +1,5 @@
 package com.github.fernthedev.fernapi.server.bungee.network;
 
-import com.github.fernthedev.fernapi.server.bungee.interfaces.BungeeServerInfo;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import com.github.fernthedev.fernapi.universal.handlers.NetworkHandler;
 import net.md_5.bungee.api.ProxyServer;

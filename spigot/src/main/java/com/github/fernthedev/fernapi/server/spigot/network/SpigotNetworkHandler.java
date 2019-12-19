@@ -1,6 +1,5 @@
 package com.github.fernthedev.fernapi.server.spigot.network;
 
-import com.github.fernthedev.fernapi.server.spigot.interfaces.SpigotServerInfo;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import com.github.fernthedev.fernapi.universal.exceptions.FernDebugException;

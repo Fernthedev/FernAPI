@@ -36,7 +36,7 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group = 'com.github.Fernthedev'
-    version = '1.9b6'
+    version = '1.9b7'
     description = 'An API for universal code'
 
     repositories {
@@ -94,9 +94,9 @@ allprojects {
             publications {
                 mavenJava(MavenPublication) {
                     from components.java
+                    groupId = "$rootProject.group.$rootProject.name"
 
-
-                    artifactId = "$rootProject.name-$project.name"
+                    artifactId = "$project.name"
 
 
                     artifact sourcesJar {
@@ -124,8 +124,10 @@ allprojects {
 }
 
 configure(subprojects.findAll {it.name != 'core'}) {
-    dependencies {
-        compile project(':core')
+    afterEvaluate {
+        dependencies {
+            compile(project(':core'))
+        }
     }
 }
 

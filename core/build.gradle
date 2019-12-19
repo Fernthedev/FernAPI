@@ -9,14 +9,18 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
-    compile ('com.google.code.gson:gson:2.6.2')
+    implementation ('com.google.code.gson:gson:2.6.2')
 
 //    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
-    compile 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
-    compile 'com.github.Fernthedev:fern-configmanager:1.1.2' // Check github releases tag for the version.
+    implementation 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
+    api 'com.github.Fernthedev:fern-configmanager:1.1.2' // Check github releases tag for the version.
 
     // 2. Use Guava types in your public API:
-    compile("com.google.guava:guava:28.1-jre")
+    implementation("com.google.guava:guava:28.1-jre")
+
+//    api group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.29'
+
+
 //
     compileOnly 'org.projectlombok:lombok:1.18.8'
     annotationProcessor 'org.projectlombok:lombok:1.18.8'

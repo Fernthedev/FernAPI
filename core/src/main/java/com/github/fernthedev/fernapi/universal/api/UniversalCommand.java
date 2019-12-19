@@ -4,15 +4,14 @@ import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
 import com.github.fernthedev.fernapi.universal.data.chat.TextMessage;
+import com.github.fernthedev.fernapi.universal.exceptions.command.ArgumentNotFoundException;
 import com.google.common.base.Preconditions;
 import lombok.*;
 
 import javax.annotation.Nullable;
-import java.security.PrivilegedActionException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Data
 @RequiredArgsConstructor(access = AccessLevel.NONE)
@@ -31,8 +30,9 @@ public abstract class UniversalCommand {
         arguments.addAll(Arrays.asList(argumentsArg));
     }
 
-    protected void removeArgument(Argument argument) {
+    protected void removeArgument(Argument argument, Argument... argumentsArg) {
         arguments.remove(argument);
+        arguments.removeAll(Arrays.asList(argumentsArg));
     }
 
 
@@ -62,7 +62,7 @@ public abstract class UniversalCommand {
     }
 
     protected BaseMessage message(String text) {
-        return new TextMessage(ChatColor.translateAlternateColorCodes('&',text));
+        return new TextMessage(ChatColor.translateAlternateColorCodes('&', text));
     }
 
     protected Logger getLogger() {
@@ -80,12 +80,16 @@ public abstract class UniversalCommand {
 
     /**
      * Is used for tab completion. DO NOT RETURN NULL, INSTEAD RETURN AN EMPTY LIST
+     *
+     * By default it returns a list of all the arguments
+     *
      * @param source The command source
      * @param currentArgs The arguments currently provided
      * @return The arguments suggested. CANNOT BE NULL, INSTEAD RETURN AN EMPTY LIST
      */
+    @NonNull
     public List<String> suggest(CommandSender source, String[] currentArgs) {
-        return new ArrayList<>();
+        return searchArguments(source, currentArgs).stream().map(Argument::getName).collect(Collectors.toList());
     }
 
     /**
@@ -95,40 +99,83 @@ public abstract class UniversalCommand {
      * @return The auto-complete possibilities
      */
     public static List<String> search(String arg, List<String> possibilities) {
-        List<String> newPos = new ArrayList<>();
-        possibilities.forEach(s -> {
-            if(s.startsWith(arg) || s.contains(arg)) {
-                newPos.add(s);
-            }
-        });
-        return newPos;
+        return possibilities.stream().filter(s -> s.contains(arg) || s.startsWith(arg)).collect(Collectors.toList());
     }
 
     /**
-     * A shortcut to {@link #handleArguments(CommandSender, List, String[])} for instances
+     * A shortcut to {@link #handleArguments(CommandSender, List, String)} for instances
      */
-    protected ArgumentRunnable handleArguments(CommandSender sender, String[] args) {
-        return handleArguments(sender, arguments, args);
+    protected Argument handleArguments(CommandSender sender, String arg) {
+        return handleArguments(sender, arguments, arg);
     }
 
     /**
      *
      * @param sender The sender to check
      * @param arguments The valid arguments to use
-     * @param args The arguments provided by the sender
+     * @param arg The arguments provided by the sender
      * @return The argument runnable that follows the specific criteria: {name of argument, permission if any required}
      *
-     * @throws ArgumentNotFoundException Thrown when the argument from args in index 0 is not matched
+     * @throws ArgumentNotFoundException Thrown when arg is not matched
      * to any arguments in the arguments list.
      */
-    protected static ArgumentRunnable handleArguments(CommandSender sender, List<Argument> arguments, String[] args) {
+    protected static Argument handleArguments(CommandSender sender, List<Argument> arguments, String arg) {
         for (Argument argument : arguments) {
-            if (argument.name.equalsIgnoreCase(args[0]) &&
+            if (argument.name.equalsIgnoreCase(arg) &&
                     (argument.permission == null || sender.hasPermission(argument.permission) /* If there is a permission required, it will check if sender has it */)) {
-                return argument.getArgumentRunnable();
+                return argument;
             }
         }
-        throw new ArgumentNotFoundException("The argument {" + args[0] + "} could not be found in the list of legal arguments: " + arguments);
+        throw new ArgumentNotFoundException(new ArgumentNotFoundException.ArgumentInfo(null, arguments, arg), "The argument {" + arg + "} could not be found in the list of legal arguments: " + arguments);
+    }
+
+    /**
+     * Searches for arguments
+     * @param sender
+     * @param args
+     * @return
+     */
+    protected List<Argument> searchArguments(CommandSender sender, String[] args) {
+        return searchArguments(sender, args, getArguments(), true);
+    }
+
+    /**
+     *
+     * @param sender
+     * @param args
+     * @param checkArguments The arguments to list if no suggestions are available yet or to get form {@link #handleArguments(CommandSender, List, String)}
+     * @param autoComplete Whether the arguments should contain the argument being typed
+     * @return
+     */
+    protected List<Argument> searchArguments(CommandSender sender, String[] args, List<Argument> checkArguments, boolean autoComplete) {
+        if (args.length == 0) return new ArrayList<>(); // Return empty suggestions if no arguments are given
+
+        try {
+            Argument argument = handleArguments(sender, checkArguments, args[0]);
+
+
+            // Return all the inner argument names if they exist
+            if (argument.getInnerArguments() != null && argument.getInnerArguments().size() > 0) {
+                return searchArguments(sender, Arrays.copyOfRange(args, 1, args.length), argument.getInnerArguments(), autoComplete);
+            }
+
+
+            // Return no suggestions if there are none to give
+            return new ArrayList<>();
+        } catch (ArgumentNotFoundException e) {
+            // Return the arguments given since there are no valid ones yet
+            List<Argument> filterArguments = checkArguments;
+
+            if (autoComplete) filterArguments = filterArguments.stream().filter(argument ->
+                    argument.getName().startsWith(args[0]) || argument.getName().contains(args[0]))
+                    .collect(Collectors.toList());
+
+            return filterArguments;
+        }
+    }
+
+    protected List<String> toStringList(List<Argument> arguments) {
+        return arguments.stream().map(Argument::getName).collect(Collectors.toList());
     }
 
     /**
@@ -144,6 +191,7 @@ public abstract class UniversalCommand {
     }
 
     @Getter
+    @ToString
     public static class Argument {
 
         private final String name;
@@ -174,12 +222,16 @@ public abstract class UniversalCommand {
          * main -> "foo"
          * main bar -> "bar"
          */
-        private static ArgumentRunnable defaultArgument(List<Argument> argumentRunnables) {
+        private ArgumentRunnable defaultArgument(List<Argument> argumentRunnables) {
             return (sender, args) -> {
-                String[] argsCopy = new String[args.length - 1];
-
-                System.arraycopy(args, 1, argsCopy, 0, args.length - 1);
-                handleArguments(sender, argumentRunnables, args).run(sender, argsCopy);
+                String arg = args.length == 0 ? "" : args[0];
+                try {
+                    String[] argCopy = args.length == 0 ? new String[0] : Arrays.copyOfRange(args, 1, args.length);
+                    handleArguments(sender, argumentRunnables, arg).getArgumentRunnable().run(sender, argCopy);
+                } catch (ArgumentNotFoundException e) {
+                    e.setArgumentInfo(new ArgumentNotFoundException.ArgumentInfo(this, innerArguments, arg));
+                    throw e;
+                }
             };
         }
 
@@ -187,12 +239,12 @@ public abstract class UniversalCommand {
         /**
          *
          * @param name The name of the argument
-         * @param argumentRunnable The code ran when the argument is used
+         * @param argumentRunnable The code ran when the argument is used. Null if you want the default behaviour of using innerArguments. {@link #defaultArgument(List)}
          * @param innerArguments Any inner arguments if you wish to use the argument as a category
          */
         public Argument(@NonNull String name, @Nullable ArgumentRunnable argumentRunnable, @Nullable Argument... innerArguments) {
             this.name = name;
-            this.innerArguments = Arrays.asList(innerArguments);
+            this.innerArguments = Arrays.asList(innerArguments != null ? innerArguments : new Argument[0]);
 
             if(argumentRunnable == null) this.argumentRunnable = defaultArgument(this.innerArguments);
             else this.argumentRunnable = argumentRunnable;
@@ -200,61 +252,5 @@ public abstract class UniversalCommand {
         }
     }
 
-    public static class ArgumentNotFoundException extends IllegalArgumentException {
-        /**
-         * Constructs an <code>IllegalArgumentException</code> with no
-         * detail message.
-         */
-        public ArgumentNotFoundException() {
-            super();
-        }
 
-        /**
-         * Constructs an <code>IllegalArgumentException</code> with the
-         * specified detail message.
-         *
-         * @param s the detail message.
-         */
-        public ArgumentNotFoundException(String s) {
-            super(s);
-        }
-
-        /**
-         * Constructs a new exception with the specified detail message and
-         * cause.
-         *
-         * <p>Note that the detail message associated with <code>cause</code> is
-         * <i>not</i> automatically incorporated in this exception's detail
-         * message.
-         *
-         * @param message the detail message (which is saved for later retrieval
-         *                by the {@link Throwable#getMessage()} method).
-         * @param cause   the cause (which is saved for later retrieval by the
-         *                {@link Throwable#getCause()} method).  (A {@code null} value
-         *                is permitted, and indicates that the cause is nonexistent or
-         *                unknown.)
-         * @since 1.5
-         */
-        public ArgumentNotFoundException(String message, Throwable cause) {
-            super(message, cause);
-        }
-
-        /**
-         * Constructs a new exception with the specified cause and a detail
-         * message of {@code (cause==null ? null : cause.toString())} (which
-         * typically contains the class and detail message of {@code cause}).
-         * This constructor is useful for exceptions that are little more than
-         * wrappers for other throwables (for example, {@link
-         * PrivilegedActionException}).
-         *
-         * @param cause the cause (which is saved for later retrieval by the
-         *              {@link Throwable#getCause()} method).  (A {@code null} value is
-         *              permitted, and indicates that the cause is nonexistent or
-         *              unknown.)
-         * @since 1.5
-         */
-        public ArgumentNotFoundException(Throwable cause) {
-            super(cause);
-        }
-    }
 }
