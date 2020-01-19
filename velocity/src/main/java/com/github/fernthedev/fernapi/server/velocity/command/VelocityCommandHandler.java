@@ -3,9 +3,11 @@ package com.github.fernthedev.fernapi.server.velocity.command;
 import com.github.fernthedev.fernapi.server.velocity.FernVelocityAPI;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.UniversalCommand;
+import com.github.fernthedev.fernapi.universal.data.chat.TextMessage;
 import com.github.fernthedev.fernapi.universal.handlers.CommandHandler;
 import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandSource;
+import net.kyori.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
@@ -19,7 +21,7 @@ public class VelocityCommandHandler extends CommandHandler {
 
     @Override
     public void registerFernCommand(UniversalCommand ucommand) {
-        plugin.getServer().getCommandManager().register(new Command() {
+        plugin.getServer().getCommandManager().register(ucommand.getName(), new Command() {
             /**
              * Executes the command for the specified {@link CommandSource}.
              *
@@ -28,7 +30,12 @@ public class VelocityCommandHandler extends CommandHandler {
              */
             @Override
             public void execute(CommandSource source, @NonNull String[] args) {
-                ucommand.execute(Universal.getMethods().convertCommandSenderToAPISender(source), args);
+                if(source.hasPermission(ucommand.getPermission())) {
+                    ucommand.execute(Universal.getMethods().convertCommandSenderToAPISender(source), args);
+                } else {
+                    TextMessage textMessage = new TextMessage(Universal.locale.noPermission(ucommand));
+                    source.sendMessage((Component) Universal.getChatHandler().parseComponent(textMessage));
+                }
             }
 
             /**

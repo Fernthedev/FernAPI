@@ -3,6 +3,7 @@ package com.github.fernthedev.fernapi.server.sponge.command;
 import com.github.fernthedev.fernapi.server.sponge.FernSpongeAPI;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.UniversalCommand;
+import com.github.fernthedev.fernapi.universal.data.chat.TextMessage;
 import com.github.fernthedev.fernapi.universal.handlers.CommandHandler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.*;
@@ -46,7 +47,13 @@ public class SpongeCommandHandler extends CommandHandler {
          */
         @Override
         public CommandResult process(CommandSource source, String arguments) throws CommandException {
-            command.execute(Universal.getMethods().convertCommandSenderToAPISender(source),arguments.split(" "));
+            if(source.hasPermission(command.getPermission())) {
+
+                command.execute(Universal.getMethods().convertCommandSenderToAPISender(source), arguments.split(" "));
+            } else {
+                TextMessage textMessage = new TextMessage(Universal.locale.noPermission(command));
+                source.sendMessage((Text) Universal.getChatHandler().parseComponent(textMessage));
+            }
             return CommandResult.success();
         }
 

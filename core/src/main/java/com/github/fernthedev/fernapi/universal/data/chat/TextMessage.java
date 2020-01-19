@@ -27,16 +27,16 @@ public class TextMessage extends BaseMessage {
     }
 
     /**
-     * Creates a TextMessage with formatting and text from the passed
+     * Creates a textMessage with formatting and text from the passed
      * component
      *
-     * @param TextMessage the component to copy from
+     * @param textMessage the component to copy from
      */
-    public TextMessage(TextMessage TextMessage)
+    public TextMessage(TextMessage textMessage)
     {
-        super( TextMessage );
+        super( textMessage );
         parent = null;
-        setText( TextMessage.getText() );
+        setText( textMessage.getText() );
     }
 
     /**

@@ -6,6 +6,7 @@ import com.github.fernthedev.fernapi.universal.api.UniversalCommand;
 import com.github.fernthedev.fernapi.universal.data.database.ColumnData;
 import com.github.fernthedev.fernapi.universal.data.database.RowData;
 import com.github.fernthedev.fernapi.universal.data.database.RowDataTemplate;
+import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseException;
 
 import java.util.Arrays;
 
@@ -41,34 +42,38 @@ public class DBCommand extends UniversalCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(args.length == 0) {
-            sendMessage(sender,"&cNo args?");
-        }else{
-            switch (args[0].toLowerCase()) {
+        try {
+            if (args.length == 0) {
+                sendMessage(sender, "&cNo args?");
+            } else {
+                switch (args[0].toLowerCase()) {
 
-                case "start":
-                    db.test();
-                    break;
-                case "insert":
-                    RowData rowData = new RowData(new ColumnData("row1", "value1test"),new ColumnData("row2", "value2test"));
+                    case "start":
+                        db.test();
+                        break;
+                    case "insert":
+                        RowData rowData = new RowData(new ColumnData("row1", "value1test"), new ColumnData("row2", "value2test"));
 
-                    db.insertIntoTable(db.getTableInfo(), rowData);
-                    break;
-                case "get":
-                    for (RowData rowData1 : db.getTable(db.getTableInfo().getTableName(),
-                            new RowDataTemplate(new ColumnData("row1", "value1test"),
-                                    new ColumnData("row2", "value2test"))).getRowDataList()) {
-                        getLogger().info(Arrays.toString(rowData1.getColumnDataList().toArray()));
+                        db.insertIntoTable(db.getTableInfo(), rowData);
+                        break;
+                    case "get":
+                        for (RowData rowData1 : db.getTable(db.getTableInfo().getTableName(),
+                                new RowDataTemplate(new ColumnData("row1", "value1test"),
+                                        new ColumnData("row2", "value2test"))).getRowDataList()) {
+                            getLogger().info(Arrays.toString(rowData1.getColumnDataList().toArray()));
 
-                        for (ColumnData columnData : rowData1.getColumnDataList()) {
-                            getLogger().info(columnData.getColumnName() + ":" + columnData.getValue() + " (" + columnData.getType() + "|" + columnData.getLength() + ")\n");
+                            for (ColumnData columnData : rowData1.getColumnDataList()) {
+                                getLogger().info(columnData.getColumnName() + ":" + columnData.getValue() + " (" + columnData.getType() + "|" + columnData.getLength() + ")\n");
+                            }
                         }
-                    }
-                    break;
-                case "remove":
-                    db.removeTable(db.getTableInfo());
-                    break;
+                        break;
+                    case "remove":
+                        db.removeTable(db.getTableInfo());
+                        break;
+                }
             }
+        } catch (DatabaseException e) {
+            e.printStackTrace();
         }
     }
 }

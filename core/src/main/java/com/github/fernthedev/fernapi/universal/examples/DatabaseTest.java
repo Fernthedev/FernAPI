@@ -3,6 +3,7 @@ package com.github.fernthedev.fernapi.universal.examples;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.database.*;
 import com.github.fernthedev.fernapi.universal.mysql.DatabaseManager;
+import lombok.SneakyThrows;
 
 public class DatabaseTest extends DatabaseManager {
     private TableInfo tableInfo;
@@ -40,6 +41,7 @@ public class DatabaseTest extends DatabaseManager {
         }
     }
 
+    @SneakyThrows
     public void test() {
 
         tableInfo = new TableInfo("test_no", rowDataTemplate);

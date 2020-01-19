@@ -8,8 +8,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 
-import java.net.SocketException;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -126,7 +126,7 @@ public abstract class DatabaseManager {
      * @param rowDataTemplate The row data template. Used to define table parameters when creating.
      * @return The table
      */
-    public TableInfo getTable(String name, RowDataTemplate rowDataTemplate) {
+    public TableInfo getTable(String name, RowDataTemplate rowDataTemplate) throws DatabaseException {
         String sql = "SELECT * FROM " + name + ";";
 
         @NonNull ResultSet result = runSqlStatement(sql);
@@ -191,7 +191,7 @@ public abstract class DatabaseManager {
      * @param columnName The columnName
      * @param value The value needed to remove from the columnName to be true to remove row
      */
-    public void removeRowIfColumnContainsValue(TableInfo tableInfo,String columnName,String value) {
+    public void removeRowIfColumnContainsValue(TableInfo tableInfo,String columnName,String value) throws DatabaseException {
         String sql = "DELETE FROM " + tableInfo.getTableName() + " WHERE " + columnName + "='" + value + "';";
 
         runSqlStatement(sql);
@@ -204,7 +204,7 @@ public abstract class DatabaseManager {
      * @param tableInfo The table
      * @param rowData The row
      */
-    public void insertIntoTable(TableInfo tableInfo, RowData rowData) {
+    public void insertIntoTable(TableInfo tableInfo, RowData rowData) throws DatabaseException {
         tableInfo.addTableInfo(rowData);
 
         //INSERT INTO test_no(row1,row2) VALUES (value1test,value2test);
@@ -222,7 +222,7 @@ public abstract class DatabaseManager {
      * @param conditionKey What column
      * @param conditionValue What value is required from the column to update
      */
-    public void updateRow(TableInfo tableInfo,RowData newRow,String conditionKey,String conditionValue) {
+    public void updateRow(TableInfo tableInfo,RowData newRow,String conditionKey,String conditionValue) throws DatabaseException {
         //UPDATE table_name
         //SET column1 = value1, column2 = value2, ...
         //WHERE condition;
@@ -243,7 +243,7 @@ public abstract class DatabaseManager {
      * Deletes the table
      * @param tableInfo The table info
      */
-    public void removeTable(TableInfo tableInfo) {
+    public void removeTable(TableInfo tableInfo) throws DatabaseException {
         String sql = "DROP TABLE IF EXISTS " + tableInfo.getTableName() + ";";
 
         runSqlStatement(sql);
@@ -311,38 +311,31 @@ public abstract class DatabaseManager {
      * @param sql The statement
      * @return The result
      */
-    public ResultSet runSqlStatement(String sql) {
+    public ResultSet runSqlStatement(String sql) throws DatabaseException {
 
 
-        try {
-            PreparedStatement stmt = getConnection().prepareStatement(sql);
+
+        try(PreparedStatement stmt = getConnection().prepareStatement(sql)) {
             connection = null;
             Universal.debug("Running {" + sql + "}");
 
+
+
             try {
                 return sqlRun(stmt, sql);
-            } catch (Exception e) {
-                if(e instanceof SocketException || e.getCause() instanceof SocketException || e instanceof SQLNonTransientConnectionException || e.getCause() instanceof SQLNonTransientConnectionException) {
-                    // Attempt reconnection if broken pipe
-                    connection = createConnection(databaseAuthInfo);
-                    return sqlRun(stmt, sql);
-                } else e.printStackTrace();
+            } catch (SQLException e) {
+                // Attempt reconnection if broken pipe
+                connection = createConnection(databaseAuthInfo);
+                return sqlRun(stmt, sql);
             }
 
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            throw new DatabaseException("Unable to create statement", e);
         }
-
-
-        try {
-            throw new DatabaseException("Unable to create statement");
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
-    private ResultSet sqlRun(PreparedStatement stmt, String sql) throws SQLException {
+    @Nullable
+    private static ResultSet sqlRun(@NonNull PreparedStatement stmt, @NonNull String sql) throws SQLException {
         if (sql.startsWith("SELECT ")) {
             return stmt.executeQuery();
         } else {
@@ -356,7 +349,7 @@ public abstract class DatabaseManager {
      * Creates the table
      * @param tableDataInfo The table with the data
      */
-    public void createTable(@NonNull TableInfo tableDataInfo) {
+    public void createTable(@NonNull TableInfo tableDataInfo) throws DatabaseException {
         StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS " + tableDataInfo.getTableName() + "(");
 
         //CREATE TABLE IF NOT EXISTS fern_nicks(PLAYERUUID varchar(200), NICK varchar(40));

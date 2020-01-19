@@ -4,6 +4,7 @@ import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.UniversalCommand;
 import com.github.fernthedev.fernapi.universal.handlers.CommandHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,7 +28,13 @@ public class SpigotCommandHandler extends CommandHandler {
 
         @Override
         public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-            ucommand.execute(Universal.getMethods().convertCommandSenderToAPISender(sender), args);
+            if(sender.hasPermission(ucommand.getPermission())) {
+                ucommand.execute(Universal.getMethods().convertCommandSenderToAPISender(sender), args);
+            } else {
+                sender.sendMessage(
+                        ChatColor.translateAlternateColorCodes('&', Universal.locale.noPermission(ucommand)
+                        ));
+            }
             return true;
         }
 

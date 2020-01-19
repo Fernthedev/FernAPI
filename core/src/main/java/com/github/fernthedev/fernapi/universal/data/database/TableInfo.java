@@ -1,5 +1,6 @@
 package com.github.fernthedev.fernapi.universal.data.database;
 
+import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseException;
 import com.github.fernthedev.fernapi.universal.mysql.DatabaseManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -55,7 +56,7 @@ public class TableInfo {
      * @param databaseManager
      * @return {@link DatabaseManager#getTable(String, RowDataTemplate)}
      */
-    public TableInfo getFromDatabase(DatabaseManager databaseManager) {
+    public TableInfo getFromDatabase(DatabaseManager databaseManager) throws DatabaseException {
         rowDataList = databaseManager.getTable(tableName, rowDataTemplate).getRowDataList();
         return this;
     }

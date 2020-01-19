@@ -1,6 +1,7 @@
 package com.github.fernthedev.fernapi.universal;
 
-import com.github.fernthedev.fernapi.universal.api.IFPlayer;
+import com.github.fernthedev.fernapi.universal.api.ILocale;
+import com.github.fernthedev.fernapi.universal.api.Locale;
 import com.github.fernthedev.fernapi.universal.data.network.IPMessageHandler;
 import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
 import com.github.fernthedev.fernapi.universal.exceptions.setup.IncorrectSetupException;
@@ -10,8 +11,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
-import java.util.UUID;
-
 
 public class Universal {
 
@@ -20,6 +19,8 @@ public class Universal {
     private static boolean setup = false;
 
     private static Universal instance = null;
+
+    public static ILocale locale = new Locale();
 
     @Getter
     @Setter
