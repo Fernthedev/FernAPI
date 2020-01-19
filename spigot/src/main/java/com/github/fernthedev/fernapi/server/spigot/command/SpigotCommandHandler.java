@@ -2,6 +2,7 @@ package com.github.fernthedev.fernapi.server.spigot.command;
 
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.UniversalCommand;
+import com.github.fernthedev.fernapi.universal.exceptions.command.PluginYMLMustDefineCommand;
 import com.github.fernthedev.fernapi.universal.handlers.CommandHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,6 +16,9 @@ import java.util.List;
 public class SpigotCommandHandler extends CommandHandler {
     @Override
     public void registerFernCommand(UniversalCommand ucommand) {
+        if(Bukkit.getPluginCommand(ucommand.getName()) == null) throw new PluginYMLMustDefineCommand("Null exception is usually caused by plugin.yml not defining the command which in this case is " + ucommand.getName() + ". You must have it defined in your plugin.yml for it to work.");
+
+
         Bukkit.getPluginCommand(ucommand.getName()).setExecutor(new CommandInstance(ucommand));
     }
 
