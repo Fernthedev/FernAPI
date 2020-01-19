@@ -103,6 +103,29 @@ public abstract class UniversalCommand {
     }
 
     /**
+     * Just an example or a default usage of executing arguments.
+     * Use it as a base or just run the code
+     * @param sender
+     * @param args
+     */
+    protected void executeArguments(CommandSender sender, String[] args){
+        try {
+            Argument argument = handleArguments(sender, args[0]);
+            argument.getArgumentRunnable().run(sender, Arrays.copyOfRange(args, 1, args.length));
+        } catch (ArgumentNotFoundException e) {
+
+            String parentArg = e.getArgumentInfo().getParentArgument() == null ? null : e.getArgumentInfo().getParentArgument().getName();
+
+            sender.sendMessage(message("&cWrong arguments received \""
+                            + e.getArgumentInfo().getProvidedArg() + "\" is not valid " + (
+                            parentArg != null ? ("for " + parentArg) : ""
+                    ) + ". "
+                            + e.getArgumentInfo().getPossibleArguments().stream().map(Argument::getName).collect(Collectors.toList()))
+            );
+        }
+    }
+
+    /**
      * A shortcut to {@link #handleArguments(CommandSender, List, String)} for instances
      */
     protected Argument handleArguments(CommandSender sender, String arg) {
@@ -110,6 +133,10 @@ public abstract class UniversalCommand {
     }
 
     /**
+     * Returns the argument that matches arg
+     * You can then call {@link Argument#execute(CommandSender, String[])} to execute the argument though
+     * it is recommended you skip the first argument in the array if
+     * using the same array to prevent {@link StackOverflowError}
      *
      * @param sender The sender to check
      * @param arguments The valid arguments to use
@@ -245,6 +272,9 @@ public abstract class UniversalCommand {
         public Argument(@NonNull String name, @Nullable ArgumentRunnable argumentRunnable, @Nullable Argument... innerArguments) {
             this.name = name;
             this.innerArguments = Arrays.asList(innerArguments != null ? innerArguments : new Argument[0]);
+
+            if (argumentRunnable == null && innerArguments == null) throw new NullPointerException("Both argumentRunnable and innerArguments cannot be null." +
+                    " Provide inner arguments to make a category or provide an argument runnable to run code when argument is called");
 
             if(argumentRunnable == null) this.argumentRunnable = defaultArgument(this.innerArguments);
             else this.argumentRunnable = argumentRunnable;
