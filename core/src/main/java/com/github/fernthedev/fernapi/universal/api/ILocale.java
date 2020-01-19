@@ -8,6 +8,8 @@ package com.github.fernthedev.fernapi.universal.api;
  */
 public interface ILocale {
 
+    String noPermission(String permission, UniversalCommand command);
+
     String noPermission(UniversalCommand command);
 
 }

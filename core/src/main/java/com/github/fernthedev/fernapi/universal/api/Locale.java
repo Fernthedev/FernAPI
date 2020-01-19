@@ -10,9 +10,14 @@ public class Locale implements ILocale {
 
 
     @Override
-    public String noPermission(UniversalCommand universalCommand) {
+    public String noPermission(String permission, UniversalCommand command) {
         return "&cYou do not have permission (%permission%) to execute %command%"
-                .replace("%permission", universalCommand.getPermission())
-                .replace("%command%", universalCommand.getName());
+                .replace("%permission", permission)
+                .replace("%command%", command.getName());
+    }
+
+    @Override
+    public String noPermission(UniversalCommand universalCommand) {
+        return noPermission(universalCommand.getPermission(), universalCommand);
     }
 }
