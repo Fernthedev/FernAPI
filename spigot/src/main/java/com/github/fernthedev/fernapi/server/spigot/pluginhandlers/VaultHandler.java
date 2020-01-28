@@ -23,21 +23,14 @@ public class VaultHandler {
         hooked = true;
     }
 
+    @Getter
     private static Economy econ = null;
-    private static Permission perms = null;
+
+    @Getter
+    private static Permission permissions = null;
+
+    @Getter
     private static Chat chat = null;
-
-    public static Economy getEconomy() {
-        return econ;
-    }
-
-    public static Permission getPermissions() {
-        return perms;
-    }
-
-    public static Chat getChat() {
-        return chat;
-    }
 
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
@@ -59,7 +52,8 @@ public class VaultHandler {
 
     private boolean setupPermissions() {
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        perms = rsp.getProvider();
-        return perms != null;
+        permissions = rsp.getProvider();
+        return permissions != null;
     }
+
 }
