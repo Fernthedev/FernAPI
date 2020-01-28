@@ -2,6 +2,7 @@ package com.github.fernthedev.fernapi.universal;
 
 import com.github.fernthedev.fernapi.universal.api.ILocale;
 import com.github.fernthedev.fernapi.universal.api.Locale;
+import com.github.fernthedev.fernapi.universal.api.URLGit;
 import com.github.fernthedev.fernapi.universal.data.network.IPMessageHandler;
 import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
 import com.github.fernthedev.fernapi.universal.exceptions.setup.IncorrectSetupException;
@@ -11,7 +12,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
-
+/**
+ * Holds most of the core api
+ */
 public class Universal {
 
     private Universal() {}
@@ -64,7 +67,7 @@ public class Universal {
     protected static void checkNull() {
         if(mi == null || !setup) {
             try {
-                throw new IncorrectSetupException("You have not setup the API correctly. Check this for more info: https://github.com/Fernthedev/FernAPI/blob/master/error/incorrectsetup.md",new NullPointerException());
+                throw new IncorrectSetupException("You have not setup the API correctly. Check this for more info: " + URLGit.INCORRECT_SETUP, new NullPointerException());
             } catch (IncorrectSetupException e) {
                 e.printStackTrace();
             }
