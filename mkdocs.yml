@@ -1,2 +1,7 @@
+site_name: FernAPI
+repo_url: https://github.com/Fernthedev/FernAPI/
+site_author: Fernthedev
+site_description: An API
+copyright: Fernthedev
 theme:
   name: 'rtd-dropdown'
