@@ -2,6 +2,7 @@ package com.github.fernthedev.fernapi.universal;
 
 import com.github.fernthedev.fernapi.universal.api.ILocale;
 import com.github.fernthedev.fernapi.universal.api.Locale;
+import com.github.fernthedev.fernapi.universal.api.PluginData;
 import com.github.fernthedev.fernapi.universal.api.URLGit;
 import com.github.fernthedev.fernapi.universal.data.network.IPMessageHandler;
 import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
@@ -23,14 +24,16 @@ public class Universal {
 
     private static Universal instance = null;
 
-    public static ILocale locale = new Locale();
+    @Getter
+    @Setter
+    private static ILocale locale = new Locale();
 
     @Getter
     @Setter
     private static boolean debug = false;
 
     private static MethodInterface<?> mi;
-    private static IChatHandler ch;
+    private static IChatHandler<?> ch;
     private static IPMessageHandler mh;
     private static DatabaseHandler db;
     private static CommandHandler comhand;
@@ -39,14 +42,19 @@ public class Universal {
 
     private static FernAPIPlugin plugin;
 
+    @Getter
+    private static PluginData<?> pluginData;
+
 
     public static Universal getInstance() {
         return instance == null ? instance = new Universal() : instance;
     }
 
     public void setup(@NonNull MethodInterface<?> methodInterface, FernAPIPlugin aplugin,
-                      IChatHandler chatHandler, IPMessageHandler messageHandler, DatabaseHandler databaseHandler,
-                      CommandHandler commandHandler, NetworkHandler networkHandler, IScheduler<?,?> iScheduler) {
+                      IChatHandler<?> chatHandler, IPMessageHandler messageHandler, DatabaseHandler databaseHandler,
+                      CommandHandler commandHandler, NetworkHandler networkHandler, IScheduler<?,?> iScheduler,
+                      PluginData<?> pluginData
+    ) {
         if (setup) throw new FernRuntimeException("The interface has already been registered.");
 
 
@@ -60,7 +68,7 @@ public class Universal {
         plugin = aplugin;
         nh = networkHandler;
         sh = iScheduler;
-
+        Universal.pluginData = pluginData;
     }
 
 

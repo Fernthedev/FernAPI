@@ -3,6 +3,7 @@ package com.github.fernthedev.fernapi.server.sponge;
 import com.github.fernthedev.fernapi.server.sponge.chat.SpongeChatHandler;
 import com.github.fernthedev.fernapi.server.sponge.command.SpongeCommandHandler;
 import com.github.fernthedev.fernapi.server.sponge.database.SpongeDatabase;
+import com.github.fernthedev.fernapi.server.sponge.interfaces.SpongePluginData;
 import com.github.fernthedev.fernapi.server.sponge.network.SpongeMessageHandler;
 import com.github.fernthedev.fernapi.server.sponge.network.SpongeNetworkHandler;
 import com.github.fernthedev.fernapi.server.sponge.scheduler.SpongeScheduler;
@@ -25,7 +26,7 @@ import java.nio.file.Path;
 // Imports for logger
 
 
-@Plugin(id = "fernapi", name = "FernAPI", version = "1.0", description = "A com.github.fernthedev.fernapi.com.github.fernthedev.fernapi.universal API")
+@Plugin(id = "fernapi", name = "FernAPI", version = "1.0", description = "A universal API")
 public class FernSpongeAPI implements FernAPIPlugin {
 
     @Inject
@@ -35,6 +36,8 @@ public class FernSpongeAPI implements FernAPIPlugin {
     @Inject
     @DefaultConfig(sharedRoot = true)
     protected Path defaultConfig;
+
+
 
     @Inject
     @DefaultConfig(sharedRoot = true)
@@ -53,7 +56,8 @@ public class FernSpongeAPI implements FernAPIPlugin {
                 new SpongeMessageHandler(this),
                 new SpongeDatabase(this),new SpongeCommandHandler(this),
                 new SpongeNetworkHandler(),
-                new SpongeScheduler(this));
+                new SpongeScheduler(this),
+                new SpongePluginData());
     }
 
     @Listener

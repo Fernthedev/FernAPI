@@ -3,6 +3,7 @@ package com.github.fernthedev.fernapi.server.spigot;
 import com.github.fernthedev.fernapi.server.spigot.chat.SpigotChatHandler;
 import com.github.fernthedev.fernapi.server.spigot.command.SpigotCommandHandler;
 import com.github.fernthedev.fernapi.server.spigot.database.SpigotDatabase;
+import com.github.fernthedev.fernapi.server.spigot.interfaces.SpigotPluginData;
 import com.github.fernthedev.fernapi.server.spigot.network.PlaceHolderAPI.PlaceHolderAPIResponder;
 import com.github.fernthedev.fernapi.server.spigot.network.SpigotMessageHandler;
 import com.github.fernthedev.fernapi.server.spigot.network.SpigotNetworkHandler;
@@ -30,7 +31,8 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
                 new SpigotMessageHandler(this),
                 new SpigotDatabase(this),new SpigotCommandHandler(),
                 new SpigotNetworkHandler(),
-                new SpigotScheduler(this));
+                new SpigotScheduler(this),
+                new SpigotPluginData(getDescription()));
 //        UUIDFetcher.setFetchManager(new UUIDSpigot());
 
         Universal.getMessageHandler().registerMessageHandler(new PlaceHolderAPIResponder(this));

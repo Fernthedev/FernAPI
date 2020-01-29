@@ -94,3 +94,4 @@ hs_err_pid*
 
 !/.gitignore
 !/.gitignore
+/.idea/sonarlint/issuestore/
