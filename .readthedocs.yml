@@ -8,8 +8,8 @@ version: 2
 # Build documentation in the docs/ directory with Sphinx
 mkdocs:
   configuration: mkdocs.yml
-  submodules:
-    include: all
+#  submodules:
+#    include: all
   recursive: true
 
 # Build documentation with MkDocs
