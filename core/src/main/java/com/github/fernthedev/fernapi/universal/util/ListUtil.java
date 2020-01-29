@@ -5,9 +5,13 @@ import lombok.Getter;
 
 import java.util.*;
 
-public class Sorter {
+public class ListUtil {
 
-    public static List<DateObject> sortNewest(HashMap<Date,Object> oldList) {
+    public static boolean containsString(List<String> strings, String string) {
+        return strings.parallelStream().anyMatch(s -> s.equals(string));
+    }
+    
+    public static List<DateObject> sortNewest(Map<Date,Object> oldList) {
 
         List<DateObject> dateObjects = new ArrayList<>();
 
@@ -23,7 +27,7 @@ public class Sorter {
         return oldList;
     }
 
-    public static List<DateObject> sortOldest(HashMap<Date,Object> oldList) {
+    public static List<DateObject> sortOldest(Map<Date,Object> oldList) {
 
         List<DateObject> dateObjects = new ArrayList<>();
 
