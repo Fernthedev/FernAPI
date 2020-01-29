@@ -9,6 +9,7 @@ import com.github.fernthedev.fernapi.server.spigot.network.SpigotNetworkHandler;
 import com.github.fernthedev.fernapi.server.spigot.pluginhandlers.VaultHandler;
 import com.github.fernthedev.fernapi.server.spigot.scheduler.SpigotScheduler;
 import com.github.fernthedev.fernapi.universal.Universal;
+import com.github.fernthedev.fernapi.universal.util.ListUtil;
 import com.github.fernthedev.fernapi.universal.util.network.vanish.VanishProxyCheck;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import lombok.Getter;
@@ -33,7 +34,12 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
 //        UUIDFetcher.setFetchManager(new UUIDSpigot());
 
         Universal.getMessageHandler().registerMessageHandler(new PlaceHolderAPIResponder(this));
-        if(Bukkit.getPluginManager().isPluginEnabled("Vault")) {
+
+        if (Bukkit.getPluginManager().isPluginEnabled(VaultHandler.VAULT_PLUGIN_NAME) && (!ListUtil.containsString(getDescription().getSoftDepend(), VaultHandler.VAULT_PLUGIN_NAME) && !ListUtil.containsString(getDescription().getDepend(), VaultHandler.VAULT_PLUGIN_NAME))) {
+            Universal.debug("[WARNING/CAN BE IGNORED] Vault is enabled though not added to soft dependencies or dependencies in plugin.yml. If you want to use VaultHandler which is included in the FernSpigotAPI you must add it to your dependencies/soft dependencies.");
+        }
+
+        if(Bukkit.getPluginManager().isPluginEnabled(VaultHandler.VAULT_PLUGIN_NAME) && (ListUtil.containsString(getDescription().getSoftDepend(), VaultHandler.VAULT_PLUGIN_NAME) || ListUtil.containsString(getDescription().getDepend(), VaultHandler.VAULT_PLUGIN_NAME))) {
             vaultHandler = new VaultHandler();
 
             vaultHandler.hook();

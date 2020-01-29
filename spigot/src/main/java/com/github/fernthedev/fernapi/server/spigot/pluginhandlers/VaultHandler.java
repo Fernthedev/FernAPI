@@ -11,6 +11,8 @@ import static org.bukkit.Bukkit.getServer;
 
 public class VaultHandler {
 
+    public static final String VAULT_PLUGIN_NAME = "Vault";
+
     @Getter
     private static boolean hooked = false;
 
