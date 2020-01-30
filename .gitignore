@@ -95,3 +95,15 @@ hs_err_pid*
 !/.gitignore
 !/.gitignore
 /.idea/sonarlint/issuestore/
+
+core/build/
+
+bungee/build/
+
+all/build/
+
+velocity/build/
+
+spigot/build/
+
+sponge/build/
