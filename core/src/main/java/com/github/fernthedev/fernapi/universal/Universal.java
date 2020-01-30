@@ -1,7 +1,7 @@
 package com.github.fernthedev.fernapi.universal;
 
 import com.github.fernthedev.fernapi.universal.api.ILocale;
-import com.github.fernthedev.fernapi.universal.api.Locale;
+import com.github.fernthedev.fernapi.universal.api.DefaultLocale;
 import com.github.fernthedev.fernapi.universal.api.PluginData;
 import com.github.fernthedev.fernapi.universal.api.URLGit;
 import com.github.fernthedev.fernapi.universal.data.network.IPMessageHandler;
@@ -26,7 +26,8 @@ public class Universal {
 
     @Getter
     @Setter
-    private static ILocale locale = new Locale();
+    @NonNull
+    private static ILocale locale = new DefaultLocale();
 
     @Getter
     @Setter

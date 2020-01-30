@@ -51,7 +51,7 @@ public class SpongeCommandHandler extends CommandHandler {
 
                 command.execute(Universal.getMethods().convertCommandSenderToAPISender(source), arguments.split(" "));
             } else {
-                TextMessage textMessage = new TextMessage(Universal.locale.noPermission(command));
+                TextMessage textMessage = new TextMessage(Universal.getLocale().noPermission(command));
                 source.sendMessage((Text) Universal.getChatHandler().parseComponent(textMessage));
             }
             return CommandResult.success();

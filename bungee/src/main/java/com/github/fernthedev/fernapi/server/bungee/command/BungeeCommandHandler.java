@@ -47,7 +47,7 @@ public class BungeeCommandHandler extends CommandHandler {
             if (sender.hasPermission(ucommand.getPermission())) {
                 ucommand.execute(Universal.getMethods().convertCommandSenderToAPISender(sender), args);
             } else {
-                TextMessage textMessage = new TextMessage(Universal.locale.noPermission(ucommand));
+                TextMessage textMessage = new TextMessage(Universal.getLocale().noPermission(ucommand));
                 sender.sendMessage((BaseComponent) Universal.getChatHandler().parseComponent(textMessage));
             }
         }

@@ -36,7 +36,7 @@ public class SpigotCommandHandler extends CommandHandler {
                 ucommand.execute(Universal.getMethods().convertCommandSenderToAPISender(sender), args);
             } else {
                 sender.sendMessage(
-                        ChatColor.translateAlternateColorCodes('&', Universal.locale.noPermission(ucommand)
+                        ChatColor.translateAlternateColorCodes('&', Universal.getLocale().noPermission(ucommand)
                         ));
             }
             return true;

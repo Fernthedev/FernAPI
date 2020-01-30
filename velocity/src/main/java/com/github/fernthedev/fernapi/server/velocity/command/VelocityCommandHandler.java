@@ -33,7 +33,7 @@ public class VelocityCommandHandler extends CommandHandler {
                 if(source.hasPermission(ucommand.getPermission())) {
                     ucommand.execute(Universal.getMethods().convertCommandSenderToAPISender(source), args);
                 } else {
-                    TextMessage textMessage = new TextMessage(Universal.locale.noPermission(ucommand));
+                    TextMessage textMessage = new TextMessage(Universal.getLocale().noPermission(ucommand));
                     source.sendMessage((Component) Universal.getChatHandler().parseComponent(textMessage));
                 }
             }
