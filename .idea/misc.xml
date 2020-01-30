@@ -3,11 +3,10 @@
   <component name="EntryPointsManager">
     <list size="4">
       <item index="0" class="java.lang.String" itemvalue="net.md_5.bungee.event.EventHandler" />
-      <item index="1" class="java.lang.String" itemvalue="org.bukkit.event.EventHandler" />
-      <item index="2" class="java.lang.String" itemvalue="org.spongepowered.api.event.Listener" />
-      <item index="3" class="java.lang.String" itemvalue="org.spongepowered.api.plugin.Plugin" />
+      <item index="1" class="java.lang.String" itemvalue="org.spongepowered.api.event.Listener" />
+      <item index="2" class="java.lang.String" itemvalue="org.spongepowered.api.plugin.Plugin" />
+      <item index="3" class="java.lang.String" itemvalue="org.bukkit.event.EventHandler" />
     </list>
   </component>
-  <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="11 OpenJDK" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11 OpenJDK" project-jdk-type="JavaSDK" />
 </project>

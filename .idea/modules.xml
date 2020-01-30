@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/FernAPI.iml" filepath="$PROJECT_DIR$/.idea/FernAPI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/all/FernAPI.all.iml" filepath="$PROJECT_DIR$/.idea/modules/all/FernAPI.all.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/all/FernAPI.all.main.iml" filepath="$PROJECT_DIR$/.idea/modules/all/FernAPI.all.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/all/FernAPI.all.test.iml" filepath="$PROJECT_DIR$/.idea/modules/all/FernAPI.all.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bungee/FernAPI.bungee.iml" filepath="$PROJECT_DIR$/.idea/modules/bungee/FernAPI.bungee.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bungee/FernAPI.bungee.main.iml" filepath="$PROJECT_DIR$/.idea/modules/bungee/FernAPI.bungee.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bungee/FernAPI.bungee.test.iml" filepath="$PROJECT_DIR$/.idea/modules/bungee/FernAPI.bungee.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/FernAPI.core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/FernAPI.core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/FernAPI.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/FernAPI.core.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/FernAPI.core.test.iml" filepath="$PROJECT_DIR$/.idea/modules/core/FernAPI.core.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FernAPI.main.iml" filepath="$PROJECT_DIR$/.idea/modules/FernAPI.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot/FernAPI.spigot.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot/FernAPI.spigot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot/FernAPI.spigot.main.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot/FernAPI.spigot.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/spigot/FernAPI.spigot.test.iml" filepath="$PROJECT_DIR$/.idea/modules/spigot/FernAPI.spigot.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sponge/FernAPI.sponge.iml" filepath="$PROJECT_DIR$/.idea/modules/sponge/FernAPI.sponge.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sponge/FernAPI.sponge.main.iml" filepath="$PROJECT_DIR$/.idea/modules/sponge/FernAPI.sponge.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sponge/FernAPI.sponge.test.iml" filepath="$PROJECT_DIR$/.idea/modules/sponge/FernAPI.sponge.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FernAPI.test.iml" filepath="$PROJECT_DIR$/.idea/modules/FernAPI.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/velocity/FernAPI.velocity.iml" filepath="$PROJECT_DIR$/.idea/modules/velocity/FernAPI.velocity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/velocity/FernAPI.velocity.main.iml" filepath="$PROJECT_DIR$/.idea/modules/velocity/FernAPI.velocity.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/velocity/FernAPI.velocity.test.iml" filepath="$PROJECT_DIR$/.idea/modules/velocity/FernAPI.velocity.test.iml" />
+    </modules>
+  </component>
+</project>
