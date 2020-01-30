@@ -41,5 +41,19 @@
         <module name="FernAPI.velocity.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="FernAPI.all.main" target="1.8" />
+      <module name="FernAPI.all.test" target="1.8" />
+      <module name="FernAPI.bungee.main" target="1.8" />
+      <module name="FernAPI.bungee.test" target="1.8" />
+      <module name="FernAPI.core.main" target="1.8" />
+      <module name="FernAPI.core.test" target="1.8" />
+      <module name="FernAPI.spigot.main" target="1.8" />
+      <module name="FernAPI.spigot.test" target="1.8" />
+      <module name="FernAPI.sponge.main" target="1.8" />
+      <module name="FernAPI.sponge.test" target="1.8" />
+      <module name="FernAPI.velocity.main" target="1.8" />
+      <module name="FernAPI.velocity.test" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

@@ -1,4 +1,4 @@
-package com.github.fernthedev.fernapi.universal.examples;
+package com.github.fernthedev.fernapi.universal.examples.mysql;
 
 
 import com.github.fernthedev.fernapi.universal.api.CommandSender;

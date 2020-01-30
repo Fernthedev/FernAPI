@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="4">
-  <component name="ExternalSystem" externalSystem="GRADLE" externalSystemModuleGroup="com.github.Fernthedev" externalSystemModuleType="sourceSet" externalSystemModuleVersion="1.9b9" linkedProjectId="FernAPI:test" linkedProjectPath="$MODULE_DIR$/../.." rootProjectPath="$MODULE_DIR$/../.." />
+  <component name="ExternalSystem" externalSystem="GRADLE" externalSystemModuleGroup="com.github.Fernthedev" externalSystemModuleType="sourceSet" externalSystemModuleVersion="1.9.0-beta9" linkedProjectId="FernAPI:test" linkedProjectPath="$MODULE_DIR$/../.." rootProjectPath="$MODULE_DIR$/../.." />
   <component name="FacetManager">
     <facet type="kotlin-language" name="Kotlin">
       <configuration version="3" platform="JVM 1.6" allPlatforms="JVM [1.6]" useProjectSettings="false">
