@@ -13,12 +13,14 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    - name: Change wrapper permissions
+      run: chmod +x ./gradlew
     - name: Build with Gradle
       run: ./gradlew clean build
-    - name: Upload artifact
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        # Artifact name
-        name: Jar Files
-        # Directory containing files to upload
-        path: ./build/libs
+#    - name: Upload artifact
+#      uses: actions/upload-artifact@v1.0.0
+#      with:
+#        # Artifact name
+#        name: Jar Files
+#        # Directory containing files to upload
+#        path: ./build/libs
