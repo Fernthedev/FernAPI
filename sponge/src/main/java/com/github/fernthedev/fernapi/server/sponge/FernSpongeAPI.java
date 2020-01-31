@@ -14,6 +14,7 @@ import lombok.Getter;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
@@ -50,6 +51,7 @@ public class FernSpongeAPI implements FernAPIPlugin {
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
         getLogger().info("Registered FernAPI Sponge");
+
         Universal.getInstance().setup(new SpongeInterface(this),
                 this,
                 new SpongeChatHandler(),
@@ -57,7 +59,7 @@ public class FernSpongeAPI implements FernAPIPlugin {
                 new SpongeDatabase(this),new SpongeCommandHandler(this),
                 new SpongeNetworkHandler(),
                 new SpongeScheduler(this),
-                new SpongePluginData());
+                new SpongePluginData(Sponge.getPluginManager().fromInstance(this).orElseThrow(() -> new IllegalStateException("Plugin container was not registered in Plugin Manager for some reason")), this));
     }
 
     @Listener
