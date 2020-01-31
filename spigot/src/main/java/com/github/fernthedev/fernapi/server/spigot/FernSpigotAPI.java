@@ -38,7 +38,7 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
         Universal.getMessageHandler().registerMessageHandler(new PlaceHolderAPIResponder(this));
 
         if (Bukkit.getPluginManager().isPluginEnabled(VaultHandler.VAULT_PLUGIN_NAME) && (!ListUtil.containsString(getDescription().getSoftDepend(), VaultHandler.VAULT_PLUGIN_NAME) && !ListUtil.containsString(getDescription().getDepend(), VaultHandler.VAULT_PLUGIN_NAME))) {
-            Universal.debug("[WARNING/CAN BE IGNORED] Vault is enabled though not added to soft dependencies or dependencies in plugin.yml. If you want to use VaultHandler which is included in the FernSpigotAPI you must add it to your dependencies/soft dependencies.");
+            Universal.debug("[WARNING/CAN BE IGNORED] Vault has been enabled though not added to soft dependencies or dependencies in plugin.yml. If you want to use VaultHandler which is included in the FernSpigotAPI you must add it to your dependencies/soft dependencies.");
         }
 
         if(Bukkit.getPluginManager().isPluginEnabled(VaultHandler.VAULT_PLUGIN_NAME) && (ListUtil.containsString(getDescription().getSoftDepend(), VaultHandler.VAULT_PLUGIN_NAME) || ListUtil.containsString(getDescription().getDepend(), VaultHandler.VAULT_PLUGIN_NAME))) {

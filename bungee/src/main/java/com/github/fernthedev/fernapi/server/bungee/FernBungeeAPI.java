@@ -17,6 +17,7 @@ public class FernBungeeAPI extends Plugin implements FernAPIPlugin {
 
     @Override
     public void onEnable() {
+        getLogger().info("Registered FernAPI Bungee");
         BungeeMessageHandler messageHandler = new BungeeMessageHandler(this);
         Universal.getInstance().setup(new BungeeInterface(this),
                 this,

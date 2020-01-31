@@ -10,3 +10,5 @@ theme:
         - yaml
         - rust
         - java
+        - gradle
+        - xml

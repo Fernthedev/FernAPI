@@ -236,34 +236,6 @@ public interface PluginData<T> {
     List<String> getSoftDepend();
 
     /**
-     * Gets the list of plugins that should consider this plugin a
-     * soft-dependency.
-     * <ul>
-     * <li>Use the value in the {@link #getName()} of the target plugin to
-     *     specify the dependency.
-     * <li>The plugin should load before any other plugins listed here.
-     * <li>Specifying another plugin here is strictly equivalent to having the
-     *     specified plugin's {@link #getSoftDepend()} include {@link
-     *     #getName() this plugin}.
-     * <li><code>loadbefore</code> must be in <a
-     *     href="http://en.wikipedia.org/wiki/YAML#Lists">YAML list
-     *     format</a>.
-     * </ul>
-     * <p>
-     * In the plugin.yml, this entry is named <code>loadbefore</code>.
-     * <p>
-     * Example:
-     * <blockquote><pre>loadbefore:
-     *- OnePlugin
-     *- AnotherPlugin</pre></blockquote>
-     *
-     * @return immutable list of plugins that should consider this plugin a
-     *     soft-dependency
-     */
-    @NotNull
-    List<String> getLoadBefore();
-
-    /**
      * Gives the token to prefix plugin-specific logging messages with.
      * <ul>
      * <li>This includes all messages using {@link java.util.logging.Logger} ()}.
