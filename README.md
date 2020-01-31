@@ -6,7 +6,7 @@ This is a runtime API that works as a compability layer for multiple server plat
 [![Release](https://jitpack.io/v/Fernthedev/FernAPI.svg)](https://jitpack.io/#Fernthedev/FernAPI)
 [![CircleCI](https://circleci.com/gh/Fernthedev/FernAPI.svg?style=svg)](https://circleci.com/gh/Fernthedev/FernAPI)
 [![Jitpack](https://jitci.com/gh/Fernthedev/FernAPI/svg)](https://jitci.com/gh/Fernthedev/FernAPI)
-[![Build Status](https://dev.azure.com/Fernthedev/FernAPI/_apis/build/status/Fernthedev.FernAPI?branchName=master)](https://dev.azure.com/Fernthedev/FernAPI/_build/latest?definitionId=5&branchName=master)
+[![Build Status](https://dev.azure.com/Fernthedev/FernAPI/_apis/build/status/Fernthedev.FernAPI?branchName=stable)](https://dev.azure.com/Fernthedev/FernAPI/_build/latest?definitionId=5&branchName=stable)
 ![Java CI](https://github.com/Fernthedev/FernAPI/workflows/Java%20CI/badge.svg)
 
 Check out [the docs](https://fernapi.readthedocs.io/en/stable/) for more info. You may see the current branch docs [here](docs/)
