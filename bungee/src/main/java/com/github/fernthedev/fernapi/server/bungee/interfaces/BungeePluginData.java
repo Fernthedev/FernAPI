@@ -46,7 +46,7 @@ public class BungeePluginData implements PluginData<PluginDescription> {
      *     'MyPlugin.jar'.
      * <li>Case sensitive.
      * <li>The is the token referenced in {@link #getDepend()}, {@link
-     *     #getSoftDepend()}, and {@link #getLoadBefore()}.
+     *     #getSoftDepend()}.
      * <li>Using spaces in the plugin's name is deprecated.
      * </ul>
      * <p>
@@ -140,8 +140,7 @@ public class BungeePluginData implements PluginData<PluginDescription> {
      * <li>Possible values are in {@link PluginLoadOrder}.
      * <li>Defaults to {@link PluginLoadOrder#POSTWORLD}.
      * <li>Certain caveats apply to each phase.
-     * <li>When different, {@link #getDepend()}, {@link #getSoftDepend()}, and
-     *     {@link #getLoadBefore()} become relative in order loaded per-phase.
+     * <li>When different, {@link #getDepend()}, {@link #getSoftDepend()}.
      *     If a plugin loads at <code>STARTUP</code>, but a dependency loads
      *     at <code>POSTWORLD</code>, the dependency will not be loaded before
      *     the plugin is loaded.
