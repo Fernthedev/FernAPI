@@ -46,10 +46,81 @@ allprojects {
     group = 'com.github.Fernthedev'
 //    version = versioning.info.full
     project.ext.beta_version = '9' // Only modify when beta
-    version = "1.9.0-beta${project.beta_version}"
     description = 'An API for universal code'
 
+    versioning {
+        /**
+         * Defines the SCM to use in order to collect information.
+         *
+         * At the moment, only Git (git) and Subversion (svn) are supported.
+         */
+        scm = 'git'
 
+        /**
+         * Fetch branch name from environment variables. Useful when using CI like
+         * Travis or Jenkins.
+         */
+        branchEnv = ['TRAVIS_BRANCH', 'GIT_BRANCH', 'SVN_BRANCH', 'BRANCH_NAME']
+        /**
+         * Computation of the full version
+         */
+        full = {
+            scmInfo ->
+
+                GString suffix = "${scmInfo.branch}"
+
+                if (suffix == 'beta') suffix += "${project.beta_version}"
+
+                GString num = scmInfo.tag != null ? "${scmInfo.tag}" : "${scmInfo.abbreviated}.h-${suffix}"
+
+                return "${num}"
+
+        }
+
+        releaseMode = 'snapshot'
+        snapshot = '-beta'
+//        displayMode = 'snapshot'
+
+        /**
+         * Dirty mode.
+         *
+         * Closure that takes a version (display or full) and processes it to produce a <i>dirty</i>
+         * indicator. By default, it appends the dirtySuffix value to the version.
+         */
+        dirty = { version -> "${version}" }
+
+        /**
+         * Default dirty suffix
+         */
+        dirtySuffix = ''
+
+        /**
+         * If set to true, the build will fail if working copy is dirty and if the branch type is
+         * part of the releases list ("release" only by default).
+         */
+        dirtyFailOnReleases = false
+
+        /**
+         * If set to true, no warning will be printed in case the workspace is dirty. Default is
+         * to print a warning.
+         */
+        noWarningOnDirty = false
+
+        /**
+         * Set of eligible branch types for computing a display version from the branch base name
+         */
+        releases = ['release', 'stable']
+        /**
+         * Pattern used to match when looking for the last tag. By default, checks for any
+         * tag having a last part being numeric. At least one numeric grouping
+         * expression is required. The first one will be used to reverse order
+         * the tags in Git.
+         */
+        lastTagPattern = /(\d+)$/
+    }
+
+
+    version = !versioning.info.dirty ? versioning.info.full : "1.9.0-beta${project.beta_version}"
 
     repositories {
         flatDir {
@@ -128,78 +199,7 @@ allprojects {
         }
     }
 
-    versioning {
-        /**
-         * Defines the SCM to use in order to collect information.
-         *
-         * At the moment, only Git (git) and Subversion (svn) are supported.
-         */
-        scm = 'git'
 
-        /**
-         * Fetch branch name from environment variables. Useful when using CI like
-         * Travis or Jenkins.
-         */
-        branchEnv = ['TRAVIS_BRANCH', 'GIT_BRANCH', 'SVN_BRANCH', 'BRANCH_NAME']
-        /**
-         * Computation of the full version
-         */
-        full = {
-            scmInfo ->
-
-                GString suffix = "${scmInfo.branch}"
-
-                if (suffix == 'beta') suffix += "${project.beta_version}"
-
-                GString num = scmInfo.tag != null ? "${scmInfo.tag}" : "${scmInfo.abbreviated}.h-${suffix}"
-
-                return "${num}"
-
-        }
-
-        releaseMode = 'snapshot'
-        snapshot = '-beta'
-//        displayMode = 'snapshot'
-
-        /**
-         * Dirty mode.
-         *
-         * Closure that takes a version (display or full) and processes it to produce a <i>dirty</i>
-         * indicator. By default, it appends the dirtySuffix value to the version.
-         */
-        dirty = { version -> "${version}" }
-
-        /**
-         * Default dirty suffix
-         */
-        dirtySuffix = ''
-
-        /**
-         * If set to true, the build will fail if working copy is dirty and if the branch type is
-         * part of the releases list ("release" only by default).
-         */
-        dirtyFailOnReleases = false
-
-        /**
-         * If set to true, no warning will be printed in case the workspace is dirty. Default is
-         * to print a warning.
-         */
-        noWarningOnDirty = false
-
-        /**
-         * Set of eligible branch types for computing a display version from the branch base name
-         */
-        releases = ['release', 'stable']
-        /**
-         * Pattern used to match when looking for the last tag. By default, checks for any
-         * tag having a last part being numeric. At least one numeric grouping
-         * expression is required. The first one will be used to reverse order
-         * the tags in Git.
-         */
-        lastTagPattern = /(\d+)$/
-    }
-
-    version = !versioning.info.dirty ? versioning.info.full : project.version
 
 
     javadoc {
