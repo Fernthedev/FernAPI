@@ -18,7 +18,7 @@
         </compilerSettings>
         <compilerArguments>
           <option name="destination" value="$MODULE_DIR$/../../build/classes/kotlin/main" />
-          <option name="classpath" value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.8/448003bc1b234aac04b58e27d7755c12c3ec4236/lombok-1.18.8.jar" />
+          <option name="classpath" value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.12/48e4e5d60309ebd833bc528dcf77668eab3cd72c/lombok-1.18.12.jar" />
           <option name="noStdlib" value="true" />
           <option name="noReflect" value="true" />
           <option name="moduleName" value="FernAPI" />
@@ -51,6 +51,6 @@
     <content url="file://$MODULE_DIR$/../../src/main" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.projectlombok:lombok:1.18.8" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.projectlombok:lombok:1.18.12" level="project" />
   </component>
 </module>

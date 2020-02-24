@@ -9,6 +9,7 @@
         </compilerSettings>
         <compilerArguments>
           <option name="destination" value="$MODULE_DIR$/../../build/classes/kotlin/test" />
+          <option name="classpath" value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.12/48e4e5d60309ebd833bc528dcf77668eab3cd72c/lombok-1.18.12.jar" />
           <option name="noStdlib" value="true" />
           <option name="noReflect" value="true" />
           <option name="moduleName" value="FernAPI" />
@@ -47,6 +48,7 @@
     <content url="file://$MODULE_DIR$/../../src/test" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.projectlombok:lombok:1.18.12" level="project" />
     <orderEntry type="module" module-name="FernAPI.main" />
   </component>
   <component name="TestModuleProperties" production-module="FernAPI.main" />
