@@ -45,7 +45,7 @@ allprojects {
 
     group = 'com.github.Fernthedev'
 //    version = versioning.info.full
-    project.ext.beta_version = '9' // Only modify when beta
+    project.ext.beta_version = '10' // Only modify when beta
     description = 'An API for universal code'
 
     versioning {
@@ -121,6 +121,21 @@ allprojects {
 
 
     version = !versioning.info.dirty ? versioning.info.full : "1.9.0-beta${project.beta_version}"
+
+
+    processResources {
+//        from 'resources'
+
+        inputs.property "fernapi_version", project.version
+
+        from(sourceSets.main.resources.srcDirs) {
+            include 'fernapi_version.json'
+
+
+            expand 'fernapi_version': project.version
+        }
+
+    }
 
     repositories {
         flatDir {

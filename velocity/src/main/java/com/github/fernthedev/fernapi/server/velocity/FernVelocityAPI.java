@@ -41,7 +41,6 @@ public class FernVelocityAPI implements FernAPIPlugin {
     protected final PluginContainer pluginContainer;
 
     public FernVelocityAPI(ProxyServer server, Logger logger) {
-        getLogger().info("Registered FernAPI Velocity");
         this.server = server;
         this.logger = logger;
 

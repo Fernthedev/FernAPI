@@ -24,7 +24,6 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
 
     @Override
     public void onEnable() {
-        getLogger().info("Registered FernAPI Spigot");
         Universal.getInstance().setup(new SpigotInterface(this),
                 this,
                 new SpigotChatHandler(),

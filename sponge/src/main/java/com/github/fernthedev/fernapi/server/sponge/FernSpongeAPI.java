@@ -50,8 +50,6 @@ public class FernSpongeAPI implements FernAPIPlugin {
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
-        getLogger().info("Registered FernAPI Sponge");
-
         Universal.getInstance().setup(new SpongeInterface(this),
                 this,
                 new SpongeChatHandler(),
