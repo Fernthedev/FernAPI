@@ -60,7 +60,7 @@ allprojects {
     dependencies {
         implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-        compileOnly 'org.projectlombok:lombok:1.18.8'
+        compileOnly 'org.projectlombok:lombok:1.18.12'
         annotationProcessor 'org.projectlombok:lombok:1.18.8'
     }
 
