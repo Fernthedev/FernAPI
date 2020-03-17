@@ -1,26 +1,36 @@
 package com.github.fernthedev.fernapi.server.sponge.interfaces;
 
+import com.github.fernthedev.fernapi.server.sponge.FernSpongeAPI;
 import com.github.fernthedev.fernapi.universal.api.PluginData;
 import com.github.fernthedev.fernapi.universal.api.PluginLoadOrder;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.plugin.meta.PluginDependency;
 
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
-// Todo: Finish
 @RequiredArgsConstructor
-public class SpongePluginData implements PluginData<Object> {
+public class SpongePluginData implements PluginData<PluginContainer> {
 
-    /**
+    @NonNull
+    private final PluginContainer pluginContainer;
+
+    @NonNull
+    private final FernSpongeAPI spongeAPI;
+
+    /**pl
      * @return the server specific instance. Use for checking equality or getting server-specific data
      */
     @Override
-    public Object getPluginDataInstance() {
-        return null;
+    public PluginContainer getPluginDataInstance() {
+        return pluginContainer;
     }
 
     /**
@@ -34,11 +44,11 @@ public class SpongePluginData implements PluginData<Object> {
      *     folders are placed in the ./plugins/ directory by default, but this
      *     behavior should not be relied on. {@link MethodInterface#getDataFolder()}
      *     should be used to reference the data folder.
-     * <li>It is good practice to name your jar the same as this, for example
+     * <li>It is good practice naming your jar the same as this, for example
      *     'MyPlugin.jar'.
      * <li>Case sensitive.
-     * <li>The is the token referenced in {@link #getDepend()}, {@link
-     *     #getSoftDepend()}, and {@link #getLoadBefore()}.
+     * <li>The token referenced in {@link #getDepend()} and {@link
+     *     #getSoftDepend()}.
      * <li>Using spaces in the plugin's name is deprecated.
      * </ul>
      * <p>
@@ -51,7 +61,7 @@ public class SpongePluginData implements PluginData<Object> {
     @NotNull
     @Override
     public String getName() {
-        return null;
+        return pluginContainer.getId();
     }
 
     /**
@@ -73,7 +83,7 @@ public class SpongePluginData implements PluginData<Object> {
     @NotNull
     @Override
     public String getVersion() {
-        return null;
+        return pluginContainer.getVersion().orElse("VERSION_UNSPECIFIED");
     }
 
     /**
@@ -101,7 +111,7 @@ public class SpongePluginData implements PluginData<Object> {
     @NotNull
     @Override
     public String getMain() {
-        return null;
+        return spongeAPI.getClass().getName();
     }
 
     /**
@@ -122,7 +132,7 @@ public class SpongePluginData implements PluginData<Object> {
     @Nullable
     @Override
     public String getDescription() {
-        return null;
+        return pluginContainer.getDescription().orElse("UNSPECIFIED_DESCRIPTION");
     }
 
     /**
@@ -131,8 +141,7 @@ public class SpongePluginData implements PluginData<Object> {
      * <li>Possible values are in {@link PluginLoadOrder}.
      * <li>Defaults to {@link PluginLoadOrder#POSTWORLD}.
      * <li>Certain caveats apply to each phase.
-     * <li>When different, {@link #getDepend()}, {@link #getSoftDepend()}, and
-     *     {@link #getLoadBefore()} become relative in order loaded per-phase.
+     * <li>When different, {@link #getDepend()}, {@link #getSoftDepend()}
      *     If a plugin loads at <code>STARTUP</code>, but a dependency loads
      *     at <code>POSTWORLD</code>, the dependency will not be loaded before
      *     the plugin is loaded.
@@ -147,7 +156,7 @@ public class SpongePluginData implements PluginData<Object> {
     @NotNull
     @Override
     public PluginLoadOrder getLoad() {
-        return null;
+        return PluginLoadOrder.STARTUP;
     }
 
     /**
@@ -184,7 +193,7 @@ public class SpongePluginData implements PluginData<Object> {
     @NotNull
     @Override
     public List<String> getAuthors() {
-        return null;
+        return pluginContainer.getAuthors();
     }
 
     /**
@@ -205,7 +214,7 @@ public class SpongePluginData implements PluginData<Object> {
     @Nullable
     @Override
     public String getWebsite() {
-        return null;
+        return pluginContainer.getUrl().orElse("UNSPECIFIED_URL");
     }
 
     /**
@@ -237,7 +246,7 @@ public class SpongePluginData implements PluginData<Object> {
     @NotNull
     @Override
     public List<String> getDepend() {
-        return null;
+        return pluginContainer.getDependencies().parallelStream().map(PluginDependency::getId).collect(Collectors.toList());
     }
 
     /**
@@ -268,38 +277,7 @@ public class SpongePluginData implements PluginData<Object> {
     @NotNull
     @Override
     public List<String> getSoftDepend() {
-        return null;
-    }
-
-    /**
-     * Gets the list of plugins that should consider this plugin a
-     * soft-dependency.
-     * <ul>
-     * <li>Use the value in the {@link #getName()} of the target plugin to
-     *     specify the dependency.
-     * <li>The plugin should load before any other plugins listed here.
-     * <li>Specifying another plugin here is strictly equivalent to having the
-     *     specified plugin's {@link #getSoftDepend()} include {@link
-     *     #getName() this plugin}.
-     * <li><code>loadbefore</code> must be in <a
-     *     href="http://en.wikipedia.org/wiki/YAML#Lists">YAML list
-     *     format</a>.
-     * </ul>
-     * <p>
-     * In the plugin.yml, this entry is named <code>loadbefore</code>.
-     * <p>
-     * Example:
-     * <blockquote><pre>loadbefore:
-     * - OnePlugin
-     * - AnotherPlugin</pre></blockquote>
-     *
-     * @return immutable list of plugins that should consider this plugin a
-     * soft-dependency
-     */
-    @NotNull
-    @Override
-    public List<String> getLoadBefore() {
-        return null;
+        return pluginContainer.getDependencies().parallelStream().filter(PluginDependency::isOptional).map(PluginDependency::getId).collect(Collectors.toList());
     }
 
     /**
@@ -320,6 +298,6 @@ public class SpongePluginData implements PluginData<Object> {
     @Nullable
     @Override
     public String getPrefix() {
-        return null;
+        return pluginContainer.getName();
     }
 }

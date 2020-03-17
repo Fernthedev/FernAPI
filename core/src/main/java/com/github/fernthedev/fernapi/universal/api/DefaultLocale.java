@@ -4,7 +4,7 @@ package com.github.fernthedev.fernapi.universal.api;
  * Implement {@link ILocale} interface to replace the
  * messages to be different. You may use color codes.
  *
- * Replace in {@link com.github.fernthedev.fernapi.universal.Universal#setLocale(ILocale)}
+ * Replace in Universal#setLocale(ILocale)
  */
 public class DefaultLocale implements ILocale {
 

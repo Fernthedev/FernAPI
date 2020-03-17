@@ -46,7 +46,7 @@ public class BungeePluginData implements PluginData<PluginDescription> {
      *     'MyPlugin.jar'.
      * <li>Case sensitive.
      * <li>The is the token referenced in {@link #getDepend()}, {@link
-     *     #getSoftDepend()}, and {@link #getLoadBefore()}.
+     *     #getSoftDepend()}.
      * <li>Using spaces in the plugin's name is deprecated.
      * </ul>
      * <p>
@@ -140,8 +140,7 @@ public class BungeePluginData implements PluginData<PluginDescription> {
      * <li>Possible values are in {@link PluginLoadOrder}.
      * <li>Defaults to {@link PluginLoadOrder#POSTWORLD}.
      * <li>Certain caveats apply to each phase.
-     * <li>When different, {@link #getDepend()}, {@link #getSoftDepend()}, and
-     *     {@link #getLoadBefore()} become relative in order loaded per-phase.
+     * <li>When different, {@link #getDepend()}, {@link #getSoftDepend()}.
      *     If a plugin loads at <code>STARTUP</code>, but a dependency loads
      *     at <code>POSTWORLD</code>, the dependency will not be loaded before
      *     the plugin is loaded.
@@ -278,37 +277,6 @@ public class BungeePluginData implements PluginData<PluginDescription> {
     @Override
     public List<String> getSoftDepend() {
         return new ArrayList<>(bungeePluginData.getSoftDepends());
-    }
-
-    /**
-     * Gets the list of plugins that should consider this plugin a
-     * soft-dependency.
-     * <ul>
-     * <li>Use the value in the {@link #getName()} of the target plugin to
-     *     specify the dependency.
-     * <li>The plugin should load before any other plugins listed here.
-     * <li>Specifying another plugin here is strictly equivalent to having the
-     *     specified plugin's {@link #getSoftDepend()} include {@link
-     *     #getName() this plugin}.
-     * <li><code>loadbefore</code> must be in <a
-     *     href="http://en.wikipedia.org/wiki/YAML#Lists">YAML list
-     *     format</a>.
-     * </ul>
-     * <p>
-     * In the plugin.yml, this entry is named <code>loadbefore</code>.
-     * <p>
-     * Example:
-     * <blockquote><pre>loadbefore:
-     * - OnePlugin
-     * - AnotherPlugin</pre></blockquote>
-     *
-     * @return immutable list of plugins that should consider this plugin a
-     * soft-dependency
-     */
-    @NotNull
-    @Override
-    public List<String> getLoadBefore() {
-        return new ArrayList<>();
     }
 
     /**

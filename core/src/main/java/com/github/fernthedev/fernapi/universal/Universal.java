@@ -9,6 +9,7 @@ import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
 import com.github.fernthedev.fernapi.universal.exceptions.setup.IncorrectSetupException;
 import com.github.fernthedev.fernapi.universal.handlers.*;
 import com.github.fernthedev.fernapi.universal.mysql.DatabaseHandler;
+import com.github.fernthedev.fernapi.universal.util.VersionUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -70,6 +71,8 @@ public class Universal {
         nh = networkHandler;
         sh = iScheduler;
         Universal.pluginData = pluginData;
+
+        getMethods().getLogger().info("Registered FernAPI " + getMethods().getServerType().toString() + " using version " + VersionUtil.getVersionData());
     }
 
 

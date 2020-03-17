@@ -4,4 +4,11 @@ site_author: Fernthedev
 site_description: This API allows for use of code that should work across all server platforms. It aims to allow developers to create better plugins without having inconsistency across platforms and ease their workflow and project workspaces.
 copyright: Fernthedev
 theme:
-  name: 'rtd-dropdown'
+    name: readthedocs
+    highlightjs: true
+    hljs_languages:
+        - yaml
+        - rust
+        - java
+        - gradle
+        - xml
