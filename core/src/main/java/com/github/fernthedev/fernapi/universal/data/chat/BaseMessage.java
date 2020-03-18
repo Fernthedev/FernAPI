@@ -338,7 +338,7 @@ public abstract class BaseMessage {
     {
         if ( bold == null )
         {
-            return parent != null && parent.isBold();
+            return parent != this && parent != null && parent.isBold();
         }
         return bold;
     }
@@ -365,7 +365,7 @@ public abstract class BaseMessage {
     {
         if ( italic == null )
         {
-            return parent != null && parent.isItalic();
+            return parent != this && parent != null && parent.isItalic();
         }
         return italic;
     }
@@ -392,7 +392,7 @@ public abstract class BaseMessage {
     {
         if ( underlined == null )
         {
-            return parent != null && parent.isUnderlined();
+            return parent != this && parent != null && parent.isUnderlined();
         }
         return underlined;
     }
@@ -419,7 +419,7 @@ public abstract class BaseMessage {
     {
         if ( strikethrough == null )
         {
-            return parent != null && parent.isStrikethrough();
+            return parent != this && parent != null && parent.isStrikethrough();
         }
         return strikethrough;
     }
@@ -446,7 +446,7 @@ public abstract class BaseMessage {
     {
         if ( obfuscated == null )
         {
-            return parent != null && parent.isObfuscated();
+            return parent != this && parent != null && parent.isObfuscated();
         }
         return obfuscated;
     }
@@ -494,9 +494,6 @@ public abstract class BaseMessage {
         {
             extra = new ArrayList<>();
         }
-        new RuntimeException("Add extra called " +
-                "\nthis" + this.toString() +
-                "\ncomponent" + component.toString()).printStackTrace();
         component.parent = this;
         extra.add( component );
         return this;
