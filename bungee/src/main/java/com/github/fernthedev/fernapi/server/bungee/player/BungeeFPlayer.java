@@ -3,6 +3,7 @@ package com.github.fernthedev.fernapi.server.bungee.player;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
+import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import lombok.NonNull;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.*;
@@ -94,8 +95,8 @@ public class BungeeFPlayer extends IFPlayer<ProxiedPlayer> {
     }
 
     @Override
-    public String getCurrentServerName() {
-        return player.getServer().getInfo().getName();
+    public IServerInfo getServerInfo() {
+        return Universal.getNetworkHandler().toServer(player.getServer().getInfo());
     }
 
     private BaseComponent[] message(String text) {

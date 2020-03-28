@@ -512,6 +512,13 @@ public abstract class BaseMessage {
                 || hoverData != null || clickData != null;
     }
 
+
+    /**
+     * Only plain text itself
+     * @return
+     */
+    public abstract String selfPlainText();
+
     /**
      * Converts the component into a string without any formatting
      *
@@ -560,7 +567,7 @@ public abstract class BaseMessage {
     }
 
 
-    public static enum FormatRetention
+    public enum FormatRetention
     {
 
         /**

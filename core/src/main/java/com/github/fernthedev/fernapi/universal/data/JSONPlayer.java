@@ -2,6 +2,7 @@ package com.github.fernthedev.fernapi.universal.data;
 
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
+import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -66,7 +67,7 @@ public class JSONPlayer extends IFPlayer<Object> {
     }
 
     @Override
-    public String getCurrentServerName() {
-        return "";
+    public IServerInfo getServerInfo() {
+        return null;
     }
 }

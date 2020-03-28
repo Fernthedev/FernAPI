@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor
-public class VelocityNetworkHandler implements NetworkHandler {
+public class VelocityNetworkHandler implements NetworkHandler<ServerConnection> {
     @Override
     public boolean isRegistered(Object sender) {
         return sender instanceof ServerConnection;
@@ -32,5 +32,10 @@ public class VelocityNetworkHandler implements NetworkHandler {
     @Override
     public IServerInfo getServer(String name) {
         return new VelocityServerInfo(plugin.getServer().getServer(name).get());
+    }
+
+    @Override
+    public IServerInfo toServer(ServerConnection server) {
+        return new VelocityServerInfo(server.getServer());
     }
 }

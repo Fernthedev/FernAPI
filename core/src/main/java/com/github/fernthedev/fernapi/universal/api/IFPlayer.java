@@ -1,6 +1,5 @@
 package com.github.fernthedev.fernapi.universal.api;
 
-import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
 import com.github.fernthedev.fernapi.universal.exceptions.network.PluginTimeoutException;
@@ -29,11 +28,11 @@ public abstract class IFPlayer<T> implements CommandSender {
 
     public abstract long getPing();
 
-    public abstract String getCurrentServerName();
-
-    public IServerInfo getServerInfo() {
-        return Universal.getNetworkHandler().getServer(getCurrentServerName());
+    public String getCurrentServerName() {
+        return getServerInfo() != null ? getServerInfo().getName() : null;
     }
+
+    public abstract IServerInfo getServerInfo();
 
     /**
      * Returns true if all data is null

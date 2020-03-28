@@ -3,6 +3,7 @@ package com.github.fernthedev.fernapi.server.velocity.player;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
+import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.text.TextComponent;
 
@@ -88,7 +89,7 @@ public class VelocityFPlayer extends IFPlayer<Player> {
     }
 
     @Override
-    public String getCurrentServerName() {
-        return player.getCurrentServer().get().getServerInfo().getName();
+    public IServerInfo getServerInfo() {
+        return Universal.getNetworkHandler().toServer(player.getCurrentServer().orElse(null));
     }
 }

@@ -1,5 +1,6 @@
 package com.github.fernthedev.fernapi.server.bungee.chat;
 
+import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.handlers.IChatHandler;
 import net.md_5.bungee.api.ChatColor;
@@ -9,7 +10,7 @@ public class BungeeChatHandler implements IChatHandler<BaseComponent> {
 
     @Override
     public BaseComponent parseComponent(BaseMessage baseMessage) {
-        BaseComponent builder = new TextComponent(ChatColor.translateAlternateColorCodes('&', baseMessage.toLegacyText()));
+        BaseComponent builder = new TextComponent(ChatColor.translateAlternateColorCodes('&', baseMessage.selfPlainText()));
 
         if (baseMessage.getColor() != null) builder.setColor(ChatColor.getByChar(baseMessage.getColor().getCode()));
 
@@ -30,9 +31,13 @@ public class BungeeChatHandler implements IChatHandler<BaseComponent> {
         }
 
         if (baseMessage.getExtra() != null)
-        for (BaseMessage extra : baseMessage.getExtra()) {
-            builder.addExtra(parseComponent(extra));
-        }
+            for (BaseMessage extra : baseMessage.getExtra()) {
+                Universal.debug("Adding message " + extra.toPlainText());
+                builder.addExtra(parseComponent(extra));
+            }
+
+
+        Universal.debug("Parsed " + builder.toPlainText());
 
 //        new RuntimeException(builder.toString(), new RuntimeException(baseMessage.toString())).printStackTrace();
 

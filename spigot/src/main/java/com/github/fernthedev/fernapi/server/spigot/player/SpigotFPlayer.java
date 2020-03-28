@@ -4,7 +4,9 @@ import com.github.fernthedev.fernapi.server.spigot.pluginhandlers.VaultHandler;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
-import net.md_5.bungee.api.chat.*;
+import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
@@ -121,8 +123,8 @@ public class SpigotFPlayer extends IFPlayer<Player> {
     }
 
     @Override
-    public String getCurrentServerName() {
-        return player.getServer().getName();
+    public IServerInfo getServerInfo() {
+        return Universal.getNetworkHandler().toServer(player.getServer());
     }
 
     private BaseComponent[] message(String text) {
