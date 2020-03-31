@@ -5,7 +5,9 @@ import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
 import com.github.fernthedev.fernapi.universal.handlers.UUIDFetchManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,14 +22,20 @@ public class UUIDFetcher {
 
     private static int requests = 0;
 
-    private static UUIDFetchManager fetchManager = new UUIDFetchManager();
+    private static UUIDFetchManager fetchManager = new UUIDFetchManager(new Runnable() {
+        @Override
+        public void run() {
+            playerHistoryCache.clear();
+            playerNameCache.clear();
+            playerUUIDCache.clear();
+        }
+    });
 
     /**
+     * @param fetchManager
      * @deprecated It is now deprecated because it is no longer needed to use specific-interface
      * uuid fetchers with the use of com.github.fernthedev.fernapi.com.github.fernthedev.fernapi.universal schedulers now.
-     *
-     *
-     * @param fetchManager
+     * Use only to override default behaviour
      */
     @Deprecated
     public static void setFetchManager(UUIDFetchManager fetchManager) {
@@ -38,21 +46,43 @@ public class UUIDFetcher {
         UUIDFetcher.requests = requests;
     }
 
-    public static final Map<String,PlayerUUID> playerUUIDCache = new HashMap<>();
-    public static final Map<String,PlayerName> playerNameCache = new HashMap<>();
-    public static final Map<String,List<PlayerHistory>> playerHistoryCache = new HashMap<>();
+    private static final Map<String, PlayerUUID> playerUUIDCache = new HashMap<>();
+    private static final Map<String, PlayerName> playerNameCache = new HashMap<>();
+    private static final Map<String, List<PlayerHistory>> playerHistoryCache = new HashMap<>();
 
 
+    @Getter
+    @Setter
+    private static boolean hourRan = true;
 
-
-
-    public static boolean hourRan = true;
-    public static boolean didHourCheck = false;
+    @Getter
+    @Setter
+    private static boolean didHourCheck = false;
 
     private UUIDFetcher() { }
 
+    public static void addRequestTimer() {
+        try {
+            fetchManager.runTimerRequest();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static UUIDFetchManager getFetchManager() {
+        return fetchManager;
+    }
+
+    public static void stopRequestTimer() {
+        fetchManager.stopTimerRequest();
+    }
+
+    public static void stopHourTask() {
+        fetchManager.stopHourTask();
+    }
+
     public static String getUUID(String name) {
-        if(Universal.getMethods().getUUIDFromPlayer(name) != null ) {
+        if (Universal.getMethods().getUUIDFromPlayer(name) != null) {
             return Universal.getMethods().getUUIDFromPlayer(name).toString();
         }
 
@@ -60,29 +90,29 @@ public class UUIDFetcher {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         // read JSON file dataInfo as String
 
-        if(name == null) return null;
+        if (name == null) return null;
 
         try {
-            String fileData = readUrl(UUID_URL.replace("%name%",name));
+            String fileData = readUrl(UUID_URL.replace("%name%", name));
 
-            if(fileData == null) {
-                if(playerUUIDCache.containsKey(name)) {
+            if (fileData == null) {
+                if (playerUUIDCache.containsKey(name)) {
                     return playerUUIDCache.get(name).id;
-                }else return null;
-            }else{
+                } else return null;
+            } else {
 
-            PlayerUUID uuidResponse = gson.fromJson(fileData,PlayerUUID.class);
+                PlayerUUID uuidResponse = gson.fromJson(fileData, PlayerUUID.class);
 
-            if (uuidResponse == null) {
-                return null;
-            }
+                if (uuidResponse == null) {
+                    return null;
+                }
 
-            Universal.debug("The uuid for " + name + " is " + uuidResponse.getId());
+                Universal.debug("The uuid for " + name + " is " + uuidResponse.getId());
 
-                if(playerUUIDCache.get(name) != uuidResponse) playerHistoryCache.remove(name);
-                playerUUIDCache.put(name,uuidResponse);
+                if (playerUUIDCache.get(name) != uuidResponse) playerHistoryCache.remove(name);
+                playerUUIDCache.put(name, uuidResponse);
 
-            return uuidResponse.getId();
+                return uuidResponse.getId();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -95,8 +125,8 @@ public class UUIDFetcher {
             if (Universal.getMethods().getNameFromPlayer(UUID.fromString(uuid)) != null) {
                 return Universal.getMethods().getNameFromPlayer(UUID.fromString(uuid));
             }
-        }catch (Exception e) {
-            throw new FernRuntimeException("Unable to find name, perhaps the UUID is invalid?",e);
+        } catch (Exception e) {
+            throw new FernRuntimeException("Unable to find name, perhaps the UUID is invalid?", e);
         }
 
         // Get Gson object
@@ -108,7 +138,7 @@ public class UUIDFetcher {
             String fileData = readUrl(NAME_URL.replace("%uuid%", uuid));
 
             if (fileData == null) {
-                if(playerNameCache.containsKey(uuid)) return playerNameCache.get(uuid).name;
+                if (playerNameCache.containsKey(uuid)) return playerNameCache.get(uuid).name;
                 else return null;
             } else {
 
@@ -126,8 +156,8 @@ public class UUIDFetcher {
 
                         Universal.debug("The current name is " + currentName.name);
 
-                        if(playerNameCache.get(uuid) != currentName) playerHistoryCache.remove(uuid);
-                        playerNameCache.put(uuid,currentName);
+                        if (playerNameCache.get(uuid) != currentName) playerHistoryCache.remove(uuid);
+                        playerNameCache.put(uuid, currentName);
 
                         return currentName.name;
                     } else {
@@ -149,6 +179,7 @@ public class UUIDFetcher {
 
     /**
      * This can be used to get name history
+     *
      * @param uuid The uuid of the player
      * @return The name history.
      */
@@ -186,8 +217,8 @@ public class UUIDFetcher {
                             names.add(new PlayerHistory(currentResponse.name, new Date(currentResponse.getChangedToAt()), currentResponse.changedToAt));
                         }
 
-                        if(playerHistoryCache.get(uuid) != names) playerHistoryCache.remove(uuid);
-                        playerHistoryCache.put(uuid,names);
+                        if (playerHistoryCache.get(uuid) != names) playerHistoryCache.remove(uuid);
+                        playerHistoryCache.put(uuid, names);
 
                         return names;
                     } else {
@@ -205,13 +236,10 @@ public class UUIDFetcher {
     }
 
 
-
     private static String readUrl(String urlString) throws Exception {
         if (requests < 560) {
-            BufferedReader reader = null;
-            try {
-                URL url = new URL(urlString);
-                reader = new BufferedReader(new InputStreamReader(url.openStream()));
+            URL url = new URL(urlString);
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
                 StringBuilder buffer = new StringBuilder();
                 int read;
                 char[] chars = new char[1024];
@@ -220,21 +248,19 @@ public class UUIDFetcher {
 
                 return buffer.toString();
             } catch (IOException e) {
-                if(e.getMessage().contains("code: 429")) {
+                if (e.getMessage().contains("code: 429") || e.getMessage().contains("429")) {
                     requests = 601;
-                    print("Received error 429, waiting for an hour to continue checking for uuids");
+                    debug("Received error 429, waiting for an hour to continue checking for uuids");
                     addBanHourTask();
                     return null;
-                }else{
+                } else {
                     e.printStackTrace();
                 }
-            }finally {
-                if (reader != null)
-                    reader.close();
+            } finally {
                 requests++;
             }
-        }else{
-            print("There is over 600 requests sent, waiting for requests to be refreshed.");
+        } else {
+            debug("There is over 600 requests sent, waiting for requests to be refreshed.");
             return null;
         }
         return null;
@@ -245,7 +271,7 @@ public class UUIDFetcher {
         private Date date;
         private long timeDate;
 
-        PlayerHistory(String name,Date time,long timeDate) {
+        PlayerHistory(String name, Date time, long timeDate) {
             this.name = name;
             this.date = time;
             this.timeDate = timeDate;
@@ -263,8 +289,8 @@ public class UUIDFetcher {
             return date;
         }
     }
-@SuppressWarnings("unused")
- public class PlayerName {
+
+    public static class PlayerName {
         private String name;
         private long changedToAt;
 
@@ -277,8 +303,8 @@ public class UUIDFetcher {
         }
     }
 
-@SuppressWarnings("unused")
- public class PlayerUUID {
+
+    public static class PlayerUUID {
         private String name;
         private String id;
 
@@ -294,6 +320,7 @@ public class UUIDFetcher {
 
     private static void addBanHourTask() {
         stopRequestTimer();
+
         hourRan = false;
         didHourCheck = false;
 
@@ -302,32 +329,9 @@ public class UUIDFetcher {
 
     }
 
-    private static void print(Object log) {
-        Universal.debug("[com.github.fernthedev.fernapi.com.github.fernthedev.fernapi.com.github.fernthedev.fernapi.universal.util.UUIDFetcher] " + log);
-    }
-
     protected static void debug(Object log) {
         Universal.debug("[UUIDFetcher/FernAPI] " + log);
     }
 
-    public static void addRequestTimer() {
-        try {
-            fetchManager.runTimerRequest();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
-    public static UUIDFetchManager getFetchManager() {
-        return fetchManager;
-    }
-
-    public static void stopRequestTimer() {
-        fetchManager.stopTimerRequest();
-    }
-
-    public static void stopHourTask() {
-            fetchManager.stopHourTask();
-        
-    }
 }

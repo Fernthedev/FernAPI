@@ -26,7 +26,7 @@ public class SpongeChatHandler implements IChatHandler<Text> {
 
         Text.Builder builder = Text.builder();
 
-        builder.append(TextSerializers.FORMATTING_CODE.deserialize(baseMessage.toLegacyText()));
+        builder.append(TextSerializers.FORMATTING_CODE.deserialize(baseMessage.selfPlainText()));
 
         if (baseMessage.getColor() != null) {
             TextColor color = getTextColor(baseMessage.getColor());

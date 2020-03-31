@@ -11,7 +11,7 @@ public class SpigotChatHandler implements IChatHandler<BaseComponent> {
     @Override
     public BaseComponent parseComponent(BaseMessage baseMessage) {
         TextComponent builder = new TextComponent();
-        builder.addExtra(ChatColor.translateAlternateColorCodes('&', baseMessage.toLegacyText()));
+        builder.addExtra(ChatColor.translateAlternateColorCodes('&', baseMessage.selfPlainText()));
 
         if (baseMessage.getColor() != null) builder.setColor(ChatColor.getByChar(baseMessage.getColor().getCode()));
 

@@ -14,7 +14,7 @@ import net.kyori.text.format.TextDecoration;
 public class VelocityChatHandler implements IChatHandler<TextComponent> {
     @Override
     public TextComponent parseComponent(BaseMessage baseMessage) {
-        TextComponent builder = TextComponent.of(ChatColor.translateAlternateColorCodes('&', baseMessage.toLegacyText()));
+        TextComponent builder = TextComponent.of(ChatColor.translateAlternateColorCodes('&', baseMessage.selfPlainText()));
 
         if (baseMessage.getColor() != null) {
             builder.color(getTextColor(baseMessage.getColor()));

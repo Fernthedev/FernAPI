@@ -3,6 +3,7 @@ package com.github.fernthedev.fernapi.server.sponge.player;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
+import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -114,6 +115,11 @@ public class SpongeFPlayer extends IFPlayer<Player> {
     @Override
     public String getCurrentServerName() {
         return Sponge.getServer().getDefaultWorldName();
+    }
+
+    @Override
+    public IServerInfo getServerInfo() {
+        return Universal.getNetworkHandler().toServer(null);
     }
 
     @Override

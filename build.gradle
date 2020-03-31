@@ -45,7 +45,9 @@ allprojects {
 
     group = 'com.github.Fernthedev'
 //    version = versioning.info.full
-    project.ext.beta_version = '10' // Only modify when beta
+    ext.buildVer = "1.9.0"
+    project.ext.beta_version = '2' // Only modify when beta
+    ext.beta_prefix = 'rc'
     description = 'An API for universal code'
 
     versioning {
@@ -120,7 +122,7 @@ allprojects {
     }
 
 
-    version = !versioning.info.dirty ? versioning.info.full : "1.9.0-beta${project.beta_version}"
+    version = !versioning.info.dirty ? versioning.info.full : "${project.buildVer}-${project.beta_prefix}${project.beta_version}"
 
 
     processResources {

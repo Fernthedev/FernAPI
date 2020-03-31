@@ -11,9 +11,6 @@ import java.util.List;
 
 /**
  * Class used to represent a server to connect to.
- */
-
-/**
  * From net.md_5.bungee.api.config.ServerInfo
  */
 public interface IServerInfo {

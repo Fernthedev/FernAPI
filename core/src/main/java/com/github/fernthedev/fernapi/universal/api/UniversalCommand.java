@@ -1,7 +1,6 @@
 package com.github.fernthedev.fernapi.universal.api;
 
 import com.github.fernthedev.fernapi.universal.Universal;
-import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
 import com.github.fernthedev.fernapi.universal.data.chat.TextMessage;
 import com.github.fernthedev.fernapi.universal.exceptions.command.ArgumentNotFoundException;
@@ -9,7 +8,9 @@ import com.google.common.base.Preconditions;
 import lombok.*;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -61,7 +62,7 @@ public abstract class UniversalCommand {
         this.aliases = aliases;
     }
 
-    protected BaseMessage message(String text) {
+    protected TextMessage message(String text) {
         return new TextMessage(ChatColor.translateAlternateColorCodes('&', text));
     }
 

@@ -3,11 +3,12 @@ package com.github.fernthedev.fernapi.server.bungee.network;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import com.github.fernthedev.fernapi.universal.handlers.NetworkHandler;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.config.ServerInfo;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class BungeeNetworkHandler implements NetworkHandler {
+public class BungeeNetworkHandler implements NetworkHandler<ServerInfo> {
     @Override
     public boolean isRegistered(Object sender) {
         return true;
@@ -24,5 +25,10 @@ public class BungeeNetworkHandler implements NetworkHandler {
     @Override
     public IServerInfo getServer(String name) {
         return new BungeeServerInfo(ProxyServer.getInstance().getServerInfo(name));
+    }
+
+    @Override
+    public IServerInfo toServer(ServerInfo server) {
+        return new BungeeServerInfo(server);
     }
 }

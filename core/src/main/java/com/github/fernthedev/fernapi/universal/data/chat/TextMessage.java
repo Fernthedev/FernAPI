@@ -63,6 +63,16 @@ public class TextMessage extends BaseMessage {
         return new TextMessage( this );
     }
 
+    /**
+     * Only plain text itself
+     *
+     * @return
+     */
+    @Override
+    public String selfPlainText() {
+        return text;
+    }
+
     @Override
     protected void toPlainText(StringBuilder builder)
     {

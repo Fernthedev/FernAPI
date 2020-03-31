@@ -4,17 +4,20 @@ import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import com.github.fernthedev.fernapi.universal.exceptions.FernDebugException;
 import com.github.fernthedev.fernapi.universal.handlers.NetworkHandler;
+import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class SpigotNetworkHandler implements NetworkHandler {
+public class SpigotNetworkHandler implements NetworkHandler<Server> {
     @Override
     public boolean isRegistered(Object sender) {
         return true;
     }
 
+    @Getter
     private SpigotServerInfo serverInfo = new SpigotServerInfo(Bukkit.getServer());
 
     @Override
@@ -32,6 +35,11 @@ public class SpigotNetworkHandler implements NetworkHandler {
 
         if (Universal.isDebug()) new FernDebugException("NetworkHandler.getServer() does not apply to Sponge. (This can be ignored, though it should be noted)").printStackTrace();
 
+        return serverInfo;
+    }
+
+    @Override
+    public IServerInfo toServer(Server server) {
         return serverInfo;
     }
 }
