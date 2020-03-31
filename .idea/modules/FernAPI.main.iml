@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="4">
-  <component name="ExternalSystem" externalSystem="GRADLE" externalSystemModuleGroup="com.github.Fernthedev" externalSystemModuleType="sourceSet" externalSystemModuleVersion="1.9.0-rc1" linkedProjectId="FernAPI:main" linkedProjectPath="$MODULE_DIR$/../.." rootProjectPath="$MODULE_DIR$/../.." />
+  <component name="ExternalSystem" externalSystem="GRADLE" externalSystemModuleGroup="com.github.Fernthedev" externalSystemModuleType="sourceSet" externalSystemModuleVersion="1.9.0-rc2" linkedProjectId="FernAPI:main" linkedProjectPath="$MODULE_DIR$/../.." rootProjectPath="$MODULE_DIR$/../.." />
   <component name="FacetManager">
     <facet type="minecraft" name="Minecraft">
       <configuration>

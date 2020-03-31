@@ -15,7 +15,7 @@ public class SQLDriver {
     private String sqlDriver;
 
     public static SQLDriver MYSQL_DRIVER = new SQLDriver("mysql", "com.mysql.jdbc.Driver");
-    public static SQLDriver MARIADB_DRIVER = new SQLDriver("mariadb", "org.mariadb.jdbc.Driver");
+    public static SQLDriver MARIADB_DRIVER = new SQLDriver("mariadb", org.mariadb.jdbc.Driver.class.getName());
 }
 
 

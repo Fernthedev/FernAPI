@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="4">
-  <component name="ExternalSystem" externalSystem="GRADLE" externalSystemModuleGroup="com.github.Fernthedev" externalSystemModuleVersion="1.9.0-rc1" linkedProjectId="FernAPI" linkedProjectPath="$MODULE_DIR$" rootProjectPath="$MODULE_DIR$" />
+  <component name="CheckStyle-IDEA-Module">
+    <option name="configuration">
+      <map />
+    </option>
+  </component>
+  <component name="ExternalSystem" externalSystem="GRADLE" externalSystemModuleGroup="com.github.Fernthedev" externalSystemModuleVersion="1.9.0-rc2" linkedProjectId="FernAPI" linkedProjectPath="$MODULE_DIR$" rootProjectPath="$MODULE_DIR$" />
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">

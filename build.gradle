@@ -46,7 +46,7 @@ allprojects {
     group = 'com.github.Fernthedev'
 //    version = versioning.info.full
     ext.buildVer = "1.9.0"
-    project.ext.beta_version = '1' // Only modify when beta
+    project.ext.beta_version = '2' // Only modify when beta
     ext.beta_prefix = 'rc'
     description = 'An API for universal code'
 

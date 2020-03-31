@@ -4,10 +4,7 @@ import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.database.*;
 import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseException;
 import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseNotConnectedException;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.*;
@@ -306,31 +303,43 @@ public abstract class DatabaseManager {
         return sql.toString();
     }
 
+
     /**
      * Runs a sql statement
      * @param sql The statement
      * @return The result
      */
+    @Synchronized
     public ResultSet runSqlStatement(String sql) throws DatabaseException {
 
+        Universal.debug("Running {" + sql + "}");
 
-
-        try(PreparedStatement stmt = getConnection().prepareStatement(sql)) {
-            connection = null;
-            Universal.debug("Running {" + sql + "}");
-
-
-
+        try {
             try {
-                return sqlRun(stmt, sql);
+                return sqlRun(sql);
             } catch (SQLException e) {
+
+                if (isConnected()) connection.close();
                 // Attempt reconnection if broken pipe
                 connection = createConnection(databaseAuthInfo);
-                return sqlRun(stmt, sql);
-            }
 
-        } catch (SQLException | ClassNotFoundException e) {
+                return sqlRun(sql);
+            }
+        } catch (ClassNotFoundException | SQLException e) {
             throw new DatabaseException("Unable to create statement", e);
+        }
+    }
+
+    /**
+     * Shortcut
+     * @param sql
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
+    private ResultSet sqlRun(@NonNull String sql) throws SQLException, ClassNotFoundException {
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
+            return sqlRun(stmt, sql);
         }
     }
 
@@ -355,7 +364,7 @@ public abstract class DatabaseManager {
         //CREATE TABLE IF NOT EXISTS fern_nicks(PLAYERUUID varchar(200), NICK varchar(40));
         //CREATE TABLE IF NOT EXISTS test_no(row1 TEXTrow2 TEXT);
 
-        String append;
+        StringBuilder append;
 
         RowDataTemplate rd = tableDataInfo.getRowDataTemplate();
 
@@ -372,18 +381,18 @@ public abstract class DatabaseManager {
                 type = "INT PRIMARY KEY";
             }
 
-            append = object.getColumnName() + " " + type;
+            append = new StringBuilder(object.getColumnName() + " " + type);
 
             if (object.isAutoIncrement()) {
-                append += " AUTO_INCREMENT";
+                append.append(" AUTO_INCREMENT");
             }
 
             if (!object.isNullable() && !object.isPrimaryKey()) {
-                append += " NOT NULL";
+                append.append(" NOT NULL");
             }
 
             if (time > 0 && time <= rd.getColumnDataList().size() - 1) {
-                append += ',';
+                append.append(',');
             }
 
             sql.append(append);
@@ -400,6 +409,7 @@ public abstract class DatabaseManager {
         return Universal.getMethods().getLogger();
     }
 
+    @Synchronized
     public Connection createConnection(DatabaseAuthInfo dataInfo) throws SQLException, ClassNotFoundException {
         this.databaseAuthInfo = dataInfo;
 
