@@ -150,6 +150,10 @@ allprojects {
 
         maven { url = "https://repo.aikar.co/content/groups/aikar/" }
 
+        maven {
+            url "https://libraries.minecraft.net"
+        }
+
         jcenter()
         maven { url "https://jitpack.io" }
         mavenCentral()
