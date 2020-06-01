@@ -40,6 +40,7 @@ public class FernVelocityAPI implements FernAPIPlugin {
     @Getter
     protected final PluginContainer pluginContainer;
 
+    @Inject
     public FernVelocityAPI(ProxyServer server, Logger logger) {
         this.server = server;
         this.logger = logger;
