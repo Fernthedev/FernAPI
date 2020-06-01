@@ -3,15 +3,17 @@ package com.github.fernthedev.fernapi.server.sponge;
 import com.github.fernthedev.fernapi.server.sponge.player.SpongeFConsole;
 import com.github.fernthedev.fernapi.server.sponge.player.SpongeFPlayer;
 import com.github.fernthedev.fernapi.universal.Universal;
-import com.github.fernthedev.fernapi.universal.api.CommandSender;
+import com.github.fernthedev.fernapi.universal.api.FernCommandIssuer;
+import com.github.fernthedev.fernapi.universal.api.IFConsole;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
+import com.github.fernthedev.fernapi.universal.api.OfflineFPlayer;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
 import com.github.fernthedev.fernapi.universal.handlers.ServerType;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 
@@ -22,9 +24,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public class SpongeInterface implements MethodInterface<Player> {
+public class SpongeInterface implements MethodInterface<Player, ConsoleSource> {
     @NonNull
-    private FernSpongeAPI sponge;
+    private final FernSpongeAPI sponge;
 
     @Override
     public java.util.logging.Logger getLogger() {
@@ -42,6 +44,11 @@ public class SpongeInterface implements MethodInterface<Player> {
         return sponge;
     }
 
+
+    /**
+     * @param player The player
+     * @return The {@link IFPlayer} player instance
+     */
     @Override
     public <P> IFPlayer<P> convertPlayerObjectToFPlayer(P player) {
         return (IFPlayer<P>) new SpongeFPlayer((Player) player);
@@ -49,31 +56,47 @@ public class SpongeInterface implements MethodInterface<Player> {
 
     @Override
     public Player convertFPlayerToPlayer(IFPlayer ifPlayer) {
-        return Sponge.getServer().getPlayer(ifPlayer.getUuid()).get();
+        return Sponge.getServer().getPlayer(ifPlayer.getUniqueId()).get();
     }
 
     @Override
-    public CommandSender convertCommandSenderToAPISender(Object commandSender) {
+    public FernCommandIssuer convertCommandSenderToAPISender(Object commandSender) {
         if(commandSender instanceof Player) {
             return new SpongeFPlayer((Player) commandSender);
         }
 
-        if(commandSender instanceof CommandSource) {
-            return new SpongeFConsole((CommandSource) commandSender);
+        if(commandSender instanceof ConsoleSource) {
+            return new SpongeFConsole((ConsoleSource) commandSender);
         }
 
         return null;
     }
 
+    /**
+     * Converts the command sender to it's IFPlayer instance
+     *
+     * @param commandSender
+     * @return
+     */
     @Override
-    public IFPlayer<Player> getPlayerFromName(String name) {
-
-        return convertPlayerObjectToFPlayer(Sponge.getServer().getPlayer(name).get());
+    public IFConsole<ConsoleSource> convertConsoleToAPISender(@NonNull ConsoleSource commandSender) {
+        return new SpongeFConsole(commandSender);
     }
 
     @Override
-    public IFPlayer<Player> getPlayerFromUUID(UUID uuid) {
-        return convertPlayerObjectToFPlayer(Sponge.getServer().getPlayer(uuid).get());
+    public @NonNull OfflineFPlayer<Player> getPlayerFromName(String name) {
+        Optional<Player> player = Sponge.getServer().getPlayer(name);
+
+        return player.map(value -> new OfflineFPlayer<>(convertPlayerObjectToFPlayer(value)))
+                .orElseGet(() -> new OfflineFPlayer<>(name));
+    }
+
+    @Override
+    public @NonNull OfflineFPlayer<Player> getPlayerFromUUID(UUID uuid) {
+        Optional<Player> player = Sponge.getServer().getPlayer(uuid);
+
+        return player.map(value -> new OfflineFPlayer<>(convertPlayerObjectToFPlayer(value)))
+                .orElseGet(() -> new OfflineFPlayer<>(uuid));
     }
 
     @Override
@@ -93,8 +116,16 @@ public class SpongeInterface implements MethodInterface<Player> {
     }
 
     @Override
-    public UUID getUUIDFromPlayer(String name) {
+    public UUID getUUIDFromPlayerName(String name) {
         Optional<Player> p = Sponge.getGame().getServer().getPlayer(name);
         return p.map(User::getUniqueId).orElse(null);
+    }
+
+    @Override
+    public List<IFPlayer<Player>> matchPlayerName(String name) {
+        return getPlayers()
+                .parallelStream()
+                .filter(proxiedPlayerIFPlayer -> proxiedPlayerIFPlayer.getName().contains(name))
+                .collect(Collectors.toList());
     }
 }

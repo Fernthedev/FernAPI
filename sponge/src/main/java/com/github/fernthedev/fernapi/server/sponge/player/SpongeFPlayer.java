@@ -5,17 +5,22 @@ import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
 import java.net.InetSocketAddress;
-import java.util.Collection;
+import java.util.UUID;
 
 public class SpongeFPlayer extends IFPlayer<Player> {
 
     public SpongeFPlayer(Player player) {
-        this.player = player;
+        this(player, player.getName(), player.getUniqueId());
+    }
+
+    public SpongeFPlayer(Player player, @Nullable String name, @Nullable UUID uuid) {
+        super(player == null ? name : player.getName(), player == null ? uuid : player.getUniqueId(), player);
     }
 
     /**
@@ -29,49 +34,8 @@ public class SpongeFPlayer extends IFPlayer<Player> {
         return player.hasPermission(permission);
     }
 
-    /**
-     * Set a permission node for this user.
-     *
-     * @param permission the node to set
-     * @param value      the value of the node
-     */
-    @Override
-    public void setPermission(String permission, boolean value) {
-        return;
-    }
-
-    /**
-     * Get all Permissions which this CommandSender has
-     *
-     * @return a unmodifiable Collection of Strings which represent their
-     * permissions
-     */
-    @Override
-    public Collection<String> getPermissions() {
-        return null;
-    }
-
     @Override
     public void sendMessage(BaseMessage textMessage) {
-//
-//        Text.Builder text = Text.builder();
-//
-//        if (textMessage.getExtra() != null) {
-//            for(BaseMessage be : textMessage.getExtra()) {
-//                Text.Builder te = TextSerializers.FORMATTING_CODE.deserialize(be.toPlainText()).toBuilder();
-//
-//                if(be.getClickData() != null) {
-//                    te.onClick(parseAction(be.getClickData()));
-//                }
-//
-//                if(be.getHoverData() != null) {
-//                    te.onHover(parseAction(be.getHoverData()));
-//                }
-//                text.append(te.build());
-//            }
-//        }
-//
-//        player.sendMessage(text.build());
         Text text = (Text) Universal.getChatHandler().parseComponent(textMessage);
 
         player.sendMessage(text);

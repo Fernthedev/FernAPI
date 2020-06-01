@@ -1,7 +1,9 @@
 package com.github.fernthedev.fernapi.universal.handlers;
 
-import com.github.fernthedev.fernapi.universal.api.CommandSender;
+import com.github.fernthedev.fernapi.universal.api.FernCommandIssuer;
+import com.github.fernthedev.fernapi.universal.api.IFConsole;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
+import com.github.fernthedev.fernapi.universal.api.OfflineFPlayer;
 import lombok.NonNull;
 
 import java.io.File;
@@ -13,7 +15,7 @@ import java.util.logging.Logger;
  *
  * @param <PlayerType> The player type the server uses
  */
-public interface MethodInterface<PlayerType> {
+public interface MethodInterface<PlayerType, ConsoleType> {
 
     Logger getLogger();
 
@@ -39,22 +41,31 @@ public interface MethodInterface<PlayerType> {
 
     /**
      * Converts the command sender to it's IFPlayer instance
+     * @return
      */
-    CommandSender convertCommandSenderToAPISender(@NonNull Object commandSender);
+    FernCommandIssuer convertCommandSenderToAPISender(@NonNull Object commandSender);
+
+    /**
+     * Converts the command sender to it's IFPlayer instance
+     * @return
+     */
+    IFConsole<ConsoleType> convertConsoleToAPISender(@NonNull ConsoleType commandSender);
 
     /**
      * Returns player from server
      * @param name Name of player
-     * @return The IFPlayer instance. It never returns null, however you can check if the player is null with {@link IFPlayer#isNull()}
+     * @return The IFPlayer instance. It never returns null, however you can check if the player is null with {@link IFPlayer#isPlayerNull()}
      */
-    IFPlayer<PlayerType> getPlayerFromName(String name);
+    @NonNull
+    OfflineFPlayer<PlayerType> getPlayerFromName(String name);
 
     /**
      * Returns player from server
      * @param uuid Name of player
-     * @return The IFPlayer instance. It never returns null, however you can check if the player is null with {@link IFPlayer#isNull()}
+     * @return The IFPlayer instance. It never returns null, however you can check if the player is null with {@link IFPlayer#isPlayerNull()}
      */
-    IFPlayer<PlayerType> getPlayerFromUUID(UUID uuid);
+    @NonNull
+    OfflineFPlayer<PlayerType> getPlayerFromUUID(UUID uuid);
 
     /**
      * Returns players of server in {@link IFPlayer} instance
@@ -74,6 +85,8 @@ public interface MethodInterface<PlayerType> {
     /**
      * Returns the uuid of the player from name
      */
-    UUID getUUIDFromPlayer(String name);
+    UUID getUUIDFromPlayerName(String name);
+
+    List<IFPlayer<PlayerType>> matchPlayerName(String name);
 }
 

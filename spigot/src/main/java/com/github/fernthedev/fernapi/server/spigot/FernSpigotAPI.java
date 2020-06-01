@@ -1,7 +1,7 @@
 package com.github.fernthedev.fernapi.server.spigot;
 
+import co.aikar.commands.PaperCommandManager;
 import com.github.fernthedev.fernapi.server.spigot.chat.SpigotChatHandler;
-import com.github.fernthedev.fernapi.server.spigot.command.SpigotCommandHandler;
 import com.github.fernthedev.fernapi.server.spigot.database.SpigotDatabase;
 import com.github.fernthedev.fernapi.server.spigot.interfaces.SpigotPluginData;
 import com.github.fernthedev.fernapi.server.spigot.network.PlaceHolderAPI.PlaceHolderAPIResponder;
@@ -10,9 +10,9 @@ import com.github.fernthedev.fernapi.server.spigot.network.SpigotNetworkHandler;
 import com.github.fernthedev.fernapi.server.spigot.pluginhandlers.VaultHandler;
 import com.github.fernthedev.fernapi.server.spigot.scheduler.SpigotScheduler;
 import com.github.fernthedev.fernapi.universal.Universal;
+import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.util.ListUtil;
 import com.github.fernthedev.fernapi.universal.util.network.vanish.VanishProxyCheck;
-import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -28,7 +28,8 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
                 this,
                 new SpigotChatHandler(),
                 new SpigotMessageHandler(this),
-                new SpigotDatabase(this),new SpigotCommandHandler(),
+                new SpigotDatabase(this),
+                new PaperCommandManager(this),
                 new SpigotNetworkHandler(),
                 new SpigotScheduler(this),
                 new SpigotPluginData(getDescription()));

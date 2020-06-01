@@ -6,15 +6,14 @@ import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 
-import java.util.Collection;
+public class BungeeFConsole extends IFConsole<CommandSender> {
 
-public class BungeeFConsole extends IFConsole {
-    private CommandSender commandSender;
 
     public BungeeFConsole(CommandSender commandSender) {
-        this.commandSender =commandSender;
+        super(commandSender);
     }
 
     /**
@@ -26,28 +25,6 @@ public class BungeeFConsole extends IFConsole {
     @Override
     public boolean hasPermission(String permission) {
         return commandSender.hasPermission(permission);
-    }
-
-    /**
-     * Set a permission node for this user.
-     *
-     * @param permission the node to set
-     * @param value      the value of the node
-     */
-    @Override
-    public void setPermission(String permission, boolean value) {
-        commandSender.setPermission(permission,value);
-    }
-
-    /**
-     * Get all Permissions which this CommandSender has
-     *
-     * @return a unmodifiable Collection of Strings which represent their
-     * permissions
-     */
-    @Override
-    public Collection<String> getPermissions() {
-        return commandSender.getPermissions();
     }
 
     @Override

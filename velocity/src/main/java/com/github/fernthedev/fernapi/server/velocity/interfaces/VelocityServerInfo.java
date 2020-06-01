@@ -1,8 +1,8 @@
 package com.github.fernthedev.fernapi.server.velocity.interfaces;
 
+import co.aikar.commands.CommandIssuer;
 import com.github.fernthedev.fernapi.server.velocity.player.VelocityFPlayer;
 import com.github.fernthedev.fernapi.universal.Universal;
-import com.github.fernthedev.fernapi.universal.api.CommandSender;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
@@ -106,7 +106,7 @@ public class VelocityServerInfo implements RegisteredServer, IServerInfo {
      * @return whether access is granted to this server
      */
     @Override
-    public boolean canAccess(CommandSender sender) {
+    public boolean canAccess(CommandIssuer sender) {
         return true;
     }
 

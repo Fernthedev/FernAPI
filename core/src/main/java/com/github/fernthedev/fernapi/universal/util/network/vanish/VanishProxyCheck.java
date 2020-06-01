@@ -1,54 +1,53 @@
 package com.github.fernthedev.fernapi.universal.util.network.vanish;
 
 import com.github.fernthedev.fernapi.universal.Channels;
-import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
-import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.network.Channel;
 import com.github.fernthedev.fernapi.universal.data.network.PluginMessageData;
+import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
+import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.handlers.PluginMessageHandler;
 import com.github.fernthedev.fernapi.universal.handlers.ServerType;
 import com.github.fernthedev.fernapi.universal.util.ProxyAskPlaceHolder;
 import lombok.NonNull;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class VanishProxyCheck extends PluginMessageHandler {
 
     private static Object o;
 
-    private VanishRunnable vanishRunnable;
+    private VanishFunction vanishFunction;
     private IFPlayer<?> player;
 
-    private static List<VanishProxyCheck> instances = new ArrayList<>();
+    private static Map<UUID, VanishProxyCheck> instances = new HashMap<>();
 
     private UUID uuid;
 
     /**
      * Must be called manually to work
-     * @param timeout The amount of time to wait
+     *
+     * @param timeout  The amount of time to wait
      * @param timeUnit The unit of time
      */
     public void setTimeout(long timeout, TimeUnit timeUnit) {
         VanishProxyCheck vanishProxyCheck = this;
 
         Universal.getScheduler().runSchedule(() -> {
-            if (instances.contains(vanishProxyCheck)) {
-                vanishRunnable.run(player, false, true);
-                instances.remove(vanishProxyCheck);
+            if (instances.containsKey(vanishProxyCheck.uuid)) {
+                vanishFunction.run(player, false, true);
+                instances.remove(vanishProxyCheck.uuid);
 
             }
         }, timeout, timeUnit);
     }
 
 
-    /** Call for getting an instance for registering
+    /**
+     * Call for getting an instance for registering
      *
      * @param plugin
      */
@@ -61,14 +60,16 @@ public class VanishProxyCheck extends PluginMessageHandler {
 
     /**
      * Use for getting vanish
-     * @param player the player
-     * @param vanishRunnable the code to run
+     *
+     * @param player         the player
+     * @param vanishFunction the code to run
      */
-    public VanishProxyCheck(@NonNull IFPlayer<?> player, @NonNull VanishRunnable vanishRunnable) {
-        this.vanishRunnable = vanishRunnable;
+    public VanishProxyCheck(@NonNull IFPlayer<?> player, @NonNull VanishFunction vanishFunction) {
+        this.vanishFunction = vanishFunction;
         this.player = player;
-        instances.add(this);
         uuid = UUID.randomUUID();
+
+        instances.put(uuid, this);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
 //        DataOutputStream out = new DataOutputStream(stream);
@@ -108,31 +109,31 @@ public class VanishProxyCheck extends PluginMessageHandler {
         Queue<String> dataQueue = data.getExtraDataQueue();
         UUID uuidCheck = UUID.fromString(dataQueue.remove());
 
-        System.out.println(Universal.getMethods().getServerType().isProxy() + " proxy " + Universal.getMethods().getServerType().equals(ServerType.BUKKIT ) + " bukkit");
+        System.out.println(Universal.getMethods().getServerType().isProxy() + " proxy " + Universal.getMethods().getServerType().equals(ServerType.BUKKIT) + " bukkit");
 
-        if(Universal.getMethods().getServerType().isProxy()) {
+        if (Universal.getMethods().getServerType().isProxy()) {
             boolean vanished = Boolean.parseBoolean(dataQueue.remove());
 
             System.out.println(vanished + " vanished");
 
-            for (VanishProxyCheck vanishProxyCheck : instances) {
-                if(vanishProxyCheck.uuid.equals(uuidCheck)) {
-                    Universal.getScheduler().runAsync(() -> vanishRunnable.run(vanishProxyCheck.player, vanished, false));
 
-                    instances.remove(vanishProxyCheck);
-                    return;
-                }
+            VanishProxyCheck vanishProxyCheck = instances.get(uuidCheck);
+            if (vanishProxyCheck != null) {
+                Universal.getScheduler().runAsync(() -> vanishFunction.run(vanishProxyCheck.player, vanished, false));
+
+                instances.remove(vanishProxyCheck.uuid);
             }
         }
     }
 
     /**
      * Synchronise to await message response
+     *
      * @param millis The amount of time to wait
      * @throws InterruptedException
      */
     public void awaitVanishResponse(int millis) throws InterruptedException {
-        while (instances.contains(this)) {
+        while (instances.containsKey(uuid)) {
             Thread.sleep(millis);
         }
     }

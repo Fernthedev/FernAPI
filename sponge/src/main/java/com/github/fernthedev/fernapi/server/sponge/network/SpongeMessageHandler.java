@@ -79,9 +79,9 @@ public class SpongeMessageHandler implements IPMessageHandler {
 
                                 if(in.available() > 0) {
                                     JSONPlayer player1 = new Gson().fromJson(in.readUTF(),JSONPlayer.class);
-                                    if(Sponge.getServer().getPlayer(player1.getUuid()).isPresent()) {
-                                        pdata.setPlayer(Universal.getMethods().getPlayerFromUUID(player1.getUuid()));
-                                        player = Sponge.getServer().getPlayer(player1.getUuid()).get();
+                                    if(Sponge.getServer().getPlayer(player1.getUniqueId()).isPresent()) {
+                                        pdata.setPlayer(Universal.getMethods().getPlayerFromUUID(player1.getUniqueId()));
+                                        player = Sponge.getServer().getPlayer(player1.getUniqueId()).get();
                                     }
 
                                     sponge.getLogger().debug("Received player info");

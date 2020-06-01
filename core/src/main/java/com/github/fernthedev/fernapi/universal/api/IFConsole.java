@@ -1,24 +1,47 @@
 package com.github.fernthedev.fernapi.universal.api;
 
-import java.util.Collection;
+import co.aikar.commands.CommandManager;
+import com.github.fernthedev.fernapi.universal.Universal;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class IFConsole implements CommandSender {
-    /**
-     * Set a permission node for this user.
-     *
-     * @param permission the node to set
-     * @param value      the value of the node
-     */
+import java.util.UUID;
+
+public abstract class IFConsole<T> implements FernCommandIssuer {
+    protected T commandSender;
+    protected UUID uuid;
+
+    public IFConsole(T commandSender) {
+        this.commandSender =commandSender;
+        uuid = UUID.randomUUID();
+    }
+
+    @NotNull
     @Override
-    public void setPermission(String permission, boolean value) {
+    public UUID getUniqueId() {
+        return uuid;
+    }
+
+
+    @Override
+    public T getIssuer() {
+        return commandSender;
     }
 
     /**
-     * Get all Permissions which this CommandSender has
+     * Is this issue a player, or server/console sender
      *
-     * @return a unmodifiable Collection of Strings which represent their
-     * permissions
+     * @return
      */
     @Override
-    public Collection<String> getPermissions() { return null; }
+    public boolean isPlayer() {
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "IFConsole{" +
+                "commandSender=" + commandSender +
+                ", uuid=" + uuid +
+                '}';
+    }
 }

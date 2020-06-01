@@ -21,8 +21,14 @@
 
 ### Gradle:
 ```gradle
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'java'
+}
+
 repositories {
     ...
+        maven { url = "https://repo.aikar.co/content/groups/aikar/" } // Required to solve transistive dependency issues
     maven { url 'https://jitpack.io' }
 }
 ```
@@ -32,7 +38,18 @@ dependencies {
 // Since 1.9b6+: Use name of server platform, or 'all' to include all platforms. Eg. spigot, bungee, sponge, velocity. You may even import the core to implement your own API, though it isn't recommended
 // Since1.9b6+: Use FernAPI at end of groupdId. Lower versions use groupId without FernAPI and instead provide it in artifactId
         implementation 'com.github.Fernthedev.FernAPI:all:Tag'
+
+
 }
+
+shadowJar {
+    minimize()
+    relocate 'co.aikar.commands', "${project.group}.acf"
+    relocate 'co.aikar.locales', "${project.group}.locales"
+
+}
+
+build.dependsOn shadowJar
 ```
 
 ## Local Installation

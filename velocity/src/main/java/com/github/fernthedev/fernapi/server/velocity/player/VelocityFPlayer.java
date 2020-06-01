@@ -4,16 +4,23 @@ import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
+import com.github.fernthedev.fernapi.universal.handlers.NetworkHandler;
 import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ServerConnection;
 import net.kyori.text.TextComponent;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
-import java.util.Collection;
+import java.util.UUID;
 
 public class VelocityFPlayer extends IFPlayer<Player> {
 
     public VelocityFPlayer(Player player) {
         super(player == null ? null : player.getUsername(),player == null ? null : player.getUniqueId(), player);
+    }
+
+    public VelocityFPlayer(Player player, @Nullable String name, @Nullable UUID uuid) {
+        super(player == null ? name : player.getUsername(), player == null ? uuid : player.getUniqueId(), player);
     }
 
     /**
@@ -25,28 +32,6 @@ public class VelocityFPlayer extends IFPlayer<Player> {
     @Override
     public boolean hasPermission(String permission) {
         return player.hasPermission(permission);
-    }
-
-    /**
-     * Set a permission node for this user.
-     *
-     * @param permission the node to set
-     * @param value      the value of the node
-     */
-    @Override
-    public void setPermission(String permission, boolean value) {
-
-    }
-
-    /**
-     * Get all Permissions which this CommandSender has
-     *
-     * @return a unmodifiable Collection of Strings which represent their
-     * permissions
-     */
-    @Override
-    public Collection<String> getPermissions() {
-        return null;
     }
 
     @Override
@@ -90,6 +75,6 @@ public class VelocityFPlayer extends IFPlayer<Player> {
 
     @Override
     public IServerInfo getServerInfo() {
-        return Universal.getNetworkHandler().toServer(player.getCurrentServer().orElse(null));
+        return ((NetworkHandler< ServerConnection>) Universal.getNetworkHandler()).toServer(player.getCurrentServer().orElse(null));
     }
 }

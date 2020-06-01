@@ -4,19 +4,27 @@ import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
+import com.github.fernthedev.fernapi.universal.handlers.NetworkHandler;
 import lombok.NonNull;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.net.InetSocketAddress;
-import java.util.Collection;
 
 public class BungeeFPlayer extends IFPlayer<ProxiedPlayer> {
 
     public BungeeFPlayer(ProxiedPlayer player) {
         super(player == null ? null : player.getName(),player == null ? null : player.getUniqueId(), player);
     }
+
+//    public BungeeFPlayer(ProxiedPlayer player, @Nullable String name, @Nullable UUID uuid) {
+//        super(player == null ? name : player.getName(), player == null ? uuid : player.getUniqueId(), player);
+//    }
+
+
 
     /**
      * Checks if this user has the specified permission node.
@@ -27,28 +35,6 @@ public class BungeeFPlayer extends IFPlayer<ProxiedPlayer> {
     @Override
     public boolean hasPermission(String permission) {
         return player.hasPermission(permission);
-    }
-
-    /**
-     * Set a permission node for this user.
-     *
-     * @param permission the node to set
-     * @param value      the value of the node
-     */
-    @Override
-    public void setPermission(String permission, boolean value) {
-
-    }
-
-    /**
-     * Get all Permissions which this CommandSender has
-     *
-     * @return a unmodifiable Collection of Strings which represent their
-     * permissions
-     */
-    @Override
-    public Collection<String> getPermissions() {
-        return null;
     }
 
     @Override
@@ -96,7 +82,7 @@ public class BungeeFPlayer extends IFPlayer<ProxiedPlayer> {
 
     @Override
     public IServerInfo getServerInfo() {
-        return Universal.getNetworkHandler().toServer(player.getServer().getInfo());
+        return ((NetworkHandler<ServerInfo>) Universal.getNetworkHandler()).toServer(player.getServer().getInfo());
     }
 
     private BaseComponent[] message(String text) {

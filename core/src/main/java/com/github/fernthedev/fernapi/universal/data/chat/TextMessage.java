@@ -26,6 +26,10 @@ public class TextMessage extends BaseMessage {
         this.text = text;
     }
 
+    public static TextMessage fromColor(String message) {
+        return new TextMessage(ChatColor.translateAlternateColorCodes('&', message));
+    }
+
     /**
      * Creates a textMessage with formatting and text from the passed
      * component

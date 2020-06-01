@@ -8,27 +8,33 @@ import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.*;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("unused")
 public class UUIDFetcher {
     private static final String UUID_URL = "https://api.mojang.com/users/profiles/minecraft/%name%";
     private static final String NAME_URL = "https://api.mojang.com/user/profiles/%uuid%/names";
 
+    private static final Map<String, PlayerUUID> playerUUIDCache = new HashMap<>();
+    private static final Map<UUID, PlayerName> playerNameCache = new HashMap<>();
+    private static final Map<UUID, List<PlayerHistory>> playerHistoryCache = new HashMap<>();
+
+    //Use compiled pattern to improve performance of bulk operations
+    private static final Pattern pattern = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
+
     private static int requests = 0;
 
-    private static UUIDFetchManager fetchManager = new UUIDFetchManager(new Runnable() {
-        @Override
-        public void run() {
-            playerHistoryCache.clear();
-            playerNameCache.clear();
-            playerUUIDCache.clear();
-        }
+    private static UUIDFetchManager fetchManager = new UUIDFetchManager(() -> {
+        playerHistoryCache.clear();
+        playerNameCache.clear();
+        playerUUIDCache.clear();
     });
 
     /**
@@ -46,9 +52,6 @@ public class UUIDFetcher {
         UUIDFetcher.requests = requests;
     }
 
-    private static final Map<String, PlayerUUID> playerUUIDCache = new HashMap<>();
-    private static final Map<String, PlayerName> playerNameCache = new HashMap<>();
-    private static final Map<String, List<PlayerHistory>> playerHistoryCache = new HashMap<>();
 
 
     @Getter
@@ -81,9 +84,9 @@ public class UUIDFetcher {
         fetchManager.stopHourTask();
     }
 
-    public static String getUUID(String name) {
-        if (Universal.getMethods().getUUIDFromPlayer(name) != null) {
-            return Universal.getMethods().getUUIDFromPlayer(name).toString();
+    public static UUID getUUID(String name) {
+        if (Universal.getMethods().getUUIDFromPlayerName(name) != null) {
+            return Universal.getMethods().getUUIDFromPlayerName(name);
         }
 
         // Get Gson object
@@ -97,7 +100,13 @@ public class UUIDFetcher {
 
             if (fileData == null) {
                 if (playerUUIDCache.containsKey(name)) {
-                    return playerUUIDCache.get(name).id;
+//                    String hexStringWithoutHyphens = playerUUIDCache.get(name).id;
+//// Use regex to format the hex string by inserting hyphens in the canonical format: 8-4-4-4-12
+////                    String hexStringWithInsertedHyphens =  hexStringWithoutHyphens.replaceFirst( "([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]+)", "$1-$2-$3-$4-$5" );
+//
+//                    String hexStringWithInsertedHyphens = pattern.matcher(hexStringWithoutHyphens).replaceAll("$1-$2-$3-$4-$5");
+
+                    return uuidFromString ( playerUUIDCache.get(name).id );
                 } else return null;
             } else {
 
@@ -109,10 +118,15 @@ public class UUIDFetcher {
 
                 Universal.debug("The uuid for " + name + " is " + uuidResponse.getId());
 
-                if (playerUUIDCache.get(name) != uuidResponse) playerHistoryCache.remove(name);
                 playerUUIDCache.put(name, uuidResponse);
 
-                return uuidResponse.getId();
+//                String hexStringWithoutHyphens = uuidResponse.getId();
+//// Use regex to format the hex string by inserting hyphens in the canonical format: 8-4-4-4-12
+////                String hexStringWithInsertedHyphens =  hexStringWithoutHyphens.replaceFirst( "([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]+)", "$1-$2-$3-$4-$5" );
+//
+//                String hexStringWithInsertedHyphens = pattern.matcher(hexStringWithoutHyphens).replaceAll("$1-$2-$3-$4-$5");
+
+                return uuidFromString( uuidResponse.getId() );
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -121,9 +135,13 @@ public class UUIDFetcher {
     }
 
     public static String getName(@NonNull String uuid) {
+        return getName(uuidFromString(uuid));
+    }
+
+    public static String getName(@NonNull UUID uuid) {
         try {
-            if (Universal.getMethods().getNameFromPlayer(UUID.fromString(uuid)) != null) {
-                return Universal.getMethods().getNameFromPlayer(UUID.fromString(uuid));
+            if (Universal.getMethods().getNameFromPlayer(uuid) != null) {
+                return Universal.getMethods().getNameFromPlayer(uuid);
             }
         } catch (Exception e) {
             throw new FernRuntimeException("Unable to find name, perhaps the UUID is invalid?", e);
@@ -132,17 +150,17 @@ public class UUIDFetcher {
         // Get Gson object
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        uuid = uuid.replaceAll("-", "");
+        String uuidStr = uuid.toString().replaceAll("-", "");
         // read JSON file dataInfo as String
         try {
-            String fileData = readUrl(NAME_URL.replace("%uuid%", uuid));
+            String fileData = readUrl(NAME_URL.replace("%uuid%", uuidStr));
 
             if (fileData == null) {
                 if (playerNameCache.containsKey(uuid)) return playerNameCache.get(uuid).name;
                 else return null;
             } else {
 
-                Universal.debug("The url of name is " + NAME_URL.replace("%uuid%", uuid));
+                Universal.debug("The url of name is " + NAME_URL.replace("%uuid%", uuidStr));
 
                 PlayerName[] uuidResponse = gson.fromJson(fileData, PlayerName[].class);
 
@@ -156,7 +174,7 @@ public class UUIDFetcher {
 
                         Universal.debug("The current name is " + currentName.name);
 
-                        if (playerNameCache.get(uuid) != currentName) playerHistoryCache.remove(uuid);
+//                        if (playerNameCache.get(uuid) != currentName) playerHistoryCache.remove(uuid);
                         playerNameCache.put(uuid, currentName);
 
                         return currentName.name;
@@ -176,6 +194,9 @@ public class UUIDFetcher {
         return null;
     }
 
+    public static List<PlayerHistory> getNameHistory(String uuid) {
+        return getNameHistory(uuidFromString(uuid));
+    }
 
     /**
      * This can be used to get name history
@@ -183,14 +204,15 @@ public class UUIDFetcher {
      * @param uuid The uuid of the player
      * @return The name history.
      */
-    public static List<PlayerHistory> getNameHistory(String uuid) {
+    @Nullable
+    public static List<PlayerHistory> getNameHistory(UUID uuid) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         if (uuid == null) return null;
 
-        uuid = uuid.replaceAll("-", "");
+        String uuidStr = uuid.toString().replaceAll("-", "");
         // read JSON file dataInfo as String
         try {
-            String fileData = readUrl(NAME_URL.replace("%uuid%", uuid));
+            String fileData = readUrl(NAME_URL.replace("%uuid%", uuidStr));
 
             if (fileData == null) {
                 if (playerHistoryCache.containsKey(uuid)) {
@@ -198,7 +220,7 @@ public class UUIDFetcher {
                 }
 
             } else {
-                Universal.debug("The url of namehistory is " + NAME_URL.replace("%uuid%", uuid));
+                Universal.debug("The url of namehistory is " + NAME_URL.replace("%uuid%", uuidStr));
 
                 PlayerName[] uuidResponse = gson.fromJson(fileData, PlayerName[].class);
 
@@ -217,7 +239,7 @@ public class UUIDFetcher {
                             names.add(new PlayerHistory(currentResponse.name, new Date(currentResponse.getChangedToAt()), currentResponse.changedToAt));
                         }
 
-                        if (playerHistoryCache.get(uuid) != names) playerHistoryCache.remove(uuid);
+//                        if (playerHistoryCache.get(uuid) != names) playerHistoryCache.remove(uuid);
                         playerHistoryCache.put(uuid, names);
 
                         return names;
@@ -333,5 +355,13 @@ public class UUIDFetcher {
         Universal.debug("[UUIDFetcher/FernAPI] " + log);
     }
 
+    public static UUID uuidFromString(String str) {
+        try {
+            return UUID.fromString(str);
+        } catch (IllegalArgumentException e) {
+            String hexStringWithInsertedHyphens = pattern.matcher(str).replaceAll("$1-$2-$3-$4-$5");
 
+            return UUID.fromString(hexStringWithInsertedHyphens);
+        }
+    }
 }

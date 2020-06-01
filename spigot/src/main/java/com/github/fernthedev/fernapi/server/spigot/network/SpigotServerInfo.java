@@ -1,6 +1,7 @@
 package com.github.fernthedev.fernapi.server.spigot.network;
 
-import com.github.fernthedev.fernapi.universal.api.CommandSender;
+
+import co.aikar.commands.CommandIssuer;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import com.google.common.collect.ImmutableList;
 import lombok.NonNull;
@@ -1591,7 +1592,7 @@ public class SpigotServerInfo implements Server, IServerInfo {
      * @return whether access is granted to this server
      */
     @Override
-    public boolean canAccess(CommandSender sender) {
+    public boolean canAccess(CommandIssuer sender) {
         return true;
     }
 

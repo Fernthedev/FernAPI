@@ -168,7 +168,7 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
                         if(in.available() > 0) {
                             JSONPlayer player1 = new Gson().fromJson(in.readUTF(),JSONPlayer.class);
                             if(Bukkit.getPlayer(player.getUniqueId()) != null) {
-                                data.setPlayer(Universal.getMethods().getPlayerFromUUID(player1.getUuid()));
+                                data.setPlayer(Universal.getMethods().getPlayerFromUUID(player1.getUniqueId()));
                             }
 
                             Universal.debug("Received player info");

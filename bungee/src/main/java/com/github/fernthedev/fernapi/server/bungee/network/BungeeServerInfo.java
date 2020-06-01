@@ -1,7 +1,7 @@
 package com.github.fernthedev.fernapi.server.bungee.network;
 
+import co.aikar.commands.CommandIssuer;
 import com.github.fernthedev.fernapi.universal.Universal;
-import com.github.fernthedev.fernapi.universal.api.CommandSender;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -77,7 +77,7 @@ public class BungeeServerInfo implements IServerInfo {
      * @return whether access is granted to this server
      */
     @Override
-    public boolean canAccess(CommandSender sender) {
+    public boolean canAccess(CommandIssuer sender) {
         return serverInfo.canAccess((net.md_5.bungee.api.CommandSender) Universal.getMethods().convertCommandSenderToAPISender(sender));
     }
 

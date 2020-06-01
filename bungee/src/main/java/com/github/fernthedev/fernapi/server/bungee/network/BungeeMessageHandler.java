@@ -73,8 +73,8 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
 
                             JSONPlayer ifPlayer = new Gson().fromJson(dataS, JSONPlayer.class);
 
-                            if(ifPlayer != null && ifPlayer.getUuid() != null) {
-                                IFPlayer<?> correctPlayer = Universal.getMethods().getPlayerFromUUID(ifPlayer.getUuid());
+                            if(ifPlayer != null && ifPlayer.getUniqueId() != null) {
+                                IFPlayer<?> correctPlayer = Universal.getMethods().getPlayerFromUUID(ifPlayer.getUniqueId());
                                 data.setPlayer(correctPlayer);
                             } else {
                                 data.setPlayer(null);

@@ -5,7 +5,7 @@
       <map />
     </option>
   </component>
-  <component name="ExternalSystem" externalSystem="GRADLE" externalSystemModuleGroup="com.github.Fernthedev" externalSystemModuleVersion="1.9.0-rc2" linkedProjectId="FernAPI" linkedProjectPath="$MODULE_DIR$" rootProjectPath="$MODULE_DIR$" />
+  <component name="ExternalSystem" externalSystem="GRADLE" externalSystemModuleGroup="com.github.Fernthedev" externalSystemModuleVersion="1.9.0-rc3" linkedProjectId="FernAPI" linkedProjectPath="$MODULE_DIR$" rootProjectPath="$MODULE_DIR$" />
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
@@ -13,6 +13,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build" />
       <excludeFolder url="file://$MODULE_DIR$/out" />
     </content>
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

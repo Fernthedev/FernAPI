@@ -4,12 +4,13 @@ import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFConsole;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.bukkit.command.ConsoleCommandSender;
 
-public class SpigotFConsole extends IFConsole {
-    private org.bukkit.command.CommandSender commandSender;
+public class SpigotFConsole extends IFConsole<ConsoleCommandSender> {
 
-    public SpigotFConsole(org.bukkit.command.CommandSender commandSender) {
-        this.commandSender = commandSender;
+
+    public SpigotFConsole(ConsoleCommandSender commandSender) {
+        super(commandSender);
     }
 
     /**

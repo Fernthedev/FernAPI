@@ -1,5 +1,6 @@
 package com.github.fernthedev.fernapi.server.spigot.pluginhandlers;
 
+import com.github.fernthedev.fernapi.server.spigot.FernSpigotAPI;
 import lombok.Getter;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
@@ -16,13 +17,19 @@ public class VaultHandler {
     @Getter
     private static boolean hooked = false;
 
+    /**
+     * This method wil be called on {@link FernSpigotAPI#onEnable()} making it an internal method
+     * No need to manually call it.
+     */
     public void hook() {
-        if (!setupEconomy() ) {
-            return;
-        }
-        setupPermissions();
-        setupChat();
-        hooked = true;
+        if (!hooked) {
+            if (!setupEconomy()) {
+                return;
+            }
+            setupPermissions();
+            setupChat();
+            hooked = true;
+        } else throw new IllegalStateException("Already hooked to Vault API. This method will be called on the start of plugin initialization");
     }
 
     @Getter

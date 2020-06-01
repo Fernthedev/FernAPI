@@ -1,8 +1,8 @@
 package com.github.fernthedev.fernapi.universal.data.network;
 
 
+import co.aikar.commands.CommandIssuer;
 import com.github.fernthedev.fernapi.universal.Universal;
-import com.github.fernthedev.fernapi.universal.api.CommandSender;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -72,7 +72,7 @@ public interface IServerInfo {
      * @param sender the player to check access for
      * @return whether access is granted to this server
      */
-    boolean canAccess(CommandSender sender);
+    boolean canAccess(CommandIssuer sender);
 
     /**
      * Send data by any available means to this server. This data may be queued

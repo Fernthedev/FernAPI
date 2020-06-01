@@ -72,7 +72,7 @@ public class VelocityMessageHandler implements IPMessageHandler {
 
                         if(in.available() > 0) {
                             JSONPlayer ifPlayer = new Gson().fromJson(in.readUTF(),JSONPlayer.class);
-                            IFPlayer correctPlayer = Universal.getMethods().getPlayerFromUUID(ifPlayer.getUuid());
+                            IFPlayer correctPlayer = Universal.getMethods().getPlayerFromUUID(ifPlayer.getUniqueId());
                             data.setPlayer(correctPlayer);
                         }else {
                             throw new NotEnoughDataException("The player information dataInfo was not sent");

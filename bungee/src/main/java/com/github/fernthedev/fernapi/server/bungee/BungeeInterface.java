@@ -2,12 +2,16 @@ package com.github.fernthedev.fernapi.server.bungee;
 
 import com.github.fernthedev.fernapi.server.bungee.player.BungeeFConsole;
 import com.github.fernthedev.fernapi.server.bungee.player.BungeeFPlayer;
-import com.github.fernthedev.fernapi.universal.api.CommandSender;
+import com.github.fernthedev.fernapi.universal.Universal;
+import com.github.fernthedev.fernapi.universal.api.FernCommandIssuer;
+import com.github.fernthedev.fernapi.universal.api.IFConsole;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
+import com.github.fernthedev.fernapi.universal.api.OfflineFPlayer;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
 import com.github.fernthedev.fernapi.universal.handlers.ServerType;
 import lombok.NonNull;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -17,7 +21,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class BungeeInterface implements MethodInterface<ProxiedPlayer> {
+public class BungeeInterface implements MethodInterface<ProxiedPlayer, CommandSender> {
     private FernBungeeAPI fernBungeeAPI;
 
     BungeeInterface(FernBungeeAPI fernBungeeAPI) {
@@ -39,6 +43,10 @@ public class BungeeInterface implements MethodInterface<ProxiedPlayer> {
         return fernBungeeAPI;
     }
 
+    /**
+     * @param player The player
+     * @return The {@link IFPlayer} player instance
+     */
     @Override
     public <P> IFPlayer<P> convertPlayerObjectToFPlayer(P player) {
         return (IFPlayer<P>) new BungeeFPlayer((ProxiedPlayer) player);
@@ -50,11 +58,11 @@ public class BungeeInterface implements MethodInterface<ProxiedPlayer> {
             return ifPlayer.getPlayer();
         }
 
-        return (P) ProxyServer.getInstance().getPlayer(ifPlayer.getUuid());
+        return (P) ProxyServer.getInstance().getPlayer(ifPlayer.getUniqueId());
     }
 
     @Override
-    public CommandSender convertCommandSenderToAPISender(@NonNull Object commandSender) {
+    public FernCommandIssuer convertCommandSenderToAPISender(@NonNull Object commandSender) {
         if(commandSender instanceof ProxiedPlayer) {
             return new BungeeFPlayer((ProxiedPlayer) commandSender);
         }
@@ -66,14 +74,39 @@ public class BungeeInterface implements MethodInterface<ProxiedPlayer> {
         return null;
     }
 
+    /**
+     * Converts the command sender to it's Console instance
+     *
+     * @param commandSender
+     * @return
+     */
     @Override
-    public IFPlayer<ProxiedPlayer> getPlayerFromName(String name) {
-        return convertPlayerObjectToFPlayer(fernBungeeAPI.getProxy().getPlayer(name));
+    public IFConsole<CommandSender> convertConsoleToAPISender(@NonNull CommandSender commandSender) {
+        return new BungeeFConsole(commandSender);
     }
 
     @Override
-    public IFPlayer<ProxiedPlayer> getPlayerFromUUID(UUID uuid) {
-        return convertPlayerObjectToFPlayer(fernBungeeAPI.getProxy().getPlayer(uuid));
+    public OfflineFPlayer<ProxiedPlayer> getPlayerFromName(String name) {
+        ProxiedPlayer player = fernBungeeAPI.getProxy().getPlayer(name);
+
+        if (player == null) {
+            return new OfflineFPlayer<>(name);
+        }
+
+        return new OfflineFPlayer<>(convertPlayerObjectToFPlayer(player));
+    }
+
+    @Override
+    public OfflineFPlayer<ProxiedPlayer> getPlayerFromUUID(UUID uuid) {
+        ProxiedPlayer player = fernBungeeAPI.getProxy().getPlayer(uuid);
+
+        Universal.debug("Player uuid " + uuid + " for player " + player);
+
+        if (player == null) {
+            return new OfflineFPlayer<>(uuid);
+        }
+
+        return new OfflineFPlayer<>(convertPlayerObjectToFPlayer(player));
     }
 
 
@@ -99,10 +132,18 @@ public class BungeeInterface implements MethodInterface<ProxiedPlayer> {
     }
 
     @Override
-    public UUID getUUIDFromPlayer(String name) {
+    public UUID getUUIDFromPlayerName(String name) {
         if(ProxyServer.getInstance().getPlayer(name) != null && ProxyServer.getInstance().getPlayer(name).isConnected()) {
             return ProxyServer.getInstance().getPlayer(name).getUniqueId();
         }
         return null;
+    }
+
+    @Override
+    public List<IFPlayer<ProxiedPlayer>> matchPlayerName(String name) {
+        return getPlayers()
+                .parallelStream()
+                .filter(proxiedPlayerIFPlayer -> proxiedPlayerIFPlayer.getName().contains(name))
+                .collect(Collectors.toList());
     }
 }

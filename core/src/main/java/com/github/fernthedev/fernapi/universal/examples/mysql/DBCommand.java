@@ -1,8 +1,10 @@
 package com.github.fernthedev.fernapi.universal.examples.mysql;
 
 
-import com.github.fernthedev.fernapi.universal.api.CommandSender;
-import com.github.fernthedev.fernapi.universal.api.UniversalCommand;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandIssuer;
+import co.aikar.commands.annotation.*;
+import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.database.ColumnData;
 import com.github.fernthedev.fernapi.universal.data.database.RowData;
 import com.github.fernthedev.fernapi.universal.data.database.RowDataTemplate;
@@ -10,67 +12,46 @@ import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseExcep
 
 import java.util.Arrays;
 
-public class DBCommand extends UniversalCommand {
-    /**
-     * Construct a new command with no permissions or aliases.
-     *
-     * @param name the name of this command
-     */
-    public DBCommand(String name) {
-        super(name);
-        onConst();
-    }
+@CommandAlias("db")
+public class DBCommand extends BaseCommand {
 
-    private void onConst() {
-        db = new DatabaseTest(null,null,null,null,null);
-    }
 
-    private static DatabaseTest db;
+    private static DatabaseTest db = new DatabaseTest(null,null,null,null,null);;
 
-    /**
-     * Construct a new command.
-     *
-     * @param name       primary name of this command
-     * @param permission the permission node required to execute this command,
-     *                   null or empty string allows it to be executed by everyone
-     * @param aliases    aliases which map back to this command
-     */
-    public DBCommand(String name, String permission, String... aliases) {
-        super(name, permission, aliases);
-        onConst();
-    }
+    private static final String dbValues = "start|insert|get|remove";
 
-    @Override
-    public void execute(CommandSender sender, String[] args) {
+
+    @Subcommand(dbValues)
+    @CommandCompletion(dbValues)
+    @Default
+    @Description("Test database system code")
+    public void onDefault(CommandIssuer sender, @Values(dbValues) String arg) {
         try {
-            if (args.length == 0) {
-                sendMessage(sender, "&cNo args?");
-            } else {
-                switch (args[0].toLowerCase()) {
+            switch (arg.toLowerCase()) {
+                case "start":
+                    db.test();
+                    break;
+                case "insert":
+                    RowData rowData = new RowData(new ColumnData("row1", "value1test"), new ColumnData("row2", "value2test"));
 
-                    case "start":
-                        db.test();
-                        break;
-                    case "insert":
-                        RowData rowData = new RowData(new ColumnData("row1", "value1test"), new ColumnData("row2", "value2test"));
+                    db.insertIntoTable(db.getTableInfo(), rowData);
+                    break;
+                case "get":
+                    for (RowData rowData1 : db.getTable(db.getTableInfo().getTableName(),
+                            new RowDataTemplate(new ColumnData("row1", "value1test"),
+                                    new ColumnData("row2", "value2test"))).getRowDataList()) {
+                        Universal.getLogger().info(Arrays.toString(rowData1.getColumnDataList().toArray()));
 
-                        db.insertIntoTable(db.getTableInfo(), rowData);
-                        break;
-                    case "get":
-                        for (RowData rowData1 : db.getTable(db.getTableInfo().getTableName(),
-                                new RowDataTemplate(new ColumnData("row1", "value1test"),
-                                        new ColumnData("row2", "value2test"))).getRowDataList()) {
-                            getLogger().info(Arrays.toString(rowData1.getColumnDataList().toArray()));
-
-                            for (ColumnData columnData : rowData1.getColumnDataList()) {
-                                getLogger().info(columnData.getColumnName() + ":" + columnData.getValue() + " (" + columnData.getType() + "|" + columnData.getLength() + ")\n");
-                            }
+                        for (ColumnData columnData : rowData1.getColumnDataList()) {
+                            Universal.getLogger().info(columnData.getColumnName() + ":" + columnData.getValue() + " (" + columnData.getType() + "|" + columnData.getLength() + ")\n");
                         }
-                        break;
-                    case "remove":
-                        db.removeTable(db.getTableInfo());
-                        break;
-                }
+                    }
+                    break;
+                case "remove":
+                    db.removeTable(db.getTableInfo());
+                    break;
+                default:
+                    showSyntax(sender, getDefaultRegisteredCommand());
             }
         } catch (DatabaseException e) {
             e.printStackTrace();

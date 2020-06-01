@@ -93,6 +93,7 @@ public class PluginMessageData {
     /**
      * @deprecated Use {@link PluginMessageData#PluginMessageData(ByteArrayOutputStream, String, String, Channel)}
      */
+    @Deprecated
     public PluginMessageData(@NonNull ByteArrayOutputStream outputStream, String server, String subChannel, String pluginChannel) {
         this.outputStream = outputStream;
         this.in = new DataInputStream(inputStream);
