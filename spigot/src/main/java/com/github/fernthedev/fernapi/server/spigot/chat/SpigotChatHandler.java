@@ -22,7 +22,7 @@ public class SpigotChatHandler implements IChatHandler<BaseComponent> {
         }
 
         if (baseMessage.getHoverData() != null) {
-            BaseComponent hoverMessage = parseComponent(baseMessage);
+            BaseComponent hoverMessage = parseComponent(baseMessage.getHoverData().getHoverValue());
 
             builder.setHoverEvent(new HoverEvent(
                             HoverEvent.Action.valueOf(baseMessage.getHoverData().getAction().toString()),
