@@ -26,10 +26,15 @@ public class UUIDFetcher {
     private static final Map<UUID, PlayerName> playerNameCache = new HashMap<>();
     private static final Map<UUID, List<PlayerHistory>> playerHistoryCache = new HashMap<>();
 
-    //Use compiled pattern to improve performance of bulk operations
+    // Use compiled pattern to improve performance of bulk operations
     private static final Pattern pattern = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
 
     private static int requests = 0;
+
+    public static int maxRequestsAllowed = 600;
+    public static int minimumRequestsNeededForCache = (int) (maxRequestsAllowed * 0.8);
+
+    public static int CLEAR_CACHE_TIME_MINS = 90;
 
     private static UUIDFetchManager fetchManager = new UUIDFetchManager(() -> {
         playerHistoryCache.clear();
@@ -259,7 +264,7 @@ public class UUIDFetcher {
 
 
     private static String readUrl(String urlString) throws Exception {
-        if (requests < 560) {
+        if (requests <= minimumRequestsNeededForCache) {
             URL url = new URL(urlString);
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
                 StringBuilder buffer = new StringBuilder();
@@ -282,7 +287,7 @@ public class UUIDFetcher {
                 requests++;
             }
         } else {
-            debug("There is over 600 requests sent, waiting for requests to be refreshed.");
+            debug("There is over " + minimumRequestsNeededForCache + " requests sent, waiting for requests to be refreshed.");
             return null;
         }
         return null;

@@ -1,7 +1,7 @@
 package com.github.fernthedev.fernapi.server.spigot.network.PlaceHolderAPI;
 
 import com.github.fernthedev.fernapi.server.spigot.FernSpigotAPI;
-import com.github.fernthedev.fernapi.universal.Channels;
+import com.github.fernthedev.fernapi.universal.FernAPIChannels;
 import com.github.fernthedev.fernapi.universal.util.ProxyAskPlaceHolder;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.network.Channel;
@@ -42,7 +42,7 @@ public class PlaceHolderAPIResponder extends PluginMessageHandler {
     @Override
     public List<Channel> getChannels() {
         List<Channel> channels = new ArrayList<>();
-        channels.add(Channels.PlaceHolderBungeeChannel);
+        channels.add(FernAPIChannels.PlaceHolderBungeeChannel);
 
         return channels;
     }
@@ -50,7 +50,7 @@ public class PlaceHolderAPIResponder extends PluginMessageHandler {
     @Override
     public void onMessageReceived(PluginMessageData data, Channel channel) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        PluginMessageData newData = new PluginMessageData(stream, "All", Channels.PlaceHolderValue, Channels.PlaceHolderBungeeChannel);
+        PluginMessageData newData = new PluginMessageData(stream, "All", FernAPIChannels.PlaceHolderValue, FernAPIChannels.PlaceHolderBungeeChannel);
 
         Queue<String> dataQueue = data.getExtraDataQueue();
 
@@ -87,7 +87,7 @@ public class PlaceHolderAPIResponder extends PluginMessageHandler {
 
         Universal.getMessageHandler().sendPluginData(newData);
 
-        // Bukkit.getServer().sendPluginMessage(spigotAPI.getPlugin(spigotAPI.getClass()), Channels.PlaceHolderBungeeChannel, stream.toByteArray());
+        // Bukkit.getServer().sendPluginMessage(spigotAPI.getPlugin(spigotAPI.getClass()), FernAPIChannels.PlaceHolderBungeeChannel, stream.toByteArray());
 
 
     }

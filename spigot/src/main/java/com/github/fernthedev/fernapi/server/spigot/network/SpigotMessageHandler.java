@@ -17,7 +17,7 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.io.*;
 
-public class SpigotMessageHandler implements IPMessageHandler, PluginMessageListener {
+public class SpigotMessageHandler extends IPMessageHandler implements PluginMessageListener {
 
     private FernSpigotAPI spigot;
 
@@ -91,6 +91,8 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
             out.writeUTF(new Gson().toJson(new JSONPlayer(player.getName(),player.getUniqueId())));
 
             out.writeBoolean(data.isUseGson());
+            out.writeUTF(data.getGsonName());
+
             if (data.isUseGson()) {
                 out.writeUTF(new Gson().toJson(data));
             }
@@ -146,6 +148,7 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
                         String server;
                         String subchannel;
                         boolean useGson;
+                        String gsonDataName;
 
                         if (in.available() > 0) {
                             server = in.readUTF();
@@ -183,6 +186,12 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
                             throw new NotEnoughDataException("The use gson boolean dataInfo was not sent");
                         }
 
+                        if (in.available() > 0) {
+                            gsonDataName = in.readUTF();
+                        } else {
+                            throw new NotEnoughDataException("The gson data name was not sent");
+                        }
+
                         data.setProxyChannelType(type);
                         data.setServer(server);
 //                        data.setMessageChannel(Channel.createChannelFromString(messageChannel, Channel.ChannelAction.BOTH));
@@ -190,10 +199,11 @@ public class SpigotMessageHandler implements IPMessageHandler, PluginMessageList
                         data.setSender(player);
                         data.setSubChannel(subchannel);
                         data.setUseGson(useGson);
+                        data.setGsonName(gsonDataName);
 
                         if(useGson) {
                             if (in.available() > 0) {
-                                data = new Gson().fromJson(in.readUTF(), PluginMessageData.class);
+                                data = Universal.getMessageHandler().getPacketParser(gsonDataName).parse(in.readUTF());
                             } else {
                                 throw new NotEnoughDataException("The use gson json dataInfo was not sent");
                             }

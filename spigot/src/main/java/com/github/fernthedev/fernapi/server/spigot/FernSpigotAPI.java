@@ -13,6 +13,7 @@ import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.util.ListUtil;
 import com.github.fernthedev.fernapi.universal.util.network.vanish.VanishProxyCheck;
+import fr.minuskube.inv.InventoryManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,6 +22,9 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
 
     @Getter
     private VaultHandler vaultHandler;
+
+    @Getter
+    private InventoryManager inventoryManager;
 
     @Override
     public void onEnable() {
@@ -46,6 +50,9 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
 
             vaultHandler.hook();
         }
+
+        inventoryManager = new InventoryManager(this);
+        inventoryManager.init();
 
         Universal.getMessageHandler().registerMessageHandler(new VanishProxyCheck(this));
     }

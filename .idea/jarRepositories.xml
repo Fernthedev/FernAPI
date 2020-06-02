@@ -66,5 +66,15 @@
       <option name="name" value="maven2" />
       <option name="url" value="https://libraries.minecraft.net" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="minebench-repo" />
+      <option name="name" value="minebench-repo" />
+      <option name="url" value="https://repo.minebench.de/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="minebench-repo" />
+      <option name="name" value="minebench-repo" />
+      <option name="url" value="https://repo.phoenix616.dev/" />
+    </remote-repository>
   </component>
 </project>

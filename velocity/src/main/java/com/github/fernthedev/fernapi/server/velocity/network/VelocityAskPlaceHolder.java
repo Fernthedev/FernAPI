@@ -2,7 +2,7 @@ package com.github.fernthedev.fernapi.server.velocity.network;
 
 
 import com.github.fernthedev.fernapi.server.velocity.FernVelocityAPI;
-import com.github.fernthedev.fernapi.universal.Channels;
+import com.github.fernthedev.fernapi.universal.FernAPIChannels;
 import com.github.fernthedev.fernapi.universal.util.ProxyAskPlaceHolder;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
@@ -60,7 +60,7 @@ public class VelocityAskPlaceHolder extends PluginMessageHandler {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(stream);
 
-        data = new PluginMessageData(stream, player.getCurrentServerName(),Channels.getPlaceHolderResult,Channels.PlaceHolderBungeeChannel);
+        data = new PluginMessageData(stream, player.getCurrentServerName(), FernAPIChannels.getPlaceHolderResult, FernAPIChannels.PlaceHolderBungeeChannel);
 
         uuid = UUID.randomUUID().toString();
         if (!instances.isEmpty()) {
@@ -182,7 +182,7 @@ public class VelocityAskPlaceHolder extends PluginMessageHandler {
     @Override
     public List<Channel> getChannels() {
         List<Channel> channels = new ArrayList<>();
-        channels.add(Channels.PlaceHolderBungeeChannel);
+        channels.add(FernAPIChannels.PlaceHolderBungeeChannel);
 
         return channels;
     }
@@ -200,7 +200,7 @@ public class VelocityAskPlaceHolder extends PluginMessageHandler {
                 String server = data.getServer(); //Just incase
                 String subchannel = data.getSubChannel(); //The channel of our custom desire
 
-                if (channelName.equalsIgnoreCase("Forward") && subchannel.equalsIgnoreCase(Channels.PlaceHolderValue)) {
+                if (channelName.equalsIgnoreCase("Forward") && subchannel.equalsIgnoreCase(FernAPIChannels.PlaceHolderValue)) {
                     String placeholder = in.readUTF();
 
                     if (placeholder.equals("NoPlaceHolderFound")) placeholder = null;

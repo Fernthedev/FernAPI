@@ -21,7 +21,7 @@ import lombok.NonNull;
 import java.io.*;
 import java.util.List;
 
-public class VelocityMessageHandler implements IPMessageHandler {
+public class VelocityMessageHandler extends IPMessageHandler {
 
     private FernVelocityAPI velocity;
 
@@ -51,6 +51,7 @@ public class VelocityMessageHandler implements IPMessageHandler {
                         String server;
                         String subChannel;
                         boolean useGson;
+                        String gsonDataName;
 
                         if (in.available() > 0) {
                             server = in.readUTF();
@@ -84,16 +85,23 @@ public class VelocityMessageHandler implements IPMessageHandler {
                             throw new NotEnoughDataException("The use gson boolean dataInfo was not sent");
                         }
 
+                        if (in.available() > 0) {
+                            gsonDataName = in.readUTF();
+                        } else {
+                            throw new NotEnoughDataException("The gson data name was not sent");
+                        }
+
                         data.setProxyChannelType(bungeeChannelName);
                         data.setMessageChannel(channel);
                         data.setSender(ev.getSource());
                         data.setServer(server);
                         data.setSubChannel(subChannel);
                         data.setUseGson(useGson);
+                        data.setGsonName(gsonDataName);
 
                         if(useGson) {
                             if (in.available() > 0) {
-                                data = new Gson().fromJson(in.readUTF(), PluginMessageData.class);
+                                data = Universal.getMessageHandler().getPacketParser(gsonDataName).parse(in.readUTF());
                             } else {
                                 throw new NotEnoughDataException("The use gson json dataInfo was not sent");
                             }
@@ -171,6 +179,7 @@ public class VelocityMessageHandler implements IPMessageHandler {
             out.writeUTF(new Gson().toJson(new JSONPlayer(player.getUsername(),player.getUniqueId())));
 
             out.writeBoolean(data.isUseGson());
+            out.writeUTF(data.getGsonName());
             Universal.debug("Use gson status: " + data.isUseGson());
 
 

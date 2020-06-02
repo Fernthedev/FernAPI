@@ -14,6 +14,8 @@ import java.util.Set;
  */
 public interface ILocale {
 
+    String boolColored(boolean value);
+
     String noPermission(Set<String> permission, BaseCommand command);
 
     String noPermission(String permission);

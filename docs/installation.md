@@ -42,14 +42,29 @@ dependencies {
 
 }
 
+jar.dependsOn shadowJar
 shadowJar {
     minimize()
+    relocate 'fr.minuskube.inv', "${project.group}.smartinv"
+    relocate 'com.github.fernthedev', "${project.group}.fernstuff"
     relocate 'co.aikar.commands', "${project.group}.acf"
     relocate 'co.aikar.locales', "${project.group}.locales"
 
 }
 
-build.dependsOn shadowJar
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+    options.compilerArgs += ["-parameters"]
+    options.fork = true
+    options.forkOptions.executable = 'javac'
+}
+
+// Include if using kotlin
+compileKotlin {
+    kotlinOptions.javaParameters = true
+}
+
+
 ```
 
 ## Local Installation

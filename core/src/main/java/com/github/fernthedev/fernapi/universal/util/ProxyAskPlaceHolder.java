@@ -1,6 +1,6 @@
 package com.github.fernthedev.fernapi.universal.util;
 
-import com.github.fernthedev.fernapi.universal.Channels;
+import com.github.fernthedev.fernapi.universal.FernAPIChannels;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
@@ -53,7 +53,7 @@ public class ProxyAskPlaceHolder extends PluginMessageHandler {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(stream);
 
-        PluginMessageData data = new PluginMessageData(stream, player.getCurrentServerName(), Channels.getPlaceHolderResult, Channels.PlaceHolderBungeeChannel);
+        PluginMessageData data = new PluginMessageData(stream, player.getCurrentServerName(), FernAPIChannels.getPlaceHolderResult, FernAPIChannels.PlaceHolderBungeeChannel);
 
         uuid = UUID.randomUUID();
         if (!instances.isEmpty()) {
@@ -88,7 +88,7 @@ public class ProxyAskPlaceHolder extends PluginMessageHandler {
     @Override
     public List<Channel> getChannels() {
         List<Channel> channels = new ArrayList<>();
-        channels.add(Channels.PlaceHolderBungeeChannel);
+        channels.add(FernAPIChannels.PlaceHolderBungeeChannel);
 
         return channels;
     }
@@ -104,7 +104,7 @@ public class ProxyAskPlaceHolder extends PluginMessageHandler {
             String subchannel = data.getSubChannel(); //The channel of our custom desire
 
 
-            if (channelName.equalsIgnoreCase("Forward") && subchannel.equalsIgnoreCase(Channels.PlaceHolderValue)) {
+            if (channelName.equalsIgnoreCase("Forward") && subchannel.equalsIgnoreCase(FernAPIChannels.PlaceHolderValue)) {
                 Queue<String> queueData = data.getExtraDataQueue();
                 String placeholder = queueData.remove();
 

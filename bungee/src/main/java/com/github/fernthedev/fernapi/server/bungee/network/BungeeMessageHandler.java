@@ -22,7 +22,7 @@ import net.md_5.bungee.event.EventHandler;
 
 import java.io.*;
 
-public class BungeeMessageHandler implements Listener, IPMessageHandler {
+public class BungeeMessageHandler extends IPMessageHandler implements Listener {
 
     private FernBungeeAPI bungee;
 
@@ -49,6 +49,7 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
                         String server;
                         String subchannel;
                         boolean useGson;
+                        String gsonDataName;
 
                         if (in.available() > 0) {
                             server = in.readUTF();
@@ -90,6 +91,12 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
                             throw new NotEnoughDataException("The use gson boolean dataInfo was not sent");
                         }
 
+                        if (in.available() > 0) {
+                            gsonDataName = in.readUTF();
+                        } else {
+                            throw new NotEnoughDataException("The use gson name string dataInfo was not sent");
+                        }
+
                         data.setProxyChannelType(channelName);
 //                        data.setMessageChannel(Channel.createChannelFromString(messageChannel, Channel.ChannelAction.BOTH));
                         data.setMessageChannel(channel);
@@ -97,10 +104,11 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
                         data.setServer(server);
                         data.setSubChannel(subchannel);
                         data.setUseGson(useGson);
+                        data.setGsonName(gsonDataName);
 
                         if(useGson) {
                             if (in.available() > 0) {
-                                data = new Gson().fromJson(in.readUTF(), PluginMessageData.class);
+                                data = Universal.getMessageHandler().getPacketParser(gsonDataName).parse(in.readUTF());
                             } else {
                                 throw new NotEnoughDataException("The use gson json dataInfo was not sent");
                             }
@@ -182,11 +190,12 @@ public class BungeeMessageHandler implements Listener, IPMessageHandler {
                 out.writeUTF(new Gson().toJson(new JSONPlayer()));
             }
             out.writeBoolean(data.isUseGson());
-
+            out.writeUTF(data.getGsonName());
             Universal.debug("Use gson status: " + data.isUseGson());
 
 
             if (data.isUseGson()) {
+
                 out.writeUTF(new Gson().toJson(data));
             }
 

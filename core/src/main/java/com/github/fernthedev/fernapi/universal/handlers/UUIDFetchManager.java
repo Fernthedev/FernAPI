@@ -14,7 +14,7 @@ import static com.github.fernthedev.fernapi.universal.util.UUIDFetcher.*;
 public class UUIDFetchManager {
 
     @NonNull
-    private Runnable clearCache;
+    private final Runnable clearCache;
 
 //    void stopTimerRequest();
 //
@@ -38,7 +38,7 @@ public class UUIDFetchManager {
             UUIDFetcher.setRequests(0);
             clearCache.run();
             debug("Refreshed uuid cache.");
-        }, 1, 10, TimeUnit.MINUTES);
+        }, 1, CLEAR_CACHE_TIME_MINS, TimeUnit.MINUTES);
     }
 
     public void runHourTask() {

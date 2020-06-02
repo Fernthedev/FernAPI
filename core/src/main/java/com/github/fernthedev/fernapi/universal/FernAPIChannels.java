@@ -2,10 +2,12 @@ package com.github.fernthedev.fernapi.universal;
 
 import com.github.fernthedev.fernapi.universal.data.network.Channel;
 
-public class Channels {
+public class FernAPIChannels {
 
-    private Channels() {
+    private FernAPIChannels() {
     }
+
+    public static final String BUNGEECORD_PROXY_NAME = "BungeeCord";
 
     public static final String getPlaceHolderResult = "GetPlaceHolderAPI";
 

@@ -3,12 +3,15 @@ package com.github.fernthedev.fernapi.universal;
 import co.aikar.commands.CommandManager;
 import com.github.fernthedev.fernapi.universal.api.*;
 import com.github.fernthedev.fernapi.universal.data.network.IPMessageHandler;
+import com.github.fernthedev.fernapi.universal.data.network.PluginMessageData;
 import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
 import com.github.fernthedev.fernapi.universal.exceptions.setup.IncorrectSetupException;
 import com.github.fernthedev.fernapi.universal.handlers.*;
 import com.github.fernthedev.fernapi.universal.mysql.DatabaseHandler;
+import com.github.fernthedev.fernapi.universal.util.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.util.UniversalContextResolvers;
 import com.github.fernthedev.fernapi.universal.util.VersionUtil;
+import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -101,8 +104,11 @@ public class Universal {
 
         comhand.getCommandCompletions().setDefaultCompletion("players", IFPlayer.class, IFPlayer[].class, OfflineFPlayer.class, FernCommandIssuer.class);
 
-        getMethods().getLogger().info("Registered FernAPI " + getMethods().getServerType().toString() + " using version " + VersionUtil.getVersionData());
+        messageHandler.registerPacketParser("fernapi", json -> new Gson().fromJson(json, PluginMessageData.class));
 
+        UUIDFetcher.addRequestTimer();
+
+        getMethods().getLogger().info("Registered FernAPI " + getMethods().getServerType().toString() + " using version " + VersionUtil.getVersionData());
 
     }
 

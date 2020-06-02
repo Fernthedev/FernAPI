@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-public class SpongeMessageHandler implements IPMessageHandler {
+public class SpongeMessageHandler extends IPMessageHandler {
 
     public SpongeMessageHandler(FernSpongeAPI sponge) {
         SpongeMessageHandler.sponge = sponge;
@@ -58,6 +58,7 @@ public class SpongeMessageHandler implements IPMessageHandler {
                                 String server;
                                 String subchannel;
                                 boolean useGson;
+                                String gsonDataName;
 
                                 if (in.available() > 0) {
                                     server = in.readUTF();
@@ -96,16 +97,23 @@ public class SpongeMessageHandler implements IPMessageHandler {
                                     throw new NotEnoughDataException("The use gson boolean dataInfo was not sent");
                                 }
 
+                                if (in.available() > 0) {
+                                    gsonDataName = in.readUTF();
+                                } else {
+                                    throw new NotEnoughDataException("The gson data name was not sent");
+                                }
+
                                 pdata.setProxyChannelType(type);
                                 pdata.setServer(server);
                                 pdata.setMessageChannel(channel);
                                 pdata.setSender(player);
                                 pdata.setSubChannel(subchannel);
                                 pdata.setUseGson(useGson);
+                                pdata.setGsonName(gsonDataName);
 
                                 if(useGson) {
                                     if (in.available() > 0) {
-                                        pdata = new Gson().fromJson(in.readUTF(), PluginMessageData.class);
+                                        pdata = Universal.getMessageHandler().getPacketParser(gsonDataName).parse(in.readUTF());
                                     } else {
                                         throw new NotEnoughDataException("The use gson json dataInfo was not sent");
                                     }
@@ -179,6 +187,7 @@ public class SpongeMessageHandler implements IPMessageHandler {
             out.writeUTF(new Gson().toJson(new JSONPlayer(player.getName(), player.getUniqueId())));
 
             out.writeBoolean(data.isUseGson());
+            out.writeUTF(data.getGsonName());
             if (data.isUseGson()) {
                 out.writeUTF(new Gson().toJson(data));
             }

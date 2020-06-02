@@ -1,6 +1,7 @@
 package com.github.fernthedev.fernapi.universal.data.network;
 
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
+import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -20,58 +21,29 @@ public class PluginMessageData {
 
     protected Object sender;
 
-
     protected String proxyChannelType = "Forward"; // channel we delivered or type
 
-    /**
-     * No need to define the bungee channel type
-     */
-    @Deprecated
-    public void setProxyChannelType(String proxyChannelType) {
-        this.proxyChannelType = proxyChannelType;
-    }
-
     protected String server;
-
-
-    public void setServer(String server) {
-        this.server = server;
-    }
-
-    public PluginMessageData setServer(IServerInfo server) {
-        this.server = server.getName();
-        return this;
-    }
-
     protected String subChannel;
-
     protected Channel messageChannel;
 
     protected boolean useGson = false;
+    protected String gsonName = "fernapi";
 
     protected ByteArrayInputStream inputStream;
     protected DataInputStream in;
-
     protected ByteArrayOutputStream outputStream;
     protected DataOutputStream out;
 
-
-
     protected List<String> extraData = new ArrayList<>();
-
-    /**
-     * Returns a new instance each time. Save it as a variable.
-     */
-    public Queue<String> getExtraDataQueue() {
-        return new LinkedList<>(extraData);
-    }
-
     protected IFPlayer<?> player;
+
 
     public PluginMessageData(@NonNull ByteArrayInputStream inputStream) {
         this.inputStream = inputStream;
         this.in = new DataInputStream(inputStream);
     }
+
 
     public PluginMessageData(Object channelBuf) {
 
@@ -103,11 +75,10 @@ public class PluginMessageData {
     }
 
     /**
-     *
      * @param outputStream The stream with data
-     * @param server The server to send to. Use server name or "ALL"
-     * @param subChannel The SubChannel to send to.
-     * @param channel The Plugin channel
+     * @param server       The server to send to. Use server name or "ALL"
+     * @param subChannel   The SubChannel to send to.
+     * @param channel      The Plugin channel
      */
     public PluginMessageData(@NonNull ByteArrayOutputStream outputStream, String server, String subChannel, Channel channel) {
         this.outputStream = outputStream;
@@ -118,26 +89,49 @@ public class PluginMessageData {
     }
 
     /**
-     *
      * @param outputStream The stream with data
-     * @param server The server to send to. Use server name or "ALL"
-     * @param subChannel The SubChannel to send to.
-     * @param channel The Plugin channel
+     * @param server       The server to send to. Use server name or "ALL"
+     * @param subChannel   The SubChannel to send to.
+     * @param channel      The Plugin channel
      */
     public PluginMessageData(@NonNull ByteArrayOutputStream outputStream, IServerInfo server, String subChannel, Channel channel) {
         this(outputStream, server.getName(), subChannel, channel);
     }
 
+    /**
+     * No need to define the bungee channel type
+     */
+    @Deprecated
+    public void setProxyChannelType(String proxyChannelType) {
+        this.proxyChannelType = proxyChannelType;
+    }
+
+    public void setServer(String server) {
+        this.server = server;
+    }
+
+    public PluginMessageData setServer(IServerInfo server) {
+        this.server = server.getName();
+        return this;
+    }
+
+    /**
+     * Returns a new instance each time. Save it as a variable.
+     */
+    public Queue<String> getExtraDataQueue() {
+        return new LinkedList<>(extraData);
+    }
 
     /**
      * This will add extra dataInfo, you can also send an instance of this class through gson if you extend it.
+     *
      * @param s The object, use gson if possible for objects.
      */
     public void addData(String s) {
         extraData.add(s);
     }
 
-
-
-
+    public PluginMessageData getFromGSON(String json) {
+        return new Gson().fromJson(json, getClass());
+    }
 }

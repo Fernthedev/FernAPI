@@ -22,6 +22,13 @@ open class Locale_EN_US : ILocale {
         return noPermission(universalCommand.requiredPermissions, universalCommand)
     }
 
+    override fun boolColored(value: Boolean): String {
+        val color = if (value) ChatColor.GREEN
+        else ChatColor.RED;
+
+        return "$color$value"
+    }
+
     override fun invalidNumber(arg: String, localizedMessage: String?): String {
         return "${ChatColor.RED}The number format is incorrect. Given: $arg Error: $localizedMessage"
     }

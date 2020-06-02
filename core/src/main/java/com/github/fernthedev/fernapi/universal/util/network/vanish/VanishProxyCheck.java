@@ -1,6 +1,6 @@
 package com.github.fernthedev.fernapi.universal.util.network.vanish;
 
-import com.github.fernthedev.fernapi.universal.Channels;
+import com.github.fernthedev.fernapi.universal.FernAPIChannels;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.network.Channel;
@@ -74,7 +74,7 @@ public class VanishProxyCheck extends PluginMessageHandler {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
 //        DataOutputStream out = new DataOutputStream(stream);
 
-        PluginMessageData data = new PluginMessageData(stream, player.getCurrentServerName(), Channels.VANISH_SUBCHANNEL, Channels.VANISH_CHANNEL);
+        PluginMessageData data = new PluginMessageData(stream, player.getCurrentServerName(), FernAPIChannels.VANISH_SUBCHANNEL, FernAPIChannels.VANISH_CHANNEL);
 
         data.addData(uuid.toString()); //MESSAGE 2 (UUID)
 
@@ -93,7 +93,7 @@ public class VanishProxyCheck extends PluginMessageHandler {
     public @NonNull List<Channel> getChannels() {
         List<Channel> channels = new ArrayList<>();
 
-        channels.add(Channels.VANISH_CHANNEL);
+        channels.add(FernAPIChannels.VANISH_CHANNEL);
 
         return channels;
     }
