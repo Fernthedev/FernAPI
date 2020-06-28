@@ -109,6 +109,14 @@ public class UniversalContextResolvers {
                 uuid = sender.getUniqueId();
             }
 
+            if (uuid == null) {
+                if (isOptional) {
+                    return null;
+                } else {
+                    throw new InvalidCommandArgument("Unable to find player", false);
+                }
+            }
+
             OfflineFPlayer<?> player = Universal.getMethods().getPlayerFromUUID(uuid);
 
             if (player == null) throw new NullPointerException();

@@ -14,6 +14,9 @@ import java.util.logging.Logger;
 
 public abstract class DatabaseManager {
 
+    @Setter(AccessLevel.PACKAGE)
+    protected boolean firstConnect = false;
+
     @Getter
     @Setter
     private boolean isSetup;
@@ -22,17 +25,27 @@ public abstract class DatabaseManager {
     @Getter
     private DatabaseAuthInfo databaseAuthInfo;
 
-    @Setter(AccessLevel.PACKAGE)
-    protected boolean firstConnect = false;
+    @Getter
+    @Setter
+    private DatabaseHandler databaseHandler = Universal.getDatabaseHandler();
 
     private Connection connection;
+    private Queue<Runnable> runOnConnectQueue = new LinkedList<>();
+    private Queue<Runnable> runOnConnectAsync = new LinkedList<>();
+
+    @Nullable
+    private static ResultSet sqlRun(@NonNull PreparedStatement stmt, @NonNull String sql) throws SQLException {
+        if (sql.startsWith("SELECT ")) {
+            return stmt.executeQuery();
+        } else {
+            stmt.executeUpdate();
+            return null;
+        }
+    }
 
     public boolean isConnected() throws SQLException, ClassNotFoundException {
         return !getConnection().isClosed();
     }
-
-    private Queue<Runnable> runOnConnectQueue = new LinkedList<>();
-    private Queue<Runnable> runOnConnectAsync = new LinkedList<>();
 
     public Statement statement() {
         try {
@@ -86,16 +99,15 @@ public abstract class DatabaseManager {
         }
     }
 
-
     /**
      * Attempts to make a connection to the database
      * @param data The data required for login
      * @see DatabaseManager#onConnectAttempt(boolean) Called after attempted
      */
     public void connect(DatabaseAuthInfo data) {
-        Universal.getDatabaseHandler().registerDatabase(data,this);
+        databaseHandler.registerDatabase(data,this);
         try {
-            firstConnect = Universal.getDatabaseHandler().openConnection(data);
+            firstConnect = databaseHandler.openConnection(data);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -166,7 +178,7 @@ public abstract class DatabaseManager {
                         columnData2 = columnData;
                     }
                 }
-                
+
                 tableInfo.addTableInfo(rowData);
             }
         } catch (SQLException e) {
@@ -235,7 +247,6 @@ public abstract class DatabaseManager {
         tableInfo.getFromDatabase(this);
     }
 
-
     /**
      * Deletes the table
      * @param tableInfo The table info
@@ -303,7 +314,6 @@ public abstract class DatabaseManager {
         return sql.toString();
     }
 
-
     /**
      * Runs a sql statement
      * @param sql The statement
@@ -342,17 +352,6 @@ public abstract class DatabaseManager {
             return sqlRun(stmt, sql);
         }
     }
-
-    @Nullable
-    private static ResultSet sqlRun(@NonNull PreparedStatement stmt, @NonNull String sql) throws SQLException {
-        if (sql.startsWith("SELECT ")) {
-            return stmt.executeQuery();
-        } else {
-            stmt.executeUpdate();
-            return null;
-        }
-    }
-
 
     /**
      * Creates the table
@@ -413,20 +412,7 @@ public abstract class DatabaseManager {
     public Connection createConnection(DatabaseAuthInfo dataInfo) throws SQLException, ClassNotFoundException {
         this.databaseAuthInfo = dataInfo;
 
-        try {
-            Class.forName(dataInfo.getMysqlDatabaseType().getSqlDriver());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            System.err.println("jdbc driver unavailable!");
-            throw e;
-        }
-
-        connection = DriverManager.getConnection(
-                databaseAuthInfo.getUrlToDB(),
-                databaseAuthInfo.getUsername(),
-                databaseAuthInfo.getPassword());
-
-
+        connection = databaseHandler.createConnection(dataInfo);
 
         return connection;
     }

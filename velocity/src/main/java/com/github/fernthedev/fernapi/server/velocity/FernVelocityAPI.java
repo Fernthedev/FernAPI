@@ -2,7 +2,6 @@ package com.github.fernthedev.fernapi.server.velocity;
 
 import co.aikar.commands.VelocityCommandManager;
 import com.github.fernthedev.fernapi.server.velocity.chat.VelocityChatHandler;
-import com.github.fernthedev.fernapi.server.velocity.database.VelocityDatabase;
 import com.github.fernthedev.fernapi.server.velocity.interfaces.VelocityPluginData;
 import com.github.fernthedev.fernapi.server.velocity.network.VelocityMessageHandler;
 import com.github.fernthedev.fernapi.server.velocity.network.VelocityNetworkHandler;
@@ -55,7 +54,6 @@ public class FernVelocityAPI implements FernAPIPlugin {
                 this,
                 new VelocityChatHandler(),
                 messageHandler,
-                new VelocityDatabase(this),
                 new VelocityCommandManager(server, this),
                 new VelocityNetworkHandler(this),
                 new VelocityScheduler(),

@@ -8,6 +8,8 @@ import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
 import com.github.fernthedev.fernapi.universal.exceptions.setup.IncorrectSetupException;
 import com.github.fernthedev.fernapi.universal.handlers.*;
 import com.github.fernthedev.fernapi.universal.mysql.DatabaseHandler;
+import com.github.fernthedev.fernapi.universal.mysql.HikariSQLDriver;
+import com.github.fernthedev.fernapi.universal.mysql.JDBC_SQLDriver;
 import com.github.fernthedev.fernapi.universal.util.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.util.UniversalContextResolvers;
 import com.github.fernthedev.fernapi.universal.util.VersionUtil;
@@ -42,7 +44,10 @@ public class Universal {
     private static MethodInterface<?, ?> mi;
     private static IChatHandler<?> ch;
     private static IPMessageHandler mh;
-    private static DatabaseHandler db;
+
+    @Setter
+    private static DatabaseHandler databaseHandler = new DatabaseHandler();
+
     private static CommandManager comhand;
     private static NetworkHandler<? extends Object> nh;
     private static IScheduler<?,?> sh;
@@ -62,7 +67,7 @@ public class Universal {
     }
 
     public void setup(@NonNull MethodInterface<?, ?> methodInterface, FernAPIPlugin aplugin,
-                      IChatHandler<?> chatHandler, IPMessageHandler messageHandler, DatabaseHandler databaseHandler,
+                      IChatHandler<?> chatHandler, IPMessageHandler messageHandler,
                       CommandManager commandHandler, NetworkHandler<? extends Object> networkHandler, IScheduler<?,?> iScheduler,
                       PluginData<?> pluginData
     ) {
@@ -72,7 +77,6 @@ public class Universal {
         mi = methodInterface;
         ch = chatHandler;
         mh = messageHandler;
-        db = databaseHandler;
         comhand = commandHandler;
         plugin = aplugin;
         nh = networkHandler;
@@ -91,7 +95,11 @@ public class Universal {
         comhand.getCommandContexts().registerContext(IFPlayer[].class, new UniversalContextResolvers.OnlineIFPlayerArrayCommandResolver());
 
 
+        DatabaseHandler.registerSQLDriver(JDBC_SQLDriver.MYSQL_DRIVER);
+        DatabaseHandler.registerSQLDriver(JDBC_SQLDriver.MARIADB_DRIVER);
 
+        DatabaseHandler.registerSQLDriver(HikariSQLDriver.MARIADB_DRIVER);
+        DatabaseHandler.registerSQLDriver(HikariSQLDriver.MYSQL_DRIVER);
 //        comhand.getCommandCompletions().registerAsyncCompletion("fernPlayers", context ->
 //                mi.getPlayers().parallelStream()
 //                        .filter(player -> !context.getIssuer().isPlayer() ||
@@ -148,7 +156,7 @@ public class Universal {
 
     public static DatabaseHandler getDatabaseHandler() {
         checkNull();
-        return db;
+        return databaseHandler;
     }
 
     public static NetworkHandler<? extends Object> getNetworkHandler() {

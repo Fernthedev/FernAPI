@@ -1,6 +1,7 @@
 package com.github.fernthedev.fernapi.universal.mysql;
 
 import com.github.fernthedev.fernapi.universal.Universal;
+import com.github.fernthedev.fernapi.universal.data.ScheduleTaskWrapper;
 import com.github.fernthedev.fernapi.universal.data.database.DatabaseAuthInfo;
 import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseNotConnectedException;
 import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseNotRegisteredException;
@@ -9,22 +10,34 @@ import lombok.NonNull;
 import lombok.Setter;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
-public abstract class DatabaseHandler {
+public class DatabaseHandler {
+    private static final Map<String, AbstractSQLDriver> driverMap = new HashMap<>();
     protected boolean scheduled;
-
     /**
      * The rate of minutes it takes to reconnect to the sql database.
      */
     @Setter
     @Getter
     protected int scheduleTime = 15;
-
     protected Map<DatabaseAuthInfo, DatabaseManager> databaseManagerMap = new HashMap<>();
+    private ScheduleTaskWrapper<?, ?> task;
+
+    public static final DatabaseHandler instance = new DatabaseHandler();
+
+    public static void registerSQLDriver(AbstractSQLDriver sqlDriver) {
+        driverMap.put(sqlDriver.getSqlIdentifierName(), sqlDriver);
+    }
+
+    public static AbstractSQLDriver getSqlDriver(String sqlDriver) {
+        return driverMap.get(sqlDriver);
+    }
 
     protected Runnable getScheduleRunnable() {
         return () -> {
@@ -40,15 +53,43 @@ public abstract class DatabaseHandler {
         };
     }
 
-    protected abstract void setupSchedule();
+    protected Class<? extends AbstractSQLDriver> supportedSQL() {
+        return JDBC_SQLDriver.class;
+    }
+
+    protected void setupSchedule() {
+        if(task != null) {
+            task.cancel();
+            scheduled = false;
+        }
+//        Runnable runnable = () -> {
+//            try {
+//                openConnectionOnAll();
+//
+//                for(DatabaseManager databaseManager : databaseManagerMap.values()) {
+//                    Statement statement = databaseManager.getConnection().createStatement();
+//                }
+//            } catch(ClassNotFoundException | SQLException e) {
+//                e.printStackTrace();
+//            }
+//        };
+
+        scheduled = true;
+        task = Universal.getScheduler().runSchedule(getScheduleRunnable(), 0, scheduleTime, TimeUnit.MINUTES);
+    }
+
+    public void stopSchedule() {
+        if(task != null) {
+            task.cancel();
+            scheduled = false;
+        }
+    }
 
     protected void openConnectionOnAll() throws SQLException, ClassNotFoundException {
         for(DatabaseAuthInfo databaseManager : databaseManagerMap.keySet()) {
             openConnection(databaseManager);
         }
     }
-
-
 
     public boolean openConnection(DatabaseAuthInfo dataInfo) throws SQLException, ClassNotFoundException {
         DatabaseManager manager = databaseManagerMap.get(dataInfo);
@@ -76,7 +117,14 @@ public abstract class DatabaseHandler {
 //        }
 
         try {
-            Class.forName(dataInfo.getMysqlDatabaseType().getSqlDriver());
+            AbstractSQLDriver abstractSQLDriver = driverMap.get(dataInfo.getMysqlDriver());
+
+            if (abstractSQLDriver == null) throw new IllegalStateException("The sql driver " + dataInfo.getMysqlDriver() + " does not exist or is not registed using DatabaseHandler.registerSQLDriver();" );
+            if (!(supportedSQL().isAssignableFrom(abstractSQLDriver.getClass()))) throw new IllegalStateException("The sql driver " + abstractSQLDriver.getSqlIdentifierName() + " must be instance of " + supportedSQL().getName() + " or use a database handler that is supported");
+
+            JDBC_SQLDriver sqlDriver = (JDBC_SQLDriver) abstractSQLDriver;
+
+            Class.forName(sqlDriver.getSqlDriverClassName());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             Universal.getMethods().getLogger().severe("jdbc driver unavailable!");
@@ -105,12 +153,6 @@ public abstract class DatabaseHandler {
         }
 
         return connected;
-    }
-
-    public abstract void stopSchedule();
-
-
-    public DatabaseHandler() {
     }
 
     /**]
@@ -144,6 +186,29 @@ public abstract class DatabaseHandler {
                 e.printStackTrace();
             }
         }
+    }
+
+    public Connection createConnection(DatabaseAuthInfo dataInfo) throws SQLException, ClassNotFoundException {
+        try {
+            AbstractSQLDriver abstractSQLDriver = DatabaseHandler.getSqlDriver(dataInfo.getMysqlDriver());
+
+            if (abstractSQLDriver == null) throw new IllegalStateException("The sql driver " + dataInfo.getMysqlDriver() + " does not exist or is not registed using DatabaseHandler.registerSQLDriver();" );
+            if (!(supportedSQL().isAssignableFrom(abstractSQLDriver.getClass()))) throw new IllegalStateException("The sql driver " + abstractSQLDriver.getSqlIdentifierName() + " must be instance of " + supportedSQL().getName() + " or use a database handler that is supported");
+            JDBC_SQLDriver sqlDriver = (JDBC_SQLDriver) abstractSQLDriver;
+
+            Class.forName(sqlDriver.getSqlDriverClassName());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            System.err.println("jdbc driver unavailable!");
+            throw e;
+        }
+
+        Connection connection = DriverManager.getConnection(
+                dataInfo.getUrlToDB(),
+                dataInfo.getUsername(),
+                dataInfo.getPassword());
+
+        return connection;
     }
 }
 

@@ -1,11 +1,14 @@
 package com.github.fernthedev.fernapi.universal.data.database;
 
-import com.github.fernthedev.fernapi.universal.mysql.SQLDriver;
+import com.github.fernthedev.fernapi.universal.mysql.AbstractSQLDriver;
+import com.github.fernthedev.fernapi.universal.mysql.DatabaseHandler;
+import com.github.fernthedev.fernapi.universal.mysql.JDBC_SQLDriver;
 import lombok.*;
 
 @RequiredArgsConstructor
 @Getter
 @Data
+@ToString
 public class DatabaseAuthInfo {
     //DataBase vars.
     @NonNull
@@ -23,18 +26,52 @@ public class DatabaseAuthInfo {
     @NonNull
     protected String database;
 
+    @Setter
+    protected boolean cachePrepStmts = true;
+
+    @Setter
+    protected int prepStmtCacheSize = 250;
+
+    @Setter
+    protected int prepStmtCacheSqlLimit = 2048;
+
+    @Setter
+    protected boolean useServerPrepStmts = true;
+
     /**
      * Set if necessary
      */
     @Setter
-    protected SQLDriver mysqlDatabaseType = SQLDriver.MARIADB_DRIVER;
+    @NonNull
+    protected String mysqlDriver = JDBC_SQLDriver.MARIADB_DRIVER.getSqlIdentifierName();
 
+    public DatabaseAuthInfo(@NonNull String username, @NonNull String password, @NonNull String port, @NonNull String urlHost, @NonNull String database, @NonNull AbstractSQLDriver mysqlDriver) {
+        this.username = username;
+        this.password = password;
+        this.port = port;
+        this.urlHost = urlHost;
+        this.database = database;
+        this.mysqlDriver = mysqlDriver.getSqlIdentifierName();
+    }
 
     private DatabaseAuthInfo() {}
 
 
     public String getUrlToDB() {
-        return "jdbc:%sql%://%host%:%port%/%database%".replaceAll("%host%", urlHost).replaceAll("%port%", port).replaceAll("%database%", database).replaceAll("%sql%", mysqlDatabaseType.getSql());
+        AbstractSQLDriver sqlDriver = DatabaseHandler.getSqlDriver(mysqlDriver);
+        if (sqlDriver == null) throw new IllegalStateException("Sql Driver " + mysqlDriver + " could not be found");
+
+        String jdbcUrl = sqlDriver.getJdbcUrl();
+
+        if (jdbcUrl == null) throw new IllegalStateException("JDBC Url for " + sqlDriver.getSqlIdentifierName() + " cannot be found");
+
+//        Universal.debug("This DB:" + toString());
+
+        return jdbcUrl
+                .replace("%host%", urlHost)
+                .replace("%port%", port)
+                .replace("%database%", database)
+                .replace("%sql%", sqlDriver.getSqlName());
     }
 
 

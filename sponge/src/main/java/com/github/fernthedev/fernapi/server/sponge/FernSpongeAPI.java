@@ -2,7 +2,6 @@ package com.github.fernthedev.fernapi.server.sponge;
 
 import co.aikar.commands.SpongeCommandManager;
 import com.github.fernthedev.fernapi.server.sponge.chat.SpongeChatHandler;
-import com.github.fernthedev.fernapi.server.sponge.database.SpongeDatabase;
 import com.github.fernthedev.fernapi.server.sponge.interfaces.SpongePluginData;
 import com.github.fernthedev.fernapi.server.sponge.network.SpongeMessageHandler;
 import com.github.fernthedev.fernapi.server.sponge.network.SpongeNetworkHandler;
@@ -54,7 +53,6 @@ public class FernSpongeAPI implements FernAPIPlugin {
                 this,
                 new SpongeChatHandler(),
                 new SpongeMessageHandler(this),
-                new SpongeDatabase(this),
                 new SpongeCommandManager(Sponge.getPluginManager().fromInstance(this).get()),
                 new SpongeNetworkHandler(),
                 new SpongeScheduler(this),

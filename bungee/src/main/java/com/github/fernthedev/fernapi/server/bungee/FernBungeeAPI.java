@@ -2,7 +2,6 @@ package com.github.fernthedev.fernapi.server.bungee;
 
 import co.aikar.commands.BungeeCommandManager;
 import com.github.fernthedev.fernapi.server.bungee.chat.BungeeChatHandler;
-import com.github.fernthedev.fernapi.server.bungee.database.BungeeDatabase;
 import com.github.fernthedev.fernapi.server.bungee.interfaces.BungeePluginData;
 import com.github.fernthedev.fernapi.server.bungee.network.BungeeMessageHandler;
 import com.github.fernthedev.fernapi.server.bungee.network.BungeeNetworkHandler;
@@ -23,7 +22,6 @@ public class FernBungeeAPI extends Plugin implements FernAPIPlugin {
                 this,
                 new BungeeChatHandler(),
                 messageHandler,
-                 new BungeeDatabase(this),
                 new BungeeCommandManager(this),
                 new BungeeNetworkHandler(),
                 new BungeeScheduler(this),
