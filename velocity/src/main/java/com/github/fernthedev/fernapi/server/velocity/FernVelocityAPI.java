@@ -32,7 +32,7 @@ public class FernVelocityAPI implements FernAPIPlugin {
     @Inject
     @Getter
     @DataDirectory
-    Path dataDirectory;
+    protected Path dataDirectory;
 
     @Getter
     protected Logger logger;
