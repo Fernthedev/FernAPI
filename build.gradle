@@ -166,6 +166,8 @@ allprojects {
 
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
         api 'com.zaxxer:HikariCP:3.4.5'
+        compile group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1'
+
 //        compileOnly 'org.projectlombok:lombok:1.18.12'
 //        annotationProcessor 'org.projectlombok:lombok:1.18.12'
     }

@@ -20,6 +20,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import lombok.Getter;
 import org.slf4j.Logger;
 
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 import java.nio.file.Path;
 
 public class FernVelocityAPI implements FernAPIPlugin {
@@ -65,6 +66,7 @@ public class FernVelocityAPI implements FernAPIPlugin {
     }
 
     @Subscribe
+    @OverridingMethodsMustInvokeSuper
     public void onProxyInitialization(ProxyInitializeEvent event) {
         // Do some operation demanding access to the Velocity API here.
         // For instance, we could register an event:
@@ -72,6 +74,7 @@ public class FernVelocityAPI implements FernAPIPlugin {
     }
 
     @Subscribe
+    @OverridingMethodsMustInvokeSuper
     public void onProxyStop(ProxyShutdownEvent event) {
         Universal.getInstance().onDisable();
     }

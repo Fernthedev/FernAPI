@@ -12,11 +12,13 @@ import com.github.fernthedev.fernapi.universal.util.ProxyAskPlaceHolder;
 import com.github.fernthedev.fernapi.universal.util.network.vanish.VanishProxyCheck;
 import net.md_5.bungee.api.plugin.Plugin;
 
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+
 public class FernBungeeAPI extends Plugin implements FernAPIPlugin {
 
+    @OverridingMethodsMustInvokeSuper
     @Override
     public void onEnable() {
-
         BungeeMessageHandler messageHandler = new BungeeMessageHandler(this);
         Universal.getInstance().setup(new BungeeInterface(this),
                 this,
@@ -31,6 +33,7 @@ public class FernBungeeAPI extends Plugin implements FernAPIPlugin {
         Universal.getMessageHandler().registerMessageHandler(VanishProxyCheck.LISTENER_INSTANCE);
     }
 
+    @OverridingMethodsMustInvokeSuper
     @Override
     public void onDisable() {
         Universal.getInstance().onDisable();

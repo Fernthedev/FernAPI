@@ -16,6 +16,8 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+
 public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
 
     @Getter
@@ -24,6 +26,7 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
     @Getter
     private InventoryManager inventoryManager;
 
+    @OverridingMethodsMustInvokeSuper
     @Override
     public void onEnable() {
         Universal.getInstance().setup(new SpigotInterface(this),
@@ -56,6 +59,7 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
         Universal.getMessageHandler().registerMessageHandler(VanishProxyCheck.LISTENER_INSTANCE);
     }
 
+    @OverridingMethodsMustInvokeSuper
     @Override
     public void onDisable() {
         Universal.getInstance().onDisable();

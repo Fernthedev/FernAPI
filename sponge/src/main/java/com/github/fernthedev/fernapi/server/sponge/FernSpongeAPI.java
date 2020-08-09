@@ -21,6 +21,7 @@ import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppedEvent;
 import org.spongepowered.api.plugin.Plugin;
 
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 import java.nio.file.Path;
 
 // Imports for logger
@@ -48,6 +49,7 @@ public class FernSpongeAPI implements FernAPIPlugin {
     protected Path privateConfigDir;
 
     @Listener
+    @OverridingMethodsMustInvokeSuper
     public void onServerStart(GameStartedServerEvent event) {
         Universal.getInstance().setup(new SpongeInterface(this),
                 this,
@@ -60,6 +62,7 @@ public class FernSpongeAPI implements FernAPIPlugin {
     }
 
     @Listener
+    @OverridingMethodsMustInvokeSuper
     public void onServerStop(GameStoppedEvent event) {
         Universal.getInstance().onDisable();
     }
