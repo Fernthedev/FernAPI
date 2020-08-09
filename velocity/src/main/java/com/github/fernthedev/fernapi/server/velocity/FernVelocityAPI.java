@@ -56,7 +56,7 @@ public class FernVelocityAPI implements FernAPIPlugin {
                 messageHandler,
                 new VelocityCommandManager(server, this),
                 new VelocityNetworkHandler(this),
-                new VelocityScheduler(),
+                new VelocityScheduler(this),
                 new VelocityPluginData(this, pluginContainer.getDescription()));
 
 //        UUIDFetcher.setFetchManager(new UUIDVelocity(this));

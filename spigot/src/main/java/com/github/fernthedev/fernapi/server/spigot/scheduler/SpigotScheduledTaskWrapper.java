@@ -3,12 +3,13 @@ package com.github.fernthedev.fernapi.server.spigot.scheduler;
 import com.github.fernthedev.fernapi.universal.data.ScheduleTaskWrapper;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.concurrent.CompletableFuture;
+
 
 public class SpigotScheduledTaskWrapper extends ScheduleTaskWrapper<BukkitRunnable, Integer> {
 
-
-    public SpigotScheduledTaskWrapper(BukkitRunnable task) {
-        super(task);
+    public SpigotScheduledTaskWrapper(BukkitRunnable task, CompletableFuture<Void> completableFuture) {
+        super(task, completableFuture);
     }
 
     /**

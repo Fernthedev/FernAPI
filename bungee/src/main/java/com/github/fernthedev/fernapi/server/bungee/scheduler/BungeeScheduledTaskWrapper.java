@@ -3,11 +3,13 @@ package com.github.fernthedev.fernapi.server.bungee.scheduler;
 import com.github.fernthedev.fernapi.universal.data.ScheduleTaskWrapper;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 
+import java.util.concurrent.CompletableFuture;
+
 public class BungeeScheduledTaskWrapper extends ScheduleTaskWrapper<ScheduledTask, Integer> {
 
 
-    public BungeeScheduledTaskWrapper(ScheduledTask task) {
-        super(task);
+    public BungeeScheduledTaskWrapper(ScheduledTask task, CompletableFuture<Void> completableFuture) {
+        super(task, completableFuture);
     }
 
     /**

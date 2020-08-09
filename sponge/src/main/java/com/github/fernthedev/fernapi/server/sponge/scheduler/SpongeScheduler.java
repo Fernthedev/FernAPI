@@ -8,6 +8,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.scheduler.Task;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
@@ -36,7 +37,13 @@ public class SpongeScheduler implements IScheduler<SpongeScheduledTaskWrapper, U
      */
     @Override
     public SpongeScheduledTaskWrapper runSchedule(Runnable task, long delay, TimeUnit unit) {
-        return new SpongeScheduledTaskWrapper(task, Sponge.getScheduler().createAsyncExecutor(sponge).schedule(task, delay, unit).getTask());
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+        Runnable newTask = () -> {
+            task.run();
+            completableFuture.complete(null);
+        };
+
+        return new SpongeScheduledTaskWrapper(task, Sponge.getScheduler().createAsyncExecutor(sponge).schedule(newTask, delay, unit).getTask(), completableFuture);
     }
 
     /**
@@ -46,8 +53,15 @@ public class SpongeScheduler implements IScheduler<SpongeScheduledTaskWrapper, U
      */
     @Override
     public SpongeScheduledTaskWrapper runAsync(Runnable runnable) {
-        Task t = Task.builder().async().execute(runnable).submit(sponge);
-        return new SpongeScheduledTaskWrapper(runnable, t);
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+        Runnable newTask = () -> {
+            runnable.run();
+            completableFuture.complete(null);
+        };
+
+        Task t = Task.builder().async().execute(newTask).submit(sponge);
+
+        return new SpongeScheduledTaskWrapper(newTask, t, completableFuture);
     }
 
     /**
@@ -63,6 +77,12 @@ public class SpongeScheduler implements IScheduler<SpongeScheduledTaskWrapper, U
      */
     @Override
     public SpongeScheduledTaskWrapper runSchedule(Runnable task, long delay, long period, TimeUnit unit) {
-        return new SpongeScheduledTaskWrapper(task, Sponge.getScheduler().createAsyncExecutor(sponge).scheduleAtFixedRate(task, delay, period, unit).getTask());
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+        Runnable newTask = () -> {
+            task.run();
+            completableFuture.complete(null);
+        };
+
+        return new SpongeScheduledTaskWrapper(newTask, Sponge.getScheduler().createAsyncExecutor(sponge).scheduleAtFixedRate(task, delay, period, unit).getTask(), completableFuture);
     }
 }

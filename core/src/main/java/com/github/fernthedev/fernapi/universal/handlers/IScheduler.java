@@ -2,9 +2,10 @@ package com.github.fernthedev.fernapi.universal.handlers;
 
 import com.github.fernthedev.fernapi.universal.data.ScheduleTaskWrapper;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-public interface IScheduler<TaskWrapper extends ScheduleTaskWrapper<?,?>,IDType> {
+public interface IScheduler<TaskWrapper extends ScheduleTaskWrapper<?,?>, IDType> {
     void cancelTask(IDType id);
     void cancelAllTasks();
 

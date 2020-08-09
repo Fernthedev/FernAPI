@@ -6,6 +6,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
@@ -33,14 +34,16 @@ public class SpigotScheduler implements IScheduler<SpigotScheduledTaskWrapper, I
      */
     @Override
     public SpigotScheduledTaskWrapper runSchedule(Runnable task, long delay, TimeUnit unit) {
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run() {
                 task.run();
+                completableFuture.complete(null);
             }
         };
         runnable.runTaskLaterAsynchronously(fernSpigotAPI, unit.toSeconds(delay) * 20);
-        return new SpigotScheduledTaskWrapper(runnable);
+        return new SpigotScheduledTaskWrapper(runnable, completableFuture);
     }
 
     /**
@@ -50,14 +53,16 @@ public class SpigotScheduler implements IScheduler<SpigotScheduledTaskWrapper, I
      */
     @Override
     public SpigotScheduledTaskWrapper runAsync(Runnable runnable) {
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
         BukkitRunnable bukkitRunnable = new BukkitRunnable() {
             @Override
             public void run() {
                 runnable.run();
+                completableFuture.complete(null);
             }
         };
         bukkitRunnable.runTaskAsynchronously(fernSpigotAPI);
-        return new SpigotScheduledTaskWrapper(bukkitRunnable);
+        return new SpigotScheduledTaskWrapper(bukkitRunnable, completableFuture);
     }
 
     /**
@@ -73,13 +78,15 @@ public class SpigotScheduler implements IScheduler<SpigotScheduledTaskWrapper, I
      */
     @Override
     public SpigotScheduledTaskWrapper runSchedule(Runnable task, long delay, long period, TimeUnit unit) {
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
             public void run() {
                 task.run();
+                completableFuture.complete(null);
             }
         };
         runnable.runTaskTimerAsynchronously(fernSpigotAPI, unit.toSeconds(delay) * 20, 20 * unit.toSeconds(period));
-        return new SpigotScheduledTaskWrapper(runnable);
+        return new SpigotScheduledTaskWrapper(runnable, completableFuture);
     }
 }

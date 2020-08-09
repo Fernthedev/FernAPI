@@ -4,13 +4,14 @@ import com.github.fernthedev.fernapi.universal.data.ScheduleTaskWrapper;
 import org.spongepowered.api.scheduler.Task;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class SpongeScheduledTaskWrapper extends ScheduleTaskWrapper<Task, UUID> {
 
     protected Runnable runnable;
 
-    public SpongeScheduledTaskWrapper(Runnable runnable, Task task) {
-        super(task);
+    public SpongeScheduledTaskWrapper(Runnable runnable, Task task, CompletableFuture<Void> completableFuture) {
+        super(task, completableFuture);
         this.runnable = runnable;
     }
 

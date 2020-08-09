@@ -6,6 +6,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ProxyServer;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
@@ -34,7 +35,13 @@ public class BungeeScheduler implements IScheduler<BungeeScheduledTaskWrapper, I
      */
     @Override
     public BungeeScheduledTaskWrapper runSchedule(Runnable task, long delay, TimeUnit unit) {
-        return new BungeeScheduledTaskWrapper(ProxyServer.getInstance().getScheduler().schedule(fernBungeeAPI, task, delay, unit));
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+        Runnable newTask = () -> {
+            task.run();
+            completableFuture.complete(null);
+        };
+
+        return new BungeeScheduledTaskWrapper(ProxyServer.getInstance().getScheduler().schedule(fernBungeeAPI, newTask, delay, unit), completableFuture);
     }
 
     /**
@@ -45,7 +52,13 @@ public class BungeeScheduler implements IScheduler<BungeeScheduledTaskWrapper, I
      */
     @Override
     public BungeeScheduledTaskWrapper runAsync(Runnable runnable) {
-        return new BungeeScheduledTaskWrapper(fernBungeeAPI.getProxy().getScheduler().runAsync(fernBungeeAPI, runnable));
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+        Runnable newTask = () -> {
+            runnable.run();
+            completableFuture.complete(null);
+        };
+
+        return new BungeeScheduledTaskWrapper(fernBungeeAPI.getProxy().getScheduler().runAsync(fernBungeeAPI, newTask), completableFuture);
     }
 
     /**
@@ -61,7 +74,13 @@ public class BungeeScheduler implements IScheduler<BungeeScheduledTaskWrapper, I
      */
     @Override
     public BungeeScheduledTaskWrapper runSchedule(Runnable task, long delay, long period, TimeUnit unit) {
-        return new BungeeScheduledTaskWrapper(ProxyServer.getInstance().getScheduler().schedule(fernBungeeAPI, task, delay, period, unit));
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+        Runnable newTask = () -> {
+            task.run();
+            completableFuture.complete(null);
+        };
+
+        return new BungeeScheduledTaskWrapper(ProxyServer.getInstance().getScheduler().schedule(fernBungeeAPI, newTask, delay, period, unit), completableFuture);
     }
 
 
