@@ -75,6 +75,8 @@ public class VelocityFPlayer extends IFPlayer<Player> {
 
     @Override
     public IServerInfo getServerInfo() {
+        if (player == null || !player.getCurrentServer().isPresent()) return null;
+
         return ((NetworkHandler< ServerConnection>) Universal.getNetworkHandler()).toServer(player.getCurrentServer().orElse(null));
     }
 }

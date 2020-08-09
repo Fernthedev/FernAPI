@@ -82,6 +82,8 @@ public class BungeeFPlayer extends IFPlayer<ProxiedPlayer> {
 
     @Override
     public IServerInfo getServerInfo() {
+        if (player == null || player.getServer() == null || player.getServer().getInfo() == null) return null;
+
         return ((NetworkHandler<ServerInfo>) Universal.getNetworkHandler()).toServer(player.getServer().getInfo());
     }
 

@@ -63,6 +63,8 @@ public class SpigotFPlayer extends IFPlayer<Player> {
 
     @Override
     public IServerInfo getServerInfo() {
+        if (player == null) return null;
+
         return ((NetworkHandler<Server>) Universal.getNetworkHandler()).toServer(player.getServer());
     }
 

@@ -91,7 +91,7 @@ public abstract class IFPlayer<T> implements FernCommandIssuer {
         return uuid;
     }
 
-
+    @Nullable
     public abstract IServerInfo getServerInfo();
 
     /**
