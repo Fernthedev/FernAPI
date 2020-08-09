@@ -50,7 +50,7 @@ allprojects {
 //    version = versioning.info.full
     ext.buildVer = "1.9.0"
     ext.aikarVer = "0.5.0-SNAPSHOT"
-    project.ext.beta_version = '3' // Only modify when beta
+    project.ext.beta_version = '4' // Only modify when beta
     ext.beta_prefix = 'rc'
     description = 'An API for universal code'
 
