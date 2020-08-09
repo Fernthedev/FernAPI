@@ -1,8 +1,8 @@
 package com.github.fernthedev.fernapi.universal.data.database;
 
 import com.github.fernthedev.fernapi.universal.mysql.AbstractSQLDriver;
-import com.github.fernthedev.fernapi.universal.mysql.DatabaseHandler;
-import com.github.fernthedev.fernapi.universal.mysql.JDBC_SQLDriver;
+import com.github.fernthedev.fernapi.universal.mysql.HikariDatabaseHandler;
+import com.github.fernthedev.fernapi.universal.mysql.HikariSQLDriver;
 import lombok.*;
 
 @RequiredArgsConstructor
@@ -43,7 +43,7 @@ public class DatabaseAuthInfo {
      */
     @Setter
     @NonNull
-    protected String mysqlDriver = JDBC_SQLDriver.MARIADB_DRIVER.getSqlIdentifierName();
+    protected String mysqlDriver = HikariSQLDriver.MARIADB_DRIVER.getSqlIdentifierName();
 
     public DatabaseAuthInfo(@NonNull String username, @NonNull String password, @NonNull String port, @NonNull String urlHost, @NonNull String database, @NonNull AbstractSQLDriver mysqlDriver) {
         this.username = username;
@@ -58,7 +58,7 @@ public class DatabaseAuthInfo {
 
 
     public String getUrlToDB() {
-        AbstractSQLDriver sqlDriver = DatabaseHandler.getSqlDriver(mysqlDriver);
+        AbstractSQLDriver sqlDriver = HikariDatabaseHandler.getSqlDriver(mysqlDriver);
         if (sqlDriver == null) throw new IllegalStateException("Sql Driver " + mysqlDriver + " could not be found");
 
         String jdbcUrl = sqlDriver.getJdbcUrl();

@@ -29,16 +29,19 @@ public class ProxyAskPlaceHolder extends PluginMessageHandler {
     private static final Map<UUID, ProxyAskPlaceHolder> instances = new HashMap<>();
     private UUID uuid;
 
-
     /**
      * Internal use
      */
     @Deprecated
-    public ProxyAskPlaceHolder() {
-        Universal.getMethods().getLogger().info("Registered PlaceHolderAPI Listener");
-        proxyPlaceholderRunnable = (player, placeHolder, isReplaced) -> {
+    public static final ProxyAskPlaceHolder LISTENER_INSTANCE = new ProxyAskPlaceHolder();
 
-        };
+
+    /**
+     * Internal use
+     */
+    private ProxyAskPlaceHolder() {
+        Universal.getMethods().getLogger().info("Registered PlaceHolderAPI Listener");
+        proxyPlaceholderRunnable = (player, placeHolder, isReplaced) -> {};
     }
 
     public String getPlaceHolderResult() {

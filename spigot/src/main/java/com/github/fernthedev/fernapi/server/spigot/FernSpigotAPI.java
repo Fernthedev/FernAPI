@@ -53,7 +53,7 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
         inventoryManager = new InventoryManager(this);
         inventoryManager.init();
 
-        Universal.getMessageHandler().registerMessageHandler(new VanishProxyCheck(this));
+        Universal.getMessageHandler().registerMessageHandler(VanishProxyCheck.LISTENER_INSTANCE);
     }
 
     @Override

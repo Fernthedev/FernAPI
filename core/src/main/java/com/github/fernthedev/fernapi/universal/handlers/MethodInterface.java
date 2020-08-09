@@ -16,6 +16,7 @@ import java.util.logging.Logger;
  * @param <PlayerType> The player type the server uses
  */
 public interface MethodInterface<PlayerType, ConsoleType> {
+    boolean isMainThread();
 
     Logger getLogger();
 

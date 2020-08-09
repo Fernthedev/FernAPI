@@ -166,7 +166,6 @@ allprojects {
 
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
         api 'com.zaxxer:HikariCP:3.4.5'
-
 //        compileOnly 'org.projectlombok:lombok:1.18.12'
 //        annotationProcessor 'org.projectlombok:lombok:1.18.12'
     }

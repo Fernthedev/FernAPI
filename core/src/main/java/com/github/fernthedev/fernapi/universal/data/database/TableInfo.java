@@ -1,7 +1,7 @@
 package com.github.fernthedev.fernapi.universal.data.database;
 
 import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseException;
-import com.github.fernthedev.fernapi.universal.mysql.DatabaseManager;
+import com.github.fernthedev.fernapi.universal.mysql.DatabaseListener;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -34,7 +34,7 @@ public class TableInfo {
 
     /**
      * Don't use. It is only used in the creation of tables
-     * To add to table, use {@link DatabaseManager#insertIntoTable(TableInfo, RowData)}
+     * To add to table, use {@link DatabaseListener#insertIntoTable(TableInfo, RowData)}
      */
     @Deprecated
     public void addTableInfo(RowData rowData) {
@@ -44,7 +44,7 @@ public class TableInfo {
 
     /**
      * Don't use. It is only used in the creation of tables
-     * To add to table, use {@link DatabaseManager#removeRowIfColumnContainsValue(TableInfo, String, String)}
+     * To add to table, use {@link DatabaseListener#removeRowIfColumnContainsValue(TableInfo, String, String)}
      */
     @Deprecated
     public void removeTableInfo(RowData rowData) {
@@ -53,11 +53,11 @@ public class TableInfo {
 
     /**
      * Shortcut
-     * @param databaseManager
-     * @return {@link DatabaseManager#getTable(String, RowDataTemplate)}
+     * @param databaseListener
+     * @return {@link DatabaseListener#getTable(String, RowDataTemplate)}
      */
-    public TableInfo getFromDatabase(DatabaseManager databaseManager) throws DatabaseException {
-        rowDataList = databaseManager.getTable(tableName, rowDataTemplate).getRowDataList();
+    public TableInfo getFromDatabase(DatabaseListener databaseListener) throws DatabaseException {
+        rowDataList = databaseListener.getTable(tableName, rowDataTemplate).getRowDataList();
         return this;
     }
 }

@@ -27,8 +27,8 @@ public class FernBungeeAPI extends Plugin implements FernAPIPlugin {
                 new BungeeScheduler(this),
                 new BungeePluginData(getDescription()));
         getProxy().getPluginManager().registerListener(this, messageHandler);
-        Universal.getMessageHandler().registerMessageHandler(new ProxyAskPlaceHolder());
-        Universal.getMessageHandler().registerMessageHandler(new VanishProxyCheck(this));
+        Universal.getMessageHandler().registerMessageHandler(ProxyAskPlaceHolder.LISTENER_INSTANCE);
+        Universal.getMessageHandler().registerMessageHandler(VanishProxyCheck.LISTENER_INSTANCE);
     }
 
     @Override

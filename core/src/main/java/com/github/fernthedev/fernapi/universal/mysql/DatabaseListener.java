@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.logging.Logger;
 
-public abstract class DatabaseManager {
+public abstract class DatabaseListener {
 
     @Setter(AccessLevel.PACKAGE)
     protected boolean firstConnect = false;
@@ -27,7 +27,7 @@ public abstract class DatabaseManager {
 
     @Getter
     @Setter
-    private DatabaseHandler databaseHandler = Universal.getDatabaseHandler();
+    private HikariDatabaseHandler databaseHandler = Universal.getDatabaseHandler();
 
     private Connection connection;
     private Queue<Runnable> runOnConnectQueue = new LinkedList<>();
@@ -70,7 +70,7 @@ public abstract class DatabaseManager {
 
     /**
      * This is called after you attempt a connection
-     * @see DatabaseManager#connect(DatabaseAuthInfo)
+     * @see DatabaseListener#connect(DatabaseAuthInfo)
      * @param connected Returns true if successful
      */
     public abstract void onConnectAttempt(boolean connected);
@@ -102,29 +102,38 @@ public abstract class DatabaseManager {
     /**
      * Attempts to make a connection to the database
      * @param data The data required for login
-     * @see DatabaseManager#onConnectAttempt(boolean) Called after attempted
+     * @see DatabaseListener#onConnectAttempt(boolean) Called after attempted
      */
     public void connect(DatabaseAuthInfo data) {
-        databaseHandler.registerDatabase(data,this);
-        try {
-            firstConnect = databaseHandler.openConnection(data);
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
 
-        if (firstConnect) {
-            Universal.getScheduler().runAsync(() -> {
+        Runnable runnable = () -> {
+            databaseHandler.registerDatabase(data,DatabaseListener.this);
+            try {
+                firstConnect = databaseHandler.openConnection(data);
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            if (firstConnect) {
+                Universal.getScheduler().runAsync(() -> {
+                    while(!runOnConnectAsync.isEmpty()) {
+                        Universal.getScheduler().runAsync(() -> runOnConnectAsync.remove().run());
+                    }
+                });
+
                 while(!runOnConnectQueue.isEmpty()) {
                     runOnConnectQueue.remove().run();
                 }
-            });
+            }
+        };
 
-            Universal.getScheduler().runAsync(() -> {
-                while(!runOnConnectAsync.isEmpty()) {
-                    Universal.getScheduler().runAsync(() -> runOnConnectAsync.remove().run());
-                }
-            });
+        if (Universal.getMethods().isMainThread()) {
+            Universal.getScheduler().runAsync(runnable);
+        } else {
+            runnable.run();
         }
+
+
     }
 
     /**
@@ -409,7 +418,7 @@ public abstract class DatabaseManager {
     }
 
     @Synchronized
-    public Connection createConnection(DatabaseAuthInfo dataInfo) throws SQLException, ClassNotFoundException {
+    public Connection createConnection(DatabaseAuthInfo dataInfo) throws SQLException {
         this.databaseAuthInfo = dataInfo;
 
         connection = databaseHandler.createConnection(dataInfo);

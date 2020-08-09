@@ -1,85 +1,124 @@
 package com.github.fernthedev.fernapi.universal.mysql;
 
 import com.github.fernthedev.fernapi.universal.Universal;
+import com.github.fernthedev.fernapi.universal.data.ScheduleTaskWrapper;
 import com.github.fernthedev.fernapi.universal.data.database.DatabaseAuthInfo;
-import com.github.fernthedev.fernapi.universal.data.database.HikariDatabaseAuthInfo;
 import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseNotConnectedException;
 import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseNotRegisteredException;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
-public class HikariDatabaseHandler extends DatabaseHandler {
+public class HikariDatabaseHandler {
+
+    public static final HikariDatabaseHandler instance = new HikariDatabaseHandler();
+    private static final Map<String, AbstractSQLDriver> driverMap = new HashMap<>();
+    protected boolean scheduled;
+
+    /**
+     * The rate of minutes it takes to reconnect to the sql database.
+     */
+    @Setter
+    @Getter
+    protected int scheduleTime = 15;
+    protected Map<DatabaseAuthInfo, DatabaseListener> databaseManagerMap = new HashMap<>();
+    private ScheduleTaskWrapper<?, ?> task;
 
     @Setter
     @Getter
-    private HikariDataSource hikari;
-
+    private HikariDataSource hikari = new HikariDataSource();
     private boolean sealed = false;
 
-
-    public HikariDatabaseHandler(DatabaseAuthInfo databaseAuthInfo) {
+    public HikariDatabaseHandler() {
         this.hikari = new HikariDataSource();
-        setHikariData(databaseAuthInfo);
     }
 
-    @Override
-    protected Class<? extends AbstractSQLDriver> supportedSQL() {
-        return HikariSQLDriver.class;
+    public static void registerSQLDriver(AbstractSQLDriver sqlDriver) {
+        driverMap.put(sqlDriver.getSqlIdentifierName(), sqlDriver);
     }
 
-    @Override
+    public static AbstractSQLDriver getSqlDriver(String sqlDriver) {
+        return driverMap.get(sqlDriver);
+    }
+
+    protected Runnable getScheduleRunnable() {
+        return () -> {
+            try {
+                openConnectionOnAll();
+
+                for (DatabaseListener databaseListener : databaseManagerMap.values()) {
+                    databaseListener.getConnection().createStatement();
+                }
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+            }
+        };
+    }
+
+    protected void setupSchedule() {
+        if(task != null) {
+            task.cancel();
+            scheduled = false;
+        }
+
+        scheduled = true;
+        task = Universal.getScheduler().runSchedule(getScheduleRunnable(), 0, scheduleTime, TimeUnit.MINUTES);
+    }
+
+    public void stopSchedule() {
+        if(task != null) {
+            task.cancel();
+            scheduled = false;
+        }
+    }
+
+    protected void openConnectionOnAll() throws SQLException, ClassNotFoundException {
+        for(DatabaseAuthInfo databaseManager : databaseManagerMap.keySet()) {
+            openConnection(databaseManager);
+        }
+    }
+
     public boolean openConnection(DatabaseAuthInfo dataInfo) throws SQLException, ClassNotFoundException {
-        DatabaseManager manager = databaseManagerMap.get(dataInfo);
+        DatabaseListener listener = databaseManagerMap.get(dataInfo);
 
         boolean connected = false;
 
-        if(manager == null) {
+        if(listener == null) {
             throw new DatabaseNotRegisteredException("The database info was not correctly registered. Call registerDatabase to fix this",new NullPointerException());
         }
 
-        if (!manager.isSetup())
+        if (!listener.isSetup())
             setHikariData(dataInfo);
 
 
         Connection connection;
         try {
-            connection = manager.getConnection();
+            connection = listener.getConnection();
 
             if (connection != null && !connection.isClosed()) {
                 return true;
             }
         } catch (DatabaseNotConnectedException ignored) {}
 
-//        try { //We use a try catch to avoid errors, hopefully we don't get any.
-//            Class.forName("com.mysql.jdbc.Driver"); //this accesses Driver in jdbc.
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//            System.err.println("jdbc driver unavailable!");
-//            throw e;
-//        }
-
-
-
-//            Class.forName(sqlDriver.getDataSourceClass());
-
-//        connection = DriverManager.getConnection(dataInfo.getUrlToDB(), dataInfo.getUsername(), dataInfo.getPassword());
-
-        if (!manager.isSetup()) {
+        if (!listener.isSetup()) {
             Universal.getMethods().getLogger().info("Connecting to MySQL now.");
-            manager.setFirstConnect(true);
-            manager.createConnection(dataInfo);
+            listener.setFirstConnect(true);
+            listener.createConnection(dataInfo);
 
             try {
-                connected = manager.isConnected();
+                connected = listener.isConnected();
             } catch (DatabaseNotConnectedException ignored) {}
 
-            manager.onConnectAttempt(connected);
-            manager.setSetup(true);
+            listener.onConnectAttempt(connected);
+            listener.setSetup(true);
 
 
             setupSchedule();
@@ -87,6 +126,24 @@ public class HikariDatabaseHandler extends DatabaseHandler {
 
         return connected;
     }
+
+    /**]
+     * Registers the databaseListener for calling events.
+     * @param databaseListener The manager
+     */
+    public void registerDatabase(@NonNull DatabaseAuthInfo databaseAuthInfo, @NonNull DatabaseListener databaseListener) {
+        if (!databaseListener.isSetup()) {
+            Universal.getMethods().getLogger().info("Setting database connection");
+        }
+
+        databaseManagerMap.put(databaseAuthInfo, databaseListener);
+    }
+
+    protected Class<? extends AbstractSQLDriver> supportedSQL() {
+        return HikariSQLDriver.class;
+    }
+
+
 
     private void setHikariData(DatabaseAuthInfo dataInfo) {
 
@@ -100,15 +157,13 @@ public class HikariDatabaseHandler extends DatabaseHandler {
         if (!sealed) {
             HikariSQLDriver sqlDriver = (HikariSQLDriver) abstractSQLDriver;
 
-            if ((dataInfo instanceof HikariDatabaseAuthInfo && (sqlDriver.getPreferJDBC())) || hikari.getDataSource() == null || hikari.getDataSource().getClass().getName().equals(sqlDriver.getDataSourceClass())) {
+            if (sqlDriver.getPreferJDBC() || hikari.getDataSource() == null || hikari.getDataSource().getClass().getName().equals(sqlDriver.getDataSourceClass())) {
 
                 boolean useJDBC = false;
 
-                if (dataInfo instanceof HikariDatabaseAuthInfo) {
-                    if (sqlDriver.getPreferJDBC()) {
-                        hikari.setJdbcUrl(dataInfo.getUrlToDB());
-                        useJDBC = true;
-                    }
+                if (sqlDriver.getPreferJDBC()) {
+                    hikari.setJdbcUrl(dataInfo.getUrlToDB());
+                    useJDBC = true;
                 }
 
                 if (!useJDBC) {
@@ -143,13 +198,6 @@ public class HikariDatabaseHandler extends DatabaseHandler {
             hikari.addDataSourceProperty("maintainTimeStats", false);
 
 
-
-            if (dataInfo instanceof HikariDatabaseAuthInfo) {
-                HikariDatabaseAuthInfo hikariDatabaseAuthInfo = (HikariDatabaseAuthInfo) dataInfo;
-
-            }
-
-
 //        hikari.addDataSourceProperty("user", dataInfo.getUsername());
 //        hikari.addDataSourceProperty("password", dataInfo.getPassword());
         } else {
@@ -157,7 +205,6 @@ public class HikariDatabaseHandler extends DatabaseHandler {
         }
     }
 
-    @Override
     public Connection createConnection(DatabaseAuthInfo dataInfo) throws SQLException {
         if (!sealed) {
             setHikariData(dataInfo);
@@ -168,9 +215,24 @@ public class HikariDatabaseHandler extends DatabaseHandler {
         return hikari.getConnection();
     }
 
-    @Override
     public void closeConnection() {
-        super.closeConnection();
+        for(DatabaseListener databaseListener : databaseManagerMap.values()) {
+            Connection connection = null;
+            try {
+                connection = databaseListener.getConnection();
+            } catch (DatabaseNotConnectedException ignored) { } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) { }
+            // invoke on disable.
+            try { //using a try catch to catch connection errors (like wrong sql password...)
+                if (connection != null && !connection.isClosed()) { //checking if connection isn't null to
+                    //avoid receiving a nullpointer
+                    connection.close(); //closing the connection field variable.
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         if (hikari != null)
             hikari.close();
     }

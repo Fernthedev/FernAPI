@@ -2,10 +2,10 @@ package com.github.fernthedev.fernapi.universal.examples.mysql;
 
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.database.*;
-import com.github.fernthedev.fernapi.universal.mysql.DatabaseManager;
+import com.github.fernthedev.fernapi.universal.mysql.DatabaseListener;
 import lombok.SneakyThrows;
 
-public class DatabaseTest extends DatabaseManager {
+public class DatabaseTest extends DatabaseListener {
     private TableInfo tableInfo;
 
     private static RowDataTemplate rowDataTemplate = new RowDataTemplate(
@@ -30,7 +30,7 @@ public class DatabaseTest extends DatabaseManager {
      * This is called after you attempt a connection
      *
      * @param connected Returns true if successful
-     * @see DatabaseManager#connect(DatabaseAuthInfo)
+     * @see DatabaseListener#connect(DatabaseAuthInfo)
      */
     @Override
     public void onConnectAttempt(boolean connected) {

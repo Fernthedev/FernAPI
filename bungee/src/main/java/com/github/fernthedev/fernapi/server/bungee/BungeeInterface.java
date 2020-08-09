@@ -29,6 +29,12 @@ public class BungeeInterface implements MethodInterface<ProxiedPlayer, CommandSe
     }
 
     @Override
+    public boolean isMainThread() {
+        // TODO: IMPLEMENT
+        return false;
+    }
+
+    @Override
     public Logger getLogger() {
         return fernBungeeAPI.getLogger();
     }

@@ -28,6 +28,12 @@ public class VelocityInterface implements MethodInterface<Player, ConsoleCommand
     }
 
     @Override
+    public boolean isMainThread() {
+        // TODO: IMPLEMENT
+        return false;
+    }
+
+    @Override
     public Logger getLogger() {
         fernVelocityAPI.getLogger().warn("Java Logger does not exist in Velocity.");
         return (Logger) fernVelocityAPI.getLogger();

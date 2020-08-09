@@ -29,6 +29,11 @@ public class SpigotInterface implements MethodInterface<Player, ConsoleCommandSe
     }
 
     @Override
+    public boolean isMainThread() {
+        return Bukkit.isPrimaryThread();
+    }
+
+    @Override
     public Logger getLogger() {
         return fernSpigotAPI.getLogger();
     }

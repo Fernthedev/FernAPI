@@ -60,8 +60,8 @@ public class FernVelocityAPI implements FernAPIPlugin {
                 new VelocityPluginData(this, pluginContainer.getDescription()));
 
 //        UUIDFetcher.setFetchManager(new UUIDVelocity(this));
-        Universal.getMessageHandler().registerMessageHandler(new ProxyAskPlaceHolder());
-        Universal.getMessageHandler().registerMessageHandler(new VanishProxyCheck(this));
+        Universal.getMessageHandler().registerMessageHandler(ProxyAskPlaceHolder.LISTENER_INSTANCE);
+        Universal.getMessageHandler().registerMessageHandler(VanishProxyCheck.LISTENER_INSTANCE);
     }
 
     @Subscribe

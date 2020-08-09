@@ -29,6 +29,11 @@ public class SpongeInterface implements MethodInterface<Player, ConsoleSource> {
     private final FernSpongeAPI sponge;
 
     @Override
+    public boolean isMainThread() {
+        return Sponge.getServer().isMainThread();
+    }
+
+    @Override
     public java.util.logging.Logger getLogger() {
         Universal.debug("Java Logger does not exist in Sponge.");
         return (java.util.logging.Logger) sponge.getLogger();

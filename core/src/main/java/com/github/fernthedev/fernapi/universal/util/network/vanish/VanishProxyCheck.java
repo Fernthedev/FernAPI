@@ -28,6 +28,12 @@ public class VanishProxyCheck extends PluginMessageHandler {
     private UUID uuid;
 
     /**
+     * Internal use
+     */
+    @Deprecated
+    public static final VanishProxyCheck LISTENER_INSTANCE = new VanishProxyCheck();
+
+    /**
      * Must be called manually to work
      *
      * @param timeout  The amount of time to wait
@@ -47,11 +53,10 @@ public class VanishProxyCheck extends PluginMessageHandler {
 
 
     /**
-     * Call for getting an instance for registering
-     *
-     * @param plugin
+     * Internal use
      */
-    public VanishProxyCheck(FernAPIPlugin plugin) {
+    @Deprecated
+    private VanishProxyCheck() {
         if (o != null) throw new FernRuntimeException("VanishProxyCheck is already registered");
 
         o = new Object();
