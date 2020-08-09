@@ -35,6 +35,7 @@ public abstract class DatabaseListener {
 
     @Nullable
     private static ResultSet sqlRun(@NonNull PreparedStatement stmt, @NonNull String sql) throws SQLException {
+        HikariDatabaseHandler.validateNonMainThread();
         if (sql.startsWith("SELECT ")) {
             return stmt.executeQuery();
         } else {
@@ -43,20 +44,22 @@ public abstract class DatabaseListener {
         }
     }
 
-    public boolean isConnected() throws SQLException, ClassNotFoundException {
+    public boolean isConnected() throws SQLException {
         return !getConnection().isClosed();
     }
 
     public Statement statement() {
         try {
             return getConnection().createStatement();
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public Connection getConnection() throws SQLException, ClassNotFoundException {
+    public Connection getConnection() throws SQLException {
+        HikariDatabaseHandler.validateNonMainThread();
+
         if(!firstConnect) {
             throw new DatabaseNotConnectedException("You must call the connect(); method before calling any methods affecting the database.", new NullPointerException());
         }
@@ -105,12 +108,11 @@ public abstract class DatabaseListener {
      * @see DatabaseListener#onConnectAttempt(boolean) Called after attempted
      */
     public void connect(DatabaseAuthInfo data) {
-
         Runnable runnable = () -> {
             databaseHandler.registerDatabase(data,DatabaseListener.this);
             try {
                 firstConnect = databaseHandler.openConnection(data);
-            } catch (SQLException | ClassNotFoundException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
 
@@ -339,12 +341,13 @@ public abstract class DatabaseListener {
             } catch (SQLException e) {
 
                 if (isConnected()) connection.close();
+
                 // Attempt reconnection if broken pipe
                 connection = createConnection(databaseAuthInfo);
 
                 return sqlRun(sql);
             }
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             throw new DatabaseException("Unable to create statement", e);
         }
     }
@@ -354,9 +357,8 @@ public abstract class DatabaseListener {
      * @param sql
      * @return
      * @throws SQLException
-     * @throws ClassNotFoundException
      */
-    private ResultSet sqlRun(@NonNull String sql) throws SQLException, ClassNotFoundException {
+    private ResultSet sqlRun(@NonNull String sql) throws SQLException {
         try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
             return sqlRun(stmt, sql);
         }

@@ -37,16 +37,16 @@ public class HikariDatabaseHandler {
     private HikariDataSource hikari = new HikariDataSource();
     private boolean sealed = false;
 
-    public HikariDatabaseHandler() {
-        this.hikari = new HikariDataSource();
-    }
-
     public static void registerSQLDriver(AbstractSQLDriver sqlDriver) {
         driverMap.put(sqlDriver.getSqlIdentifierName(), sqlDriver);
     }
 
     public static AbstractSQLDriver getSqlDriver(String sqlDriver) {
         return driverMap.get(sqlDriver);
+    }
+
+    protected static void validateNonMainThread() {
+        if (Universal.getMethods().isMainThread()) throw new IllegalStateException("Cannot run SQL methods on main thread. Use Universal.getScheduler() and Universal.getMethods().isMainThread()");
     }
 
     protected Runnable getScheduleRunnable() {
@@ -57,7 +57,7 @@ public class HikariDatabaseHandler {
                 for (DatabaseListener databaseListener : databaseManagerMap.values()) {
                     databaseListener.getConnection().createStatement();
                 }
-            } catch (ClassNotFoundException | SQLException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         };
@@ -80,13 +80,13 @@ public class HikariDatabaseHandler {
         }
     }
 
-    protected void openConnectionOnAll() throws SQLException, ClassNotFoundException {
+    protected void openConnectionOnAll() throws SQLException {
         for(DatabaseAuthInfo databaseManager : databaseManagerMap.keySet()) {
             openConnection(databaseManager);
         }
     }
 
-    public boolean openConnection(DatabaseAuthInfo dataInfo) throws SQLException, ClassNotFoundException {
+    public boolean openConnection(DatabaseAuthInfo dataInfo) throws SQLException {
         DatabaseListener listener = databaseManagerMap.get(dataInfo);
 
         boolean connected = false;
@@ -146,7 +146,7 @@ public class HikariDatabaseHandler {
 
 
     private void setHikariData(DatabaseAuthInfo dataInfo) {
-
+        validateNonMainThread();
         AbstractSQLDriver abstractSQLDriver = getSqlDriver(dataInfo.getMysqlDriver());
 
         if (abstractSQLDriver == null)
@@ -206,6 +206,8 @@ public class HikariDatabaseHandler {
     }
 
     public Connection createConnection(DatabaseAuthInfo dataInfo) throws SQLException {
+        validateNonMainThread();
+
         if (!sealed) {
             setHikariData(dataInfo);
         }
@@ -216,13 +218,16 @@ public class HikariDatabaseHandler {
     }
 
     public void closeConnection() {
+        validateNonMainThread();
+
         for(DatabaseListener databaseListener : databaseManagerMap.values()) {
             Connection connection = null;
             try {
                 connection = databaseListener.getConnection();
-            } catch (DatabaseNotConnectedException ignored) { } catch (SQLException e) {
+            } catch (DatabaseNotConnectedException ignored) { }
+            catch (SQLException e) {
                 e.printStackTrace();
-            } catch (ClassNotFoundException e) { }
+            }
             // invoke on disable.
             try { //using a try catch to catch connection errors (like wrong sql password...)
                 if (connection != null && !connection.isClosed()) { //checking if connection isn't null to
