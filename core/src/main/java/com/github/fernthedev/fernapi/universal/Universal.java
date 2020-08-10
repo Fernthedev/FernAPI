@@ -175,9 +175,9 @@ public class Universal {
     }
 
     public void onDisable() {
-        Universal.getScheduler().runAsync(() -> {
+        new Thread(() -> {
             getDatabaseHandler().stopSchedule();
             getDatabaseHandler().closeConnection();
-        });
+        }).start();
     }
 }
