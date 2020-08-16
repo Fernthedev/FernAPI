@@ -45,6 +45,8 @@ public class FernVelocityAPI implements FernAPIPlugin {
         this.server = server;
         this.logger = logger;
 
+
+
         messageHandler = new VelocityMessageHandler(this);
 
 
@@ -78,5 +80,4 @@ public class FernVelocityAPI implements FernAPIPlugin {
     public void onProxyStop(ProxyShutdownEvent event) {
         Universal.getInstance().onDisable();
     }
-
 }

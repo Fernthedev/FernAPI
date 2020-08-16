@@ -11,7 +11,7 @@ import net.kyori.text.TextComponent;
 public class VelocityFConsole extends IFConsole<ConsoleCommandSource> {
 
     public VelocityFConsole(ConsoleCommandSource commandSender) {
-        super(commandSender);
+        super(commandSender, commandSender);
     }
 
 
@@ -32,7 +32,6 @@ public class VelocityFConsole extends IFConsole<ConsoleCommandSource> {
         FernVelocityAPI api = (FernVelocityAPI) Universal.getMethods().getInstance();
         api.getServer().getConsoleCommandSource().sendMessage(fullMessage);
     }
-
 
 
     private TextComponent message(String text) {

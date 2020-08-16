@@ -16,11 +16,11 @@ import java.util.UUID;
 public class VelocityFPlayer extends IFPlayer<Player> {
 
     public VelocityFPlayer(Player player) {
-        super(player == null ? null : player.getUsername(),player == null ? null : player.getUniqueId(), player);
+        super(player == null ? null : player.getUsername(),player == null ? null : player.getUniqueId(), player, player);
     }
 
     public VelocityFPlayer(Player player, @Nullable String name, @Nullable UUID uuid) {
-        super(player == null ? name : player.getUsername(), player == null ? uuid : player.getUniqueId(), player);
+        super(player == null ? name : player.getUsername(), player == null ? uuid : player.getUniqueId(), player, player);
     }
 
     /**
@@ -77,6 +77,6 @@ public class VelocityFPlayer extends IFPlayer<Player> {
     public IServerInfo getServerInfo() {
         if (player == null || !player.getCurrentServer().isPresent()) return null;
 
-        return ((NetworkHandler< ServerConnection>) Universal.getNetworkHandler()).toServer(player.getCurrentServer().orElse(null));
+        return ((NetworkHandler<ServerConnection>) Universal.getNetworkHandler()).toServer(player.getCurrentServer().orElse(null));
     }
 }

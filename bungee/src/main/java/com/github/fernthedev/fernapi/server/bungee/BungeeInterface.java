@@ -55,7 +55,7 @@ public class BungeeInterface implements MethodInterface<ProxiedPlayer, CommandSe
      */
     @Override
     public <P> IFPlayer<P> convertPlayerObjectToFPlayer(P player) {
-        return (IFPlayer<P>) new BungeeFPlayer((ProxiedPlayer) player);
+        return (IFPlayer<P>) new BungeeFPlayer((ProxiedPlayer) player, player == null ? null : fernBungeeAPI.audienceProvider.audience((CommandSender) player));
     }
 
     @Override
@@ -70,11 +70,13 @@ public class BungeeInterface implements MethodInterface<ProxiedPlayer, CommandSe
     @Override
     public FernCommandIssuer convertCommandSenderToAPISender(@NonNull Object commandSender) {
         if(commandSender instanceof ProxiedPlayer) {
-            return new BungeeFPlayer((ProxiedPlayer) commandSender);
+            CommandSender sender = (CommandSender) commandSender;
+            return new BungeeFPlayer((ProxiedPlayer) commandSender, fernBungeeAPI.audienceProvider.audience(sender));
         }
 
-        if(commandSender instanceof net.md_5.bungee.api.CommandSender) {
-            return new BungeeFConsole((net.md_5.bungee.api.CommandSender) commandSender);
+        if(commandSender instanceof CommandSender) {
+            CommandSender sender = (CommandSender) commandSender;
+            return new BungeeFConsole(sender, fernBungeeAPI.audienceProvider.audience(sender));
         }
 
         return null;
@@ -88,7 +90,7 @@ public class BungeeInterface implements MethodInterface<ProxiedPlayer, CommandSe
      */
     @Override
     public IFConsole<CommandSender> convertConsoleToAPISender(@NonNull CommandSender commandSender) {
-        return new BungeeFConsole(commandSender);
+        return new BungeeFConsole(commandSender, fernBungeeAPI.audienceProvider.audience(commandSender));
     }
 
     @Override

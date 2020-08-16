@@ -5,6 +5,7 @@ import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
+import net.kyori.adventure.audience.Audience;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -15,12 +16,12 @@ import java.util.UUID;
 
 public class SpongeFPlayer extends IFPlayer<Player> {
 
-    public SpongeFPlayer(Player player) {
-        this(player, player.getName(), player.getUniqueId());
+    public SpongeFPlayer(Player player, Audience audience) {
+        this(player, player.getName(), player.getUniqueId(), audience);
     }
 
-    public SpongeFPlayer(Player player, @Nullable String name, @Nullable UUID uuid) {
-        super(player == null ? name : player.getName(), player == null ? uuid : player.getUniqueId(), player);
+    public SpongeFPlayer(Player player, @Nullable String name, @Nullable UUID uuid, Audience audience) {
+        super(player == null ? name : player.getName(), player == null ? uuid : player.getUniqueId(), player, audience);
     }
 
     /**

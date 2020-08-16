@@ -7,6 +7,7 @@ import com.github.fernthedev.fernapi.universal.util.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.util.network.vanish.VanishProxyCheck;
 import lombok.AccessLevel;
 import lombok.Getter;
+import net.kyori.adventure.audience.Audience;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
@@ -30,10 +31,14 @@ public abstract class IFPlayer<T> implements FernCommandIssuer {
     @Getter
     protected T player;
 
-    public IFPlayer(String name, UUID uuid, T player) {
+    @Getter
+    protected Audience audience;
+
+    public IFPlayer(String name, UUID uuid, T player, Audience audience) {
         this.name = name;
         this.uuid = uuid;
         this.player = player;
+        this.audience = audience;
     }
 
     @Getter(AccessLevel.NONE)
@@ -100,7 +105,7 @@ public abstract class IFPlayer<T> implements FernCommandIssuer {
      * @return
      */
     public boolean isPlayerNull() {
-        boolean isPlayer = player == null; // Player must be null
+        boolean isPlayer = player == null || audience == null; // Player and audience must be null
         boolean isDataNull = name == null || uuid == null; // Name and UUID both must be null
 
         return isPlayer || isDataNull;
@@ -165,6 +170,7 @@ public abstract class IFPlayer<T> implements FernCommandIssuer {
     public boolean isPlayer() {
         return true;
     }
+
 
     @Override
     public String toString() {

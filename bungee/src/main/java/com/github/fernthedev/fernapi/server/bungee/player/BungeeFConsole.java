@@ -3,17 +3,21 @@ package com.github.fernthedev.fernapi.server.bungee.player;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFConsole;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.audience.MessageType;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class BungeeFConsole extends IFConsole<CommandSender> {
 
 
-    public BungeeFConsole(CommandSender commandSender) {
-        super(commandSender);
+    public BungeeFConsole(CommandSender commandSender, Audience audience) {
+        super(commandSender, audience);
     }
 
     /**
@@ -29,32 +33,22 @@ public class BungeeFConsole extends IFConsole<CommandSender> {
 
     @Override
     public void sendMessage(BaseMessage baseMessage) {
-
-//        TextComponent fullMessage = new TextComponent(ChatColor.translateAlternateColorCodes('&',baseMessage.getParentText()));
-//
-//        if (baseMessage.getExtra() != null) {
-//            for(BaseMessage be : baseMessage.getExtra()) {
-//                TextComponent te = new TextComponent(ChatColor.translateAlternateColorCodes('&',be.toPlainText()));
-//
-//                if (be.getClickData() != null) {
-//                    te.setClickEvent(new ClickEvent(
-//                            ClickEvent.Action.valueOf(be.getClickData().getAction().toString()),
-//                            be.getClickData().getClickValue()));
-//                }
-//
-//                if (be.getHoverData() != null) {
-//                    te.setHoverEvent(new HoverEvent(
-//                            HoverEvent.Action.valueOf(be.getHoverData().getAction().toString()),
-//                            message(be.getHoverData().getHoverValue())));
-//                }
-//
-//                fullMessage.addExtra(te);
-//            }
-//        }
-
         BaseComponent fullMessage = (BaseComponent) Universal.getChatHandler().parseComponent(baseMessage);
 
         ProxyServer.getInstance().getConsole().sendMessage(fullMessage);
+    }
+
+    /**
+     * Sends a chat message.
+     *
+     * @param message a message
+     * @param type    the type
+     * @see Component
+     * @since 4.0.0
+     */
+    @Override
+    public void sendMessage(@NonNull Component message, @NonNull MessageType type) {
+        
     }
 
     private BaseComponent[] message(String text) {

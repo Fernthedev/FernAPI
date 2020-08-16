@@ -1,7 +1,7 @@
 package com.github.fernthedev.fernapi.universal.api;
 
-import co.aikar.commands.CommandManager;
-import com.github.fernthedev.fernapi.universal.Universal;
+import lombok.Getter;
+import net.kyori.adventure.audience.Audience;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -10,8 +10,13 @@ public abstract class IFConsole<T> implements FernCommandIssuer {
     protected T commandSender;
     protected UUID uuid;
 
-    public IFConsole(T commandSender) {
-        this.commandSender =commandSender;
+    @Getter
+    protected Audience audience;
+
+
+    public IFConsole(T commandSender, Audience audience) {
+        this.commandSender = commandSender;
+        this.audience = audience;
         uuid = UUID.randomUUID();
     }
 

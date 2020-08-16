@@ -2,6 +2,9 @@ package com.github.fernthedev.fernapi.universal.api;
 
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
+import net.kyori.adventure.audience.MessageType;
+import net.kyori.adventure.text.Component;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.net.InetSocketAddress;
 import java.util.UUID;
@@ -9,23 +12,23 @@ import java.util.UUID;
 public class OfflineFPlayer<P> extends IFPlayer<IFPlayer<P>> {
 
     public OfflineFPlayer() {
-        super(null, null, null);
+        super(null, null, null, null);
     }
 
     public OfflineFPlayer(IFPlayer<P> player) {
-        super(player.getName(), player.getUuid(), player);
+        super(player.getName(), player.getUuid(), player, player.getAudience());
     }
 
     public OfflineFPlayer(String name, UUID uuid, IFPlayer<P> player) {
-        super(name, uuid, player);
+        super(name, uuid, player, player.getAudience());
     }
 
     public OfflineFPlayer(String name) {
-        super(name, null, null);
+        super(name, null, null, null);
     }
 
     public OfflineFPlayer(UUID uuid) {
-        super(null, uuid, null);
+        super(null, uuid, null, null);
     }
 
     public void setName(String name) {
@@ -73,6 +76,19 @@ public class OfflineFPlayer<P> extends IFPlayer<IFPlayer<P>> {
     @Override
     public void sendMessage(BaseMessage message) {
         player.sendMessage(message);
+    }
+
+    /**
+     * Sends a chat message.
+     *
+     * @param message a message
+     * @param type    the type
+     * @see Component
+     * @since 4.0.0
+     */
+    @Override
+    public void sendMessage(@NonNull Component message, @NonNull MessageType type) {
+        player.sendMessage(message, type);
     }
 
     @Override

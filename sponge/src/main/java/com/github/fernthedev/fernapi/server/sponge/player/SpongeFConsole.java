@@ -3,14 +3,15 @@ package com.github.fernthedev.fernapi.server.sponge.player;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFConsole;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
+import net.kyori.adventure.audience.Audience;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.text.Text;
 
 public class SpongeFConsole extends IFConsole<ConsoleSource> {
 
 
-    public SpongeFConsole(ConsoleSource commandSender) {
-        super(commandSender);
+    public SpongeFConsole(ConsoleSource commandSender, Audience audience) {
+        super(commandSender, audience);
     }
 
     /**
@@ -48,7 +49,4 @@ public class SpongeFConsole extends IFConsole<ConsoleSource> {
 
         commandSender.sendMessage(text);
     }
-
-
-
 }

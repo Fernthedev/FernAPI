@@ -10,6 +10,7 @@ import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.google.inject.Inject;
 import lombok.Getter;
+import net.kyori.adventure.platform.spongeapi.SpongeAudiences;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
@@ -38,7 +39,9 @@ public class FernSpongeAPI implements FernAPIPlugin {
     @DefaultConfig(sharedRoot = true)
     protected Path defaultConfig;
 
-
+    @Inject
+    @Getter
+    protected SpongeAudiences audienceProvider;
 
     @Inject
     @DefaultConfig(sharedRoot = true)

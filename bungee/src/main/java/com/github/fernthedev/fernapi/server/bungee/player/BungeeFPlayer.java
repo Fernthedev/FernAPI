@@ -6,6 +6,7 @@ import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import com.github.fernthedev.fernapi.universal.handlers.NetworkHandler;
 import lombok.NonNull;
+import net.kyori.adventure.audience.Audience;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -16,8 +17,8 @@ import java.net.InetSocketAddress;
 
 public class BungeeFPlayer extends IFPlayer<ProxiedPlayer> {
 
-    public BungeeFPlayer(ProxiedPlayer player) {
-        super(player == null ? null : player.getName(),player == null ? null : player.getUniqueId(), player);
+    public BungeeFPlayer(ProxiedPlayer player, Audience audience) {
+        super(player == null ? null : player.getName(),player == null ? null : player.getUniqueId(), player, audience);
     }
 
 //    public BungeeFPlayer(ProxiedPlayer player, @Nullable String name, @Nullable UUID uuid) {

@@ -3,14 +3,15 @@ package com.github.fernthedev.fernapi.server.spigot.player;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFConsole;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
+import net.kyori.adventure.audience.Audience;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.command.ConsoleCommandSender;
 
 public class SpigotFConsole extends IFConsole<ConsoleCommandSender> {
 
 
-    public SpigotFConsole(ConsoleCommandSender commandSender) {
-        super(commandSender);
+    public SpigotFConsole(ConsoleCommandSender commandSender, Audience audience) {
+        super(commandSender, audience);
     }
 
     /**

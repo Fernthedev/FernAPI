@@ -12,11 +12,11 @@ import java.util.UUID;
 public class JSONPlayer extends IFPlayer<Object> {
 
     public JSONPlayer(String name, UUID uuid) {
-        super(name, uuid, null);
+        super(name, uuid, null, null);
     }
 
     public JSONPlayer() {
-        super(null, null, null);
+        super(null, null, null, null);
     }
 
     /**

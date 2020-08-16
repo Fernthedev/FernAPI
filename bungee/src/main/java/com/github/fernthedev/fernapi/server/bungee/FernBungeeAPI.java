@@ -10,15 +10,21 @@ import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.util.ProxyAskPlaceHolder;
 import com.github.fernthedev.fernapi.universal.util.network.vanish.VanishProxyCheck;
+import lombok.Getter;
+import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 public class FernBungeeAPI extends Plugin implements FernAPIPlugin {
 
+    @Getter
+    protected BungeeAudiences audienceProvider;
+
     @OverridingMethodsMustInvokeSuper
     @Override
     public void onEnable() {
+        audienceProvider = BungeeAudiences.create(this);
         BungeeMessageHandler messageHandler = new BungeeMessageHandler(this);
         Universal.getInstance().setup(new BungeeInterface(this),
                 this,

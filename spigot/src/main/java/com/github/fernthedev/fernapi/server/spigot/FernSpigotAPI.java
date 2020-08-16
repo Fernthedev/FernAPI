@@ -13,12 +13,16 @@ import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.util.network.vanish.VanishProxyCheck;
 import fr.minuskube.inv.InventoryManager;
 import lombok.Getter;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
+
+    @Getter
+    protected BukkitAudiences audienceProvider;
 
     @Getter
     private VaultHandler vaultHandler;
@@ -29,6 +33,7 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
     @OverridingMethodsMustInvokeSuper
     @Override
     public void onEnable() {
+        audienceProvider = BukkitAudiences.create(this);
         Universal.getInstance().setup(new SpigotInterface(this),
                 this,
                 new SpigotChatHandler(),

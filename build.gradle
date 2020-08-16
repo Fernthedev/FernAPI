@@ -50,6 +50,7 @@ allprojects {
 //    version = versioning.info.full
     ext.buildVer = "1.9.0"
     ext.aikarVer = "0.5.0-SNAPSHOT"
+    ext.adventureAPI = "4.0.0-SNAPSHOT"
     project.ext.beta_version = '4' // Only modify when beta
     ext.beta_prefix = 'rc'
     description = 'An API for universal code'
@@ -126,6 +127,7 @@ allprojects {
     }
 
 
+
     version = !versioning.info.dirty ? versioning.info.full : "${project.buildVer}-${project.beta_prefix}${project.beta_version}"
 
 
@@ -157,6 +159,10 @@ allprojects {
         jcenter()
         maven { url "https://jitpack.io" }
         mavenCentral()
+        maven {
+            name = 'sonatype-oss'
+            url = 'https://oss.sonatype.org/content/repositories/snapshots/'
+        }
         mavenLocal()
     }
 
@@ -164,6 +170,7 @@ allprojects {
     dependencies {
         implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+        implementation "net.kyori:adventure-api:$adventureAPI"
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
         api 'com.zaxxer:HikariCP:3.4.5'
         compile group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1'

@@ -50,7 +50,7 @@ public class SpigotInterface implements MethodInterface<Player, ConsoleCommandSe
 
     @Override
     public <P> IFPlayer<P> convertPlayerObjectToFPlayer(P player) {
-        return (IFPlayer<P>) new SpigotFPlayer((Player) player);
+        return (IFPlayer<P>) new SpigotFPlayer((Player) player, player == null ? null : fernSpigotAPI.audienceProvider.audience((Player) player));
 //        return new SpigotFPlayer((Player) player);
     }
 
@@ -66,11 +66,13 @@ public class SpigotInterface implements MethodInterface<Player, ConsoleCommandSe
     @Override
     public FernCommandIssuer convertCommandSenderToAPISender(Object commandSender) {
         if(commandSender instanceof Player) {
-            return new SpigotFPlayer((Player) commandSender);
+            Player player = (Player) commandSender;
+            return new SpigotFPlayer(player, fernSpigotAPI.audienceProvider.audience(player));
         }
 
         if(commandSender instanceof ConsoleCommandSender) {
-            return new SpigotFConsole((ConsoleCommandSender) commandSender);
+            ConsoleCommandSender sender = (ConsoleCommandSender) commandSender;
+            return new SpigotFConsole(sender, fernSpigotAPI.audienceProvider.audience(sender));
         }
 
         return null;
@@ -84,7 +86,7 @@ public class SpigotInterface implements MethodInterface<Player, ConsoleCommandSe
      */
     @Override
     public IFConsole<ConsoleCommandSender> convertConsoleToAPISender(@NonNull ConsoleCommandSender commandSender) {
-        return new SpigotFConsole(commandSender);
+        return new SpigotFConsole(commandSender, fernSpigotAPI.audienceProvider.audience(commandSender));
     }
 
     @Override
