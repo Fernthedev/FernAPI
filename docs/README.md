@@ -40,7 +40,6 @@ Installation moved to [here](installation.md)
 - [Bungee/Spigot/Sponge/Velocity plugin messaging](features/plugin_messaging.md) [u]
     - *Sponge has not been fully tested, please feel free to report any bugs at issues at repo.
 - [MySQL](features/mysql.md) [u]
-- [Legacy Universal Commands based on Bungee commands](features/ucommand.md) [u]
 - [Aikar ACF support](features/acf.md) [u]
 
 ## Usage
