@@ -3,7 +3,7 @@ This plugin is compiled in 1.14.4, but should work regaurdless of your plugin's 
 
 This is a runtime API that works as a compability layer for multiple server platforms. It is basically the Java of Minecraft Java Servers. It is mostly just interfaces of code implemented in different server codebases that will achieve mostly similar or same results though some features, notably plugin messaging and/or plugin data, at the moment are not fully implemented in some server platforms
 
-[![Release](https://jitpack.io/v/Fernthedev/FernAPI.svg)](https://jitpack.io/#Fernthedev/FernAPI)
+The latest release is in [Github releases](https://github.com/Fernthedev/FernAPI/releases)
 [![JitCI](https://jitci.com/gh/Fernthedev/FernAPI/svg)](https://jitci.com/gh/Fernthedev/FernAPI)
 [![Build Status](https://dev.azure.com/Fernthedev/FernAPI/_apis/build/status/Fernthedev.FernAPI?branchName=stable)](https://dev.azure.com/Fernthedev/FernAPI/_build/latest?definitionId=5&branchName=stable)
 ![Java CI](https://github.com/Fernthedev/FernAPI/workflows/Java%20CI/badge.svg)

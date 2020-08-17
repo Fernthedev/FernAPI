@@ -11,17 +11,3 @@ textMessage.setClickData(new ClickData(ClickData.Action.SUGGEST_COMMAND,"/exampl
 textMessage.setHoverData(new HoverData(HoverData.Action.SHOW_TEXT,"hover text with color code"));
 fPlayer.sendChatMessage(textMessage);
 ```
-
-### PlaceHolderAPI (Bungee)
-```java
-AskPlaceHolder velocityAskPlaceHolder = new AskPlaceHolder(Player,PlaceHolder);
-
-velocityAskPlaceHolder.setRunnable(new MessageRunnable() {
-    @Override
-    public void run() {
-        super.run();
-        //Whatever you want.
-        sender.sendMessage("The player's placeholder value of " + args[1] + " is " + velocityAskPlaceHolder.getPlaceHolderResult());
-    }
-});
-```
