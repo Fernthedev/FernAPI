@@ -222,7 +222,7 @@ public class UniversalContextResolvers {
                 uuid = UUID.fromString(name);
             }
             OfflineFPlayer<?> offlinePlayer = uuid != null ? Universal.getMethods().getPlayerFromUUID(uuid) : Universal.getMethods().getPlayerFromName(name);
-            if (offlinePlayer == null || offlinePlayer.isPlayerNull()) {
+            if (offlinePlayer.isPlayerNull() || !offlinePlayer.isOnline()) {
                 throw new InvalidCommandArgument(UniversalMinecraftMessageKeys.NO_PLAYER_FOUND_OFFLINE,
                         "{search}", name);
             }
