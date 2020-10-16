@@ -57,7 +57,7 @@ public class SpongeInterface implements MethodInterface<Player, ConsoleSource> {
     @Override
     public <P> IFPlayer<P> convertPlayerObjectToFPlayer(P player) {
         Player player1 = (Player) player;
-        return (IFPlayer<P>) new SpongeFPlayer(player1, sponge.audienceProvider.audience(player1));
+        return (IFPlayer<P>) new SpongeFPlayer(player1, sponge.audienceProvider.player(player1));
     }
 
     @Override
@@ -69,12 +69,12 @@ public class SpongeInterface implements MethodInterface<Player, ConsoleSource> {
     public FernCommandIssuer convertCommandSenderToAPISender(Object commandSender) {
         if(commandSender instanceof Player) {
             Player player = (Player) commandSender;
-            return new SpongeFPlayer(player, sponge.audienceProvider.audience(player));
+            return new SpongeFPlayer(player, sponge.audienceProvider.player(player));
         }
 
         if(commandSender instanceof ConsoleSource) {
             ConsoleSource commandSender1 = (ConsoleSource) commandSender;
-            return new SpongeFConsole(commandSender1, sponge.audienceProvider.audience(commandSender1));
+            return new SpongeFConsole(commandSender1, sponge.audienceProvider.console());
         }
 
         return null;
@@ -88,7 +88,7 @@ public class SpongeInterface implements MethodInterface<Player, ConsoleSource> {
      */
     @Override
     public IFConsole<ConsoleSource> convertConsoleToAPISender(@NonNull ConsoleSource commandSender) {
-        return new SpongeFConsole(commandSender, sponge.audienceProvider.audience(commandSender));
+        return new SpongeFConsole(commandSender, sponge.audienceProvider.console());
     }
 
     @Override
