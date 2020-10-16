@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    implementation "net.kyori:adventure-platform-spongeapi:$adventureAPI"
+    implementation "net.kyori:adventure-platform-spongeapi:$adventureAPIPlatform"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     testCompile group: 'junit', name: 'junit', version: '4.13'
     compileOnly 'org.spongepowered:spongeapi:7.1.0'

@@ -8,6 +8,7 @@ import com.github.fernthedev.fernapi.universal.data.chat.TextMessage;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.audience.MessageType;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
@@ -50,31 +51,20 @@ public interface FernCommandIssuer extends CommandIssuer, Audience {
 
     Audience getAudience();
 
-
     /**
      * Sends a chat message.
      *
-     * @param message a message
-     * @see Component
-     * @since 4.0.0
-     */
-    @Override
-    default void sendMessage(@NonNull Component message) {
-        getAudience().sendMessage(message);
-    }
-
-    /**
-     * Sends a chat message.
-     *
+     * @param source  the identity of the source of the message
      * @param message a message
      * @param type    the type
      * @see Component
      * @since 4.0.0
      */
     @Override
-    default void sendMessage(@NonNull Component message, @NonNull MessageType type) {
-        getAudience().sendMessage(message, type);
+    default void sendMessage(@NonNull Identity source, @NonNull Component message, @NonNull MessageType type) {
+        getAudience().sendMessage(source, message, type);
     }
+
 
     /**
      * Sends a message on the action bar.

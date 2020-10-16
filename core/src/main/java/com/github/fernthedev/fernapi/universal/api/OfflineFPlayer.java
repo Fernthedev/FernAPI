@@ -3,6 +3,7 @@ package com.github.fernthedev.fernapi.universal.api;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
 import net.kyori.adventure.audience.MessageType;
+import net.kyori.adventure.identity.Identified;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -81,14 +82,15 @@ public class OfflineFPlayer<P> extends IFPlayer<IFPlayer<P>> {
     /**
      * Sends a chat message.
      *
+     * @param source  the source of the message
      * @param message a message
      * @param type    the type
      * @see Component
      * @since 4.0.0
      */
     @Override
-    public void sendMessage(@NonNull Component message, @NonNull MessageType type) {
-        player.sendMessage(message, type);
+    public void sendMessage(@NonNull Identified source, @NonNull Component message, @NonNull MessageType type) {
+        player.sendMessage(source, message, type);
     }
 
     @Override
