@@ -12,7 +12,7 @@ dependencies {
 
     implementation ('com.google.code.gson:gson:2.8.6')
 //    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
-    implementation 'org.mariadb.jdbc:mariadb-java-client:2.6.2'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.0'
     api 'com.github.Fernthedev:fern-configmanager:1.3.0' // Check github releases tag for the version.
 
     // 2. Use Guava types in your public API:
