@@ -128,8 +128,9 @@ allprojects {
     }
 
 
-
-    version = !versioning.info.dirty ? versioning.info.full : "${project.buildVer}-${project.beta_prefix}${project.beta_version}"
+    GString tagVer = "${buildVer}${beta_prefix}${project.beta_version}"
+    // If being worked on
+    version = versioning.info.tag != null ? versioning.info.tag : "v${tagVer}-${versioning.info.branch}-${versioning.info.build}"
 
 
     processResources {
