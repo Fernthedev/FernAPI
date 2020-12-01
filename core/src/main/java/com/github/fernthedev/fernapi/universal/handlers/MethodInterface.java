@@ -5,11 +5,11 @@ import com.github.fernthedev.fernapi.universal.api.IFConsole;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.api.OfflineFPlayer;
 import lombok.NonNull;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 /**
  *
@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 public interface MethodInterface<PlayerType, ConsoleType> {
     boolean isMainThread();
 
-    Logger getLogger();
+    Logger getAbstractLogger();
 
     ServerType getServerType();
 

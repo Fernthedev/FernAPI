@@ -6,11 +6,11 @@ import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseExcep
 import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseNotConnectedException;
 import lombok.*;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.logging.Logger;
 
 public abstract class DatabaseListener {
 
@@ -416,7 +416,7 @@ public abstract class DatabaseListener {
     }
 
     protected Logger getLogger() {
-        return Universal.getMethods().getLogger();
+        return Universal.getMethods().getAbstractLogger();
     }
 
     @Synchronized

@@ -109,7 +109,7 @@ public class HikariDatabaseHandler {
         } catch (DatabaseNotConnectedException ignored) {}
 
         if (!listener.isSetup()) {
-            Universal.getMethods().getLogger().info("Connecting to MySQL now.");
+            Universal.getMethods().getAbstractLogger().info("Connecting to MySQL now.");
             listener.setFirstConnect(true);
             listener.createConnection(dataInfo);
 
@@ -133,7 +133,7 @@ public class HikariDatabaseHandler {
      */
     public void registerDatabase(@NonNull DatabaseAuthInfo databaseAuthInfo, @NonNull DatabaseListener databaseListener) {
         if (!databaseListener.isSetup()) {
-            Universal.getMethods().getLogger().info("Setting database connection");
+            Universal.getMethods().getAbstractLogger().info("Setting database connection");
         }
 
         databaseManagerMap.put(databaseAuthInfo, databaseListener);
@@ -201,7 +201,7 @@ public class HikariDatabaseHandler {
 //        hikari.addDataSourceProperty("user", dataInfo.getUsername());
 //        hikari.addDataSourceProperty("password", dataInfo.getPassword());
         } else {
-            Universal.getLogger().warning("Restart required to apply new SQL driver change. ");
+            Universal.getLogger().warn("Restart required to apply new SQL driver change. ");
         }
     }
 

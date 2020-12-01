@@ -14,11 +14,12 @@ import lombok.NonNull;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class BungeeInterface implements MethodInterface<ProxiedPlayer, CommandSender> {
@@ -35,8 +36,8 @@ public class BungeeInterface implements MethodInterface<ProxiedPlayer, CommandSe
     }
 
     @Override
-    public Logger getLogger() {
-        return fernBungeeAPI.getLogger();
+    public Logger getAbstractLogger() {
+        return LoggerFactory.getLogger(fernBungeeAPI.getClass());
     }
 
     @Override
@@ -153,4 +154,6 @@ public class BungeeInterface implements MethodInterface<ProxiedPlayer, CommandSe
                 .filter(proxiedPlayerIFPlayer -> proxiedPlayerIFPlayer.getName().contains(name))
                 .collect(Collectors.toList());
     }
+
+
 }

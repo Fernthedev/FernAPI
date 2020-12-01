@@ -6,7 +6,6 @@ import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.network.Channel;
 import com.github.fernthedev.fernapi.universal.data.network.PluginMessageData;
 import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
-import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import com.github.fernthedev.fernapi.universal.handlers.PluginMessageHandler;
 import com.github.fernthedev.fernapi.universal.handlers.ServerType;
 import com.github.fernthedev.fernapi.universal.util.ProxyAskPlaceHolder;
@@ -60,7 +59,7 @@ public class VanishProxyCheck extends PluginMessageHandler {
         if (o != null) throw new FernRuntimeException("VanishProxyCheck is already registered");
 
         o = new Object();
-        Universal.getMethods().getLogger().info("Registered VanishProxyCheck Listener");
+        Universal.getMethods().getAbstractLogger().info("Registered VanishProxyCheck Listener");
     }
 
     /**

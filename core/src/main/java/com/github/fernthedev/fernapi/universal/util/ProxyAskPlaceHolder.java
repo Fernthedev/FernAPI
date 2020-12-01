@@ -40,7 +40,7 @@ public class ProxyAskPlaceHolder extends PluginMessageHandler {
      * Internal use
      */
     private ProxyAskPlaceHolder() {
-        Universal.getMethods().getLogger().info("Registered PlaceHolderAPI Listener");
+        Universal.getMethods().getAbstractLogger().info("Registered PlaceHolderAPI Listener");
         proxyPlaceholderRunnable = (player, placeHolder, isReplaced) -> {};
     }
 

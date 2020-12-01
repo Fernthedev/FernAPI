@@ -165,7 +165,7 @@ public class SpongeMessageHandler extends IPMessageHandler {
         }
 
         if (player == null) {
-            Universal.getMethods().getLogger().warning("No players online, cannot send plugin message");
+            Universal.getMethods().getAbstractLogger().warn("No players online, cannot send plugin message");
             try {
                 throw new NoPlayersOnlineException("Players are required to send plugin messages through spigot to other servers.");
             } catch (NoPlayersOnlineException e) {

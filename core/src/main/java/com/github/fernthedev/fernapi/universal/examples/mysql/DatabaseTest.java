@@ -35,9 +35,9 @@ public class DatabaseTest extends DatabaseListener {
     @Override
     public void onConnectAttempt(boolean connected) {
         if(connected) {
-            Universal.getMethods().getLogger().info("Connected successfully");
+            Universal.getMethods().getAbstractLogger().info("Connected successfully");
         }else{
-            Universal.getMethods().getLogger().warning("Unable to connect successfully");
+            Universal.getMethods().getAbstractLogger().warn("Unable to connect successfully");
         }
     }
 

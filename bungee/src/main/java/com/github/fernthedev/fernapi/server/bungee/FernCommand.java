@@ -6,10 +6,10 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public abstract class FernCommand extends Command {
     /**
@@ -38,7 +38,7 @@ public abstract class FernCommand extends Command {
     }
 
     protected Logger logger() {
-        return Universal.getMethods().getLogger();
+        return Universal.getMethods().getAbstractLogger();
     }
 
     protected void sendMessage(CommandSender player, String message) {

@@ -16,9 +16,9 @@ import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.slf4j.Logger;
 
 import java.util.Locale;
-import java.util.logging.Logger;
 
 /**
  * Holds most of the core api
@@ -62,7 +62,7 @@ public class Universal {
     }
 
     public static Logger getLogger() {
-        return getMethods().getLogger();
+        return getMethods().getAbstractLogger();
     }
 
     public void setup(@NonNull MethodInterface<?, ?> methodInterface, FernAPIPlugin aplugin,
@@ -71,7 +71,7 @@ public class Universal {
                       PluginData<?> pluginData
     ) {
         if (setup) throw new FernRuntimeException("The interface has already been registered.");
-        methodInterface.getLogger().info("Registered interface");
+        methodInterface.getAbstractLogger().info("Registered interface");
         setup = true;
         mi = methodInterface;
         ch = chatHandler;
@@ -111,7 +111,7 @@ public class Universal {
 
         UUIDFetcher.addRequestTimer();
 
-        getMethods().getLogger().info("Registered FernAPI " + getMethods().getServerType().toString() + " using version " + VersionUtil.getVersionData());
+        getMethods().getAbstractLogger().info("Registered FernAPI " + getMethods().getServerType().toString() + " using version " + VersionUtil.getVersionData());
 
     }
 
@@ -130,7 +130,7 @@ public class Universal {
 
     public static void debug(String message) {
         if(debug) {
-            getMethods().getLogger().info("[DEBUG] " + message);
+            getMethods().getAbstractLogger().info("[DEBUG] " + message);
         }
     }
 

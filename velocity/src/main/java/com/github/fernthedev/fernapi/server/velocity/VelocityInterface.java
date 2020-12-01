@@ -12,16 +12,16 @@ import com.github.fernthedev.fernapi.universal.handlers.ServerType;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
 import lombok.NonNull;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class VelocityInterface implements MethodInterface<Player, ConsoleCommandSource> {
-    private FernVelocityAPI fernVelocityAPI;
+    private final FernVelocityAPI fernVelocityAPI;
 
     VelocityInterface(FernVelocityAPI fernVelocityAPI) {
         this.fernVelocityAPI = fernVelocityAPI;
@@ -34,9 +34,8 @@ public class VelocityInterface implements MethodInterface<Player, ConsoleCommand
     }
 
     @Override
-    public Logger getLogger() {
-        fernVelocityAPI.getLogger().warn("Java Logger does not exist in Velocity.");
-        return (Logger) fernVelocityAPI.getLogger();
+    public Logger getAbstractLogger() {
+        return fernVelocityAPI.getLogger();
     }
 
     @Override

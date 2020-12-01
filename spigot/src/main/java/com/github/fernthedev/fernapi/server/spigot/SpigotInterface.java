@@ -13,12 +13,13 @@ import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class SpigotInterface implements MethodInterface<Player, ConsoleCommandSender> {
@@ -34,8 +35,8 @@ public class SpigotInterface implements MethodInterface<Player, ConsoleCommandSe
     }
 
     @Override
-    public Logger getLogger() {
-        return fernSpigotAPI.getLogger();
+    public Logger getAbstractLogger() {
+        return LoggerFactory.getLogger(fernSpigotAPI.getClass());
     }
 
     @Override

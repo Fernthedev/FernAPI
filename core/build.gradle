@@ -19,9 +19,7 @@ dependencies {
     implementation("com.google.guava:guava:29.0-jre")
 
 //    api group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.29'
-
-
-//
+    api group: 'org.slf4j', name: 'slf4j-jdk14', version: slf4j_ver
     compileOnly 'org.projectlombok:lombok:1.18.16'
     annotationProcessor 'org.projectlombok:lombok:1.18.16'
 }

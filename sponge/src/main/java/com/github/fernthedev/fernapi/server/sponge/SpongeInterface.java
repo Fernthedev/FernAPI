@@ -2,7 +2,6 @@ package com.github.fernthedev.fernapi.server.sponge;
 
 import com.github.fernthedev.fernapi.server.sponge.player.SpongeFConsole;
 import com.github.fernthedev.fernapi.server.sponge.player.SpongeFPlayer;
-import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.FernCommandIssuer;
 import com.github.fernthedev.fernapi.universal.api.IFConsole;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
@@ -12,6 +11,7 @@ import com.github.fernthedev.fernapi.universal.handlers.MethodInterface;
 import com.github.fernthedev.fernapi.universal.handlers.ServerType;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.entity.living.player.Player;
@@ -34,9 +34,8 @@ public class SpongeInterface implements MethodInterface<Player, ConsoleSource> {
     }
 
     @Override
-    public java.util.logging.Logger getLogger() {
-        Universal.debug("Java Logger does not exist in Sponge.");
-        return (java.util.logging.Logger) sponge.getLogger();
+    public Logger getAbstractLogger() {
+        return sponge.getLogger();
     }
 
     @Override
