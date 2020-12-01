@@ -25,8 +25,11 @@ import java.util.stream.Collectors;
 public class SpigotInterface implements MethodInterface<Player, ConsoleCommandSender> {
 
     private final FernSpigotAPI fernSpigotAPI;
+    private final Logger abstractLogger;
+
     SpigotInterface(FernSpigotAPI fernSpigotAPI) {
         this.fernSpigotAPI = fernSpigotAPI;
+        abstractLogger = LoggerFactory.getLogger(fernSpigotAPI.getLogger().getName());
     }
 
     @Override
@@ -36,7 +39,7 @@ public class SpigotInterface implements MethodInterface<Player, ConsoleCommandSe
 
     @Override
     public Logger getAbstractLogger() {
-        return LoggerFactory.getLogger(fernSpigotAPI.getClass());
+        return abstractLogger;
     }
 
     @Override

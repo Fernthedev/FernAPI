@@ -24,9 +24,11 @@ import java.util.stream.Collectors;
 
 public class BungeeInterface implements MethodInterface<ProxiedPlayer, CommandSender> {
     private FernBungeeAPI fernBungeeAPI;
+    private final Logger abstractLogger;
 
     BungeeInterface(FernBungeeAPI fernBungeeAPI) {
         this.fernBungeeAPI = fernBungeeAPI;
+        abstractLogger = LoggerFactory.getLogger(fernBungeeAPI.getLogger().getName());
     }
 
     @Override
@@ -37,7 +39,7 @@ public class BungeeInterface implements MethodInterface<ProxiedPlayer, CommandSe
 
     @Override
     public Logger getAbstractLogger() {
-        return LoggerFactory.getLogger(fernBungeeAPI.getClass());
+        return abstractLogger;
     }
 
     @Override
