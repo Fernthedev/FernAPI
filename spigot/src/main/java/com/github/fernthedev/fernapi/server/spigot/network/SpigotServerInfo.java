@@ -46,15 +46,14 @@ import java.util.function.Consumer;
 public class SpigotServerInfo implements Server, IServerInfo {
 
     @NonNull
-    private Server server;
+    private final Server server;
+
+    private final InetSocketAddress address;
 
     public SpigotServerInfo(@NonNull Server server) {
         this.server = server;
         address = new InetSocketAddress(server.getPort());
     }
-
-    private final InetSocketAddress address;
-
 
 
     /**

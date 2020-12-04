@@ -18,7 +18,7 @@ public class SpigotNetworkHandler implements NetworkHandler<Server> {
     }
 
     @Getter
-    private SpigotServerInfo serverInfo = new SpigotServerInfo(Bukkit.getServer());
+    private final SpigotServerInfo serverInfo = new SpigotServerInfo(Bukkit.getServer());
 
     @Override
     public Map<String, IServerInfo> getServers() {
@@ -39,7 +39,7 @@ public class SpigotNetworkHandler implements NetworkHandler<Server> {
     }
 
     @Override
-    public IServerInfo toServer(Server server) {
+    public IServerInfo toServer(Object server) {
         return serverInfo;
     }
 }

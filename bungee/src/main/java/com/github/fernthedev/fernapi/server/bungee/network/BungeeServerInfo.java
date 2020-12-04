@@ -13,7 +13,7 @@ import java.net.InetSocketAddress;
 public class BungeeServerInfo implements IServerInfo {
 
     @NonNull
-    private ServerInfo serverInfo;
+    private final ServerInfo serverInfo;
 
     /**
      * Get the name of this server.

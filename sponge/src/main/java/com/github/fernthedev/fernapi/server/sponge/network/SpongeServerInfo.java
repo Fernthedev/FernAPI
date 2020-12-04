@@ -13,7 +13,7 @@ import java.net.InetSocketAddress;
 public class SpongeServerInfo implements IServerInfo {
 
     @NonNull
-    private Server server;
+    private final Server server;
 
     private final InetSocketAddress address = Sponge.getServer().getBoundAddress().get();
 

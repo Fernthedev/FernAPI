@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class VelocityServerInfo implements RegisteredServer, IServerInfo {
 
     @NonNull
-    private RegisteredServer serverInfo;
+    private final RegisteredServer serverInfo;
 
     /**
      * Get the name of this server.

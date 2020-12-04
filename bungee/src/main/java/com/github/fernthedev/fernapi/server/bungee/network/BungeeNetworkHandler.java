@@ -28,7 +28,8 @@ public class BungeeNetworkHandler implements NetworkHandler<ServerInfo> {
     }
 
     @Override
-    public IServerInfo toServer(ServerInfo server) {
-        return new BungeeServerInfo(server);
+    public IServerInfo toServer(Object server) {
+        if (!(server instanceof ServerInfo)) throw new IllegalArgumentException("Server data " + server + " is not an instance of " + ServerInfo.class.getName());
+        return new BungeeServerInfo((ServerInfo) server);
     }
 }

@@ -15,14 +15,11 @@ public class SpongeNetworkHandler implements NetworkHandler<Server> {
         return true;
     }
 
-    private SpongeServerInfo serverInfo = new SpongeServerInfo(Sponge.getServer());
+    private final SpongeServerInfo serverInfo = new SpongeServerInfo(Sponge.getServer());
 
     @Override
     public Map<String, IServerInfo> getServers() {
-        Map<String, IServerInfo> map = new HashMap<>();
-
-
-        return map;
+        return new HashMap<>();
     }
 
     @Override
@@ -35,7 +32,7 @@ public class SpongeNetworkHandler implements NetworkHandler<Server> {
     }
 
     @Override
-    public IServerInfo toServer(Server server) {
+    public IServerInfo toServer(Object server) {
         return serverInfo;
     }
 }

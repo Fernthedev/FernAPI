@@ -23,7 +23,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class BungeeInterface implements MethodInterface<ProxiedPlayer, CommandSender> {
-    private FernBungeeAPI fernBungeeAPI;
+    private final FernBungeeAPI fernBungeeAPI;
     private final Logger abstractLogger;
     private final IFConsole<CommandSender> console;
 

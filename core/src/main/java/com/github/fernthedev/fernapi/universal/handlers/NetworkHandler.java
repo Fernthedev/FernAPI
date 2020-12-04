@@ -11,5 +11,22 @@ public interface NetworkHandler<T> {
 
     IServerInfo getServer(String name);
 
-    IServerInfo toServer(T server);
+    /**
+     * Converts server-specific ServerInfo
+     * into a cross-server compatible abstracted
+     * instance
+     *
+     * @param server server instance
+     * @return abstract server data
+     */
+    IServerInfo toServer(Object server);
+
+    /**
+     * Convenience method for type-checking
+     * @param server type checked server
+     * @return abstract server data
+     */
+    default IServerInfo toServerTyped(T server) {
+        return toServer(server);
+    }
 }

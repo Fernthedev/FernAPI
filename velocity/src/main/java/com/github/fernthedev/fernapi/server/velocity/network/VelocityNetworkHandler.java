@@ -19,7 +19,7 @@ public class VelocityNetworkHandler implements NetworkHandler<ServerConnection> 
     }
 
     @NonNull
-    private FernVelocityAPI plugin;
+    private final FernVelocityAPI plugin;
 
     @Override
     public Map<String, IServerInfo> getServers() {
@@ -35,7 +35,8 @@ public class VelocityNetworkHandler implements NetworkHandler<ServerConnection> 
     }
 
     @Override
-    public IServerInfo toServer(ServerConnection server) {
-        return new VelocityServerInfo(server.getServer());
+    public IServerInfo toServer(Object server) {
+        if (!(server instanceof ServerConnection)) throw new IllegalArgumentException("Server data " + server + " is not an instance of " + ServerConnection.class.getName());
+        return new VelocityServerInfo(((ServerConnection) server).getServer());
     }
 }
