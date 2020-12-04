@@ -25,6 +25,22 @@ public interface MethodInterface<PlayerType, ConsoleType> {
     FernAPIPlugin getInstance();
 
     /**
+     * Retrieves the abstracted console instance
+     *
+     * @return console instance. Cannot confirm whether it's always constant, may depend on platform.
+     */
+    @NonNull
+    ConsoleType getConsole();
+
+    /**
+     * Retrieves the abstracted console instance
+     *
+     * @return console instance, is constant
+     */
+    @NonNull
+    IFConsole<ConsoleType> getConsoleAbstract();
+
+    /**
      *
      * @param player The player
      * @param <P> The type of player to return
@@ -49,7 +65,10 @@ public interface MethodInterface<PlayerType, ConsoleType> {
     /**
      * Converts the command sender to it's IFPlayer instance
      * @return
+     *
+     * @deprecated Use {@link #getConsoleAbstract()}
      */
+    @Deprecated
     IFConsole<ConsoleType> convertConsoleToAPISender(@NonNull ConsoleType commandSender);
 
     /**

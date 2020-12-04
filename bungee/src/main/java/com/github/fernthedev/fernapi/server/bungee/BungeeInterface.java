@@ -25,10 +25,12 @@ import java.util.stream.Collectors;
 public class BungeeInterface implements MethodInterface<ProxiedPlayer, CommandSender> {
     private FernBungeeAPI fernBungeeAPI;
     private final Logger abstractLogger;
+    private final IFConsole<CommandSender> console;
 
     BungeeInterface(FernBungeeAPI fernBungeeAPI) {
         this.fernBungeeAPI = fernBungeeAPI;
         abstractLogger = LoggerFactory.getLogger(fernBungeeAPI.getLogger().getName());
+        console = new BungeeFConsole(ProxyServer.getInstance().getConsole(), fernBungeeAPI.audienceProvider.console());
     }
 
     @Override
@@ -50,6 +52,18 @@ public class BungeeInterface implements MethodInterface<ProxiedPlayer, CommandSe
     @Override
     public FernAPIPlugin getInstance() {
         return fernBungeeAPI;
+    }
+
+    @NonNull
+    @Override
+    public CommandSender getConsole() {
+        return ProxyServer.getInstance().getConsole();
+    }
+
+    @NonNull
+    @Override
+    public IFConsole<CommandSender> getConsoleAbstract() {
+        return console;
     }
 
     /**
@@ -77,8 +91,7 @@ public class BungeeInterface implements MethodInterface<ProxiedPlayer, CommandSe
         }
 
         if(commandSender instanceof CommandSender) {
-            CommandSender sender = (CommandSender) commandSender;
-            return new BungeeFConsole(sender, fernBungeeAPI.audienceProvider.console());
+            return console;
         }
 
         return null;
@@ -92,7 +105,7 @@ public class BungeeInterface implements MethodInterface<ProxiedPlayer, CommandSe
      */
     @Override
     public IFConsole<CommandSender> convertConsoleToAPISender(@NonNull CommandSender commandSender) {
-        return new BungeeFConsole(commandSender, fernBungeeAPI.audienceProvider.console());
+        return console;
     }
 
     @Override

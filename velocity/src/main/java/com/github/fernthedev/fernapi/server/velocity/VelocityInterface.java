@@ -22,9 +22,11 @@ import java.util.stream.Collectors;
 
 public class VelocityInterface implements MethodInterface<Player, ConsoleCommandSource> {
     private final FernVelocityAPI fernVelocityAPI;
+    private final IFConsole<ConsoleCommandSource> console;
 
     VelocityInterface(FernVelocityAPI fernVelocityAPI) {
         this.fernVelocityAPI = fernVelocityAPI;
+        console = new VelocityFConsole(fernVelocityAPI.getServer().getConsoleCommandSource());
     }
 
     @Override
@@ -46,6 +48,16 @@ public class VelocityInterface implements MethodInterface<Player, ConsoleCommand
     @Override
     public FernAPIPlugin getInstance() {
         return fernVelocityAPI;
+    }
+
+    @Override
+    public @NonNull ConsoleCommandSource getConsole() {
+        return fernVelocityAPI.getServer().getConsoleCommandSource();
+    }
+
+    @Override
+    public @NonNull IFConsole<ConsoleCommandSource> getConsoleAbstract() {
+        return console;
     }
 
     /**
@@ -75,7 +87,7 @@ public class VelocityInterface implements MethodInterface<Player, ConsoleCommand
         }
 
         if(commandSender instanceof ConsoleCommandSource) {
-            return new VelocityFConsole((ConsoleCommandSource) commandSender);
+            return console;
         }
 
         return null;
@@ -89,7 +101,7 @@ public class VelocityInterface implements MethodInterface<Player, ConsoleCommand
      */
     @Override
     public IFConsole<ConsoleCommandSource> convertConsoleToAPISender(@NonNull ConsoleCommandSource commandSender) {
-        return new VelocityFConsole(commandSender);
+        return console;
     }
 
     @Override

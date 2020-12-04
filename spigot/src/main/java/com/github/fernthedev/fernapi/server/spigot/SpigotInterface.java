@@ -26,10 +26,12 @@ public class SpigotInterface implements MethodInterface<Player, ConsoleCommandSe
 
     private final FernSpigotAPI fernSpigotAPI;
     private final Logger abstractLogger;
+    private final IFConsole<ConsoleCommandSender> console;
 
     SpigotInterface(FernSpigotAPI fernSpigotAPI) {
         this.fernSpigotAPI = fernSpigotAPI;
         abstractLogger = LoggerFactory.getLogger(fernSpigotAPI.getLogger().getName());
+        console = new SpigotFConsole(Bukkit.getConsoleSender(), fernSpigotAPI.getAudienceProvider().console());
     }
 
     @Override
@@ -50,6 +52,16 @@ public class SpigotInterface implements MethodInterface<Player, ConsoleCommandSe
     @Override
     public FernAPIPlugin getInstance() {
         return fernSpigotAPI;
+    }
+
+    @Override
+    public @NonNull ConsoleCommandSender getConsole() {
+        return Bukkit.getConsoleSender();
+    }
+
+    @Override
+    public @NonNull IFConsole<ConsoleCommandSender> getConsoleAbstract() {
+        return console;
     }
 
     @Override
@@ -75,8 +87,7 @@ public class SpigotInterface implements MethodInterface<Player, ConsoleCommandSe
         }
 
         if(commandSender instanceof ConsoleCommandSender) {
-            ConsoleCommandSender sender = (ConsoleCommandSender) commandSender;
-            return new SpigotFConsole(sender, fernSpigotAPI.audienceProvider.console());
+            return console;
         }
 
         return null;
@@ -90,7 +101,7 @@ public class SpigotInterface implements MethodInterface<Player, ConsoleCommandSe
      */
     @Override
     public IFConsole<ConsoleCommandSender> convertConsoleToAPISender(@NonNull ConsoleCommandSender commandSender) {
-        return new SpigotFConsole(commandSender, fernSpigotAPI.audienceProvider.console());
+        return console;
     }
 
     @Override
