@@ -175,7 +175,7 @@ allprojects {
 
         api "net.kyori:adventure-api:$adventureAPI"
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-        api 'com.zaxxer:HikariCP:3.4.5'
+
         compile group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1u2'
 
 //        compileOnly 'org.projectlombok:lombok:1.18.12'
@@ -199,7 +199,7 @@ allprojects {
         minimize()
         relocate 'co.aikar.commands', "${project.group}.acf"
         relocate 'co.aikar.locales', "${project.group}.locales"
-
+        relocate 'co.aikar.idb', "${project.group}.idb"
     }
 
     compileJava.options.encoding = 'UTF-8'

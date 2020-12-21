@@ -2,6 +2,8 @@ package com.github.fernthedev.fernapi.universal.mysql;
 
 import lombok.NonNull;
 
+import java.util.Objects;
+
 public abstract class AbstractSQLDriver {
 
     @NonNull
@@ -37,44 +39,17 @@ public abstract class AbstractSQLDriver {
         return this.jdbcUrl;
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
         if (!(o instanceof AbstractSQLDriver)) return false;
-        final AbstractSQLDriver other = (AbstractSQLDriver) o;
-        if (!other.canEqual((Object) this)) return false;
-        final Object this$sqlIdentifierName = this.getSqlIdentifierName();
-        final Object other$sqlIdentifierName = other.getSqlIdentifierName();
-        if (this$sqlIdentifierName == null ? other$sqlIdentifierName != null : !this$sqlIdentifierName.equals(other$sqlIdentifierName))
-            return false;
-        final Object this$sqlName = this.getSqlName();
-        final Object other$sqlName = other.getSqlName();
-        if (this$sqlName == null ? other$sqlName != null : !this$sqlName.equals(other$sqlName)) return false;
-        final Object this$sqlDriverClassName = this.getSqlDriverClassName();
-        final Object other$sqlDriverClassName = other.getSqlDriverClassName();
-        if (this$sqlDriverClassName == null ? other$sqlDriverClassName != null : !this$sqlDriverClassName.equals(other$sqlDriverClassName))
-            return false;
-        final Object this$jdbcUrl = this.getJdbcUrl();
-        final Object other$jdbcUrl = other.getJdbcUrl();
-        if (this$jdbcUrl == null ? other$jdbcUrl != null : !this$jdbcUrl.equals(other$jdbcUrl)) return false;
-        return true;
+        AbstractSQLDriver that = (AbstractSQLDriver) o;
+        return sqlIdentifierName.equals(that.sqlIdentifierName) && sqlName.equals(that.sqlName) && sqlDriverClassName.equals(that.sqlDriverClassName) && jdbcUrl.equals(that.jdbcUrl);
     }
 
-    protected boolean canEqual(final Object other) {
-        return other instanceof AbstractSQLDriver;
-    }
-
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $sqlIdentifierName = this.getSqlIdentifierName();
-        result = result * PRIME + ($sqlIdentifierName == null ? 43 : $sqlIdentifierName.hashCode());
-        final Object $sqlName = this.getSqlName();
-        result = result * PRIME + ($sqlName == null ? 43 : $sqlName.hashCode());
-        final Object $sqlDriverClassName = this.getSqlDriverClassName();
-        result = result * PRIME + ($sqlDriverClassName == null ? 43 : $sqlDriverClassName.hashCode());
-        final Object $jdbcUrl = this.getJdbcUrl();
-        result = result * PRIME + ($jdbcUrl == null ? 43 : $jdbcUrl.hashCode());
-        return result;
+        return Objects.hash(sqlIdentifierName, sqlName, sqlDriverClassName, jdbcUrl);
     }
 
     public void setSqlIdentifierName(@NonNull String sqlIdentifierName) {

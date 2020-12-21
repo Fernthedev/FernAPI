@@ -6,20 +6,15 @@ import com.github.fernthedev.fernapi.universal.mysql.DatabaseListener;
 import lombok.SneakyThrows;
 
 public class DatabaseTest extends DatabaseListener {
-    private TableInfo tableInfo;
-
-    private static RowDataTemplate rowDataTemplate = new RowDataTemplate(
-            new ColumnData("thing", "test"),
-            new ColumnData("thing2", "testthing")
-    );
+    private TableInfo<RowDataTest> tableInfo;
 
     public DatabaseTest(String username,String password,String port,String URLHost,String database) {
         connect(new DatabaseAuthInfo(username,password,port,URLHost,database));
     }
 
-    public TableInfo getTableInfo() {
+    public TableInfo<RowDataTest> getTableInfo() {
         if(tableInfo == null) {
-            tableInfo = new TableInfo("test_no", rowDataTemplate);
+            tableInfo = new TableInfo<>("test_no", RowDataTest.class);
         }
 
         return tableInfo;
@@ -44,13 +39,13 @@ public class DatabaseTest extends DatabaseListener {
     @SneakyThrows
     public void test() {
 
-        tableInfo = new TableInfo("test_no", rowDataTemplate);
+        tableInfo = new TableInfo<>("test_no", RowDataTest.class);
 
-        RowData rowData = new RowData(new ColumnData("row1","value1"), new ColumnData("row2", "value2"));
+        RowDataTest rowData = new RowDataTest("row1","value1");
 
         insertIntoTable(tableInfo, rowData);
 
-        rowData = new RowData(new ColumnData("row1","value1nou"), new ColumnData("row2","value2nou"));
+        rowData = new RowDataTest("row1fern","value1nou");
 
         insertIntoTable(tableInfo, rowData);
 

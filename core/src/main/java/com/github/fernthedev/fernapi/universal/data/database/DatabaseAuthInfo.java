@@ -1,7 +1,6 @@
 package com.github.fernthedev.fernapi.universal.data.database;
 
 import com.github.fernthedev.fernapi.universal.mysql.AbstractSQLDriver;
-import com.github.fernthedev.fernapi.universal.mysql.HikariDatabaseHandler;
 import com.github.fernthedev.fernapi.universal.mysql.HikariSQLDriver;
 import lombok.*;
 
@@ -55,24 +54,6 @@ public class DatabaseAuthInfo {
     }
 
     private DatabaseAuthInfo() {}
-
-
-    public String getUrlToDB() {
-        AbstractSQLDriver sqlDriver = HikariDatabaseHandler.getSqlDriver(mysqlDriver);
-        if (sqlDriver == null) throw new IllegalStateException("Sql Driver " + mysqlDriver + " could not be found");
-
-        String jdbcUrl = sqlDriver.getJdbcUrl();
-
-        if (jdbcUrl == null) throw new IllegalStateException("JDBC Url for " + sqlDriver.getSqlIdentifierName() + " cannot be found");
-
-//        Universal.debug("This DB:" + toString());
-
-        return jdbcUrl
-                .replace("%host%", urlHost)
-                .replace("%port%", port)
-                .replace("%database%", database)
-                .replace("%sql%", sqlDriver.getSqlName());
-    }
 
 
 
