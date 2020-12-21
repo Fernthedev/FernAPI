@@ -25,18 +25,6 @@ public class DatabaseAuthInfo {
     @NonNull
     protected String database;
 
-    @Setter
-    protected boolean cachePrepStmts = true;
-
-    @Setter
-    protected int prepStmtCacheSize = 250;
-
-    @Setter
-    protected int prepStmtCacheSqlLimit = 2048;
-
-    @Setter
-    protected boolean useServerPrepStmts = true;
-
     /**
      * Set if necessary
      */

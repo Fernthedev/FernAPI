@@ -2,6 +2,7 @@ package com.github.fernthedev.fernapi.universal.mysql;
 
 import co.aikar.idb.*;
 import com.github.fernthedev.fernapi.universal.Universal;
+import com.github.fernthedev.fernapi.universal.data.database.DatabaseAuthInfo;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -22,11 +23,13 @@ public class AikarFernDatabase {
                 .logger(Logger.getLogger(Universal.getLogger().getName()))
                 .mysql(user, pass, db, hostAndPort)
                 .build();
-        PooledDatabaseOptions poolOptions = PooledDatabaseOptions
+        return PooledDatabaseOptions
                 .builder()
                 .options(options)
                 .build();
-        return poolOptions;
+    }
+    public static Database createHikariDatabase(FernAPIPlugin plugin, DatabaseAuthInfo databaseAuthInfo) {
+        return createHikariDatabase(getRecommendedOptions(plugin, databaseAuthInfo.getUsername(), databaseAuthInfo.getPassword(), databaseAuthInfo.getDatabase(), databaseAuthInfo.getUrlHost() + ":" + databaseAuthInfo.getPort()));
     }
 
     public static Database createHikariDatabase(FernAPIPlugin plugin, @NonNull String user, @NonNull String pass, @NonNull String db, @NonNull String hostAndPort) {
