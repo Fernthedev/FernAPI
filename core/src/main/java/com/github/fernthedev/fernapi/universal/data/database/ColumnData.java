@@ -68,14 +68,10 @@ public class ColumnData implements Serializable {
 
         // Code snatched from Petr Panteleyev's MySQL annotation API
         switch (typeName) {
+
+
             case TYPE_STRING:
-                if (column.isJson()) {
-                    mySQLType = "JSON";
-                } else {
-                    mySQLType = "VARCHAR("
-                            + column.length()
-                            + ")";
-                }
+                mySQLType = stringSQL(column);
                 break;
             case TYPE_ENUM:
                 mySQLType = "VARCHAR("
@@ -116,14 +112,24 @@ public class ColumnData implements Serializable {
                 }
                 break;
             default:
-                throw new IllegalStateException(BAD_FIELD_TYPE + typeName);
+                if (!MySQLData.hasEncoder(type))
+                    throw new IllegalStateException(BAD_FIELD_TYPE + typeName + "Register to " + MySQLData.class.getName() + ".registerEncoder()");
+                else
+                    mySQLType = stringSQL(column);
         }
-
-
 
 
         return new ColumnData(columnName, value, mySQLType, length, nullable, autoIncrement, primaryKey);
     }
 
+    private static String stringSQL(Column column) {
+        if (column.isJson()) {
+            return "JSON";
+        } else {
+            return "VARCHAR("
+                    + column.length()
+                    + ")";
+        }
+    }
 
 }

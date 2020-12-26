@@ -60,7 +60,8 @@ public abstract class RowData {
                 ColumnData columnData;
                 try {
                     Column column = field.getAnnotation(Column.class);
-                    columnData = ColumnData.fromField(field, rowData.get(column.value()).toString());
+
+                    columnData = ColumnData.fromField(field, getValue(rowData.get(column.value())));
                     addField(field, columnData, rowData.get(columnData.getColumnName()));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
@@ -85,13 +86,24 @@ public abstract class RowData {
                 ColumnData columnData;
                 try {
                     field.setAccessible(true);
-                    columnData = ColumnData.fromField(field, field.get(instance).toString());
+                    columnData = ColumnData.fromField(field, getValue(field.get(instance)));
                     addField(field, columnData);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
             }
         }
+    }
+
+    protected String getValue(Object object) {
+        if (mySqlProxy.getReaderMap().containsKey(object.getClass().toString()))
+            return object.getClass().toString();
+
+        if (MySQLData.hasEncoder(object.getClass()))
+            return MySQLData.encode(object.getClass(), object);
+
+
+        return String.valueOf(object);
     }
 
     /**
@@ -129,9 +141,25 @@ public abstract class RowData {
         cachedDataStr.put(field.getAnnotation(Column.class).value(), columnData);
 
         try {
-            Object val = mySqlProxy.getFieldValue(field.getType(), value);
+            Object val;
+
+            if (
+                    value instanceof String &&
+                    !String.class.isAssignableFrom(field.getType()) &&
+                    !mySqlProxy.getReaderMap().containsKey(field.getType().getName())
+            ) {
+                if (!MySQLData.hasDecoder(field.getType()))
+                    throw new IllegalStateException(
+                            "Field could not be parsed: " + field.getType().getName() + ". " +
+                            "Register to " + MySQLData.class.getName() + ".registerDecoder()");
+
+                val = MySQLData.decode(field.getType(), (String) value);
+            } else {
+                val = mySqlProxy.getFieldValue(field.getType(), value);
+            }
 
             field.setAccessible(true);
+
 
             field.set(this, val);
         } catch (IllegalAccessException e) {

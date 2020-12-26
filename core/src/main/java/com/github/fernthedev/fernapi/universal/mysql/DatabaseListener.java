@@ -9,6 +9,7 @@ import com.github.fernthedev.fernapi.universal.data.database.*;
 import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseException;
 import lombok.*;
 import org.intellij.lang.annotations.Language;
+import org.panteleyev.mysqlapi.DataTypes;
 import org.panteleyev.mysqlapi.MySqlProxy;
 import org.panteleyev.mysqlapi.annotations.Column;
 import org.panteleyev.mysqlapi.annotations.ForeignKey;
@@ -152,14 +153,14 @@ public abstract class DatabaseListener {
      * @return
      */
     public <T extends RowData> CompletableFuture<Void> removeRowIfColumnContainsValue(TableInfo<T> tableInfo, String columnName, String value) {
-        @Language("SQL") String sql = "DELETE FROM " + tableInfo.getTableName() + " WHERE ? = ?;";
+        @Language("SQL") String sql = "DELETE FROM " + tableInfo.getTableName() + " WHERE " + columnName + " = ?;";
 
 
 
         return database.queryAsync(sql).thenAccept(dbStatement -> {
             try (DbStatement statement = dbStatement) {
-                statement.execute(columnName, value);
-                Universal.debug("Executing {} {} {} {}",sql, tableInfo.getTableName(), columnName, value);
+                statement.execute(value);
+                Universal.debug("Executing {} {}  ",sql, value);
                 tableInfo.loadFromDB(this);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -332,7 +333,7 @@ public abstract class DatabaseListener {
      * @return
      */
     public <T extends RowData> CompletableFuture<Void> createTable(@NonNull TableInfo<T> tableDataInfo) {
-        @Language("SQL") String q = "CREATE TABLE IF NOT EXISTS " + tableDataInfo .getTableName() + " (";
+        @Language("SQL") String q = "CREATE TABLE IF NOT EXISTS " + tableDataInfo.getTableName() + " (";
 
         StringBuilder sql = new StringBuilder(q);
 
@@ -360,6 +361,10 @@ public abstract class DatabaseListener {
                 sql.append(",");
             }
             first = false;
+
+
+            if (MySQLData.hasEncoder(getterType) && !mysqlProxy.getReaderMap().containsKey(typeName))
+                typeName = DataTypes.TYPE_STRING;
 
             sql.append(fName).append(" ")
                     .append(mysqlProxy.getColumnString(column, field.getAnnotation(PrimaryKey.class),
