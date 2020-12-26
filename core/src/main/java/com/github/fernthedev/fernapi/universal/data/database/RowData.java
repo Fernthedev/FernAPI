@@ -30,13 +30,21 @@ public abstract class RowData {
     private final Map<Field, ColumnData> cachedData = new LinkedHashMap<>();
     private final Map<String, ColumnData> cachedDataStr = new LinkedHashMap<>();
 
+    /**
+     * Use to instantiate Row Data with empty data.
+     *
+     * It is recommended to call {@link #initiateRowData()} after your values are instantiated.
+     */
     public RowData() {
         validateKeys(getClass());
         instance = this;
     }
 
     /**
-     * Must set initiated to true to avoid problems when overriden.
+     * Must set initiated to true to avoid problems when overridden.
+     *
+     * Called when retrieving the data from the SQL table.
+     *
      * @param rowData
      */
     @OverridingMethodsMustInvokeSuper
@@ -61,6 +69,12 @@ public abstract class RowData {
         }
     }
 
+    /**
+     * Must set initiated to true to avoid problems when overridden.
+     *
+     * Called when setting the data of the class manually.
+     *
+     */
     protected void initiateRowData() {
         if (initiated)
             throw new IllegalStateException("Already initiated row data and is immutable.");
@@ -80,6 +94,11 @@ public abstract class RowData {
         }
     }
 
+    /**
+     * Validates that the row data fields are properly configured.
+     * @param rowData
+     * @param <T>
+     */
     public static <T> void validateKeys(Class<T> rowData) {
 
         boolean anyColumns = Arrays.stream(rowData.getDeclaredFields()).anyMatch(field -> field.isAnnotationPresent(Column.class));
@@ -121,6 +140,12 @@ public abstract class RowData {
     }
 
 
+    /**
+     * Retrieves the column data
+     *
+     * @param sqlName The name of the column in the SQL table
+     * @return The column data
+     */
     public ColumnData getColumn(String sqlName) {
         if (!initiated)
             initiateRowData();
@@ -128,6 +153,12 @@ public abstract class RowData {
         return cachedDataStr.get(sqlName);
     }
 
+    /**
+     * Retrieves the column data
+     *
+     * @param field The field referencing the SQL data.
+     * @return The column data
+     */
     public ColumnData getColumn(Field field) {
         if (!initiated)
             initiateRowData();

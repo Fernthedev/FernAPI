@@ -28,6 +28,15 @@ public class TableInfo<T extends RowData> {
     @Getter
     private final RowDataTemplate<T> rowDataTemplate;
 
+    /**
+     *
+     * @param tableName The name of the table
+     * @param rowClass The class of the Row Data
+     * @param rowSupplier The supplier should return a new and empty instance of the Row Class.
+     *                    This instance should not call {@link RowData#initiateRowData()}
+     *                    when constructed. Reflection will be used to
+     *                    set the field values accordingly.
+     */
     public TableInfo(String tableName, @NonNull Class<T> rowClass, Supplier<@NonNull T> rowSupplier) {
         this.tableName = tableName;
         this.rowClass = rowClass;
@@ -51,6 +60,12 @@ public class TableInfo<T extends RowData> {
         });
     }
 
+    /**
+     * Internal usage. Sets the rows
+     *
+     * @param dbRowList
+     */
+    @Deprecated
     public void setRows(List<DbRow> dbRowList) {
         rowDataList.clear();
         dbRowList.forEach(this::addRow);
@@ -69,7 +84,12 @@ public class TableInfo<T extends RowData> {
     }
 
 
-
+    /**
+     * Retrieves the row based on the primary key.
+     *
+     * @param key The value of the key
+     * @return The row
+     */
     public T getRow(String key) {
         return rowDataList.get(key);
     }

@@ -9,6 +9,13 @@ import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Creates a basic and empty version of the
+ * RowData class to reference when creating
+ * or parsing a row from a table.
+ *
+ * @param <T>
+ */
 public class RowDataTemplate<T extends RowData> {
 
     private final Map<Field, ColumnData> cachedData = new LinkedHashMap<>();
@@ -49,6 +56,11 @@ public class RowDataTemplate<T extends RowData> {
         cachedDataStr.put(field.getAnnotation(Column.class).value(), columnData);
     }
 
+    /**
+     * The SQL column name of the primary key
+     *
+     * @return
+     */
     public String getPrimaryKeySQL() {
         return primaryKeyField.getAnnotation(Column.class).value();
     }
