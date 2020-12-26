@@ -1,20 +1,21 @@
 package com.github.fernthedev.fernapi.universal.examples.mysql;
 
-import co.aikar.idb.DbRow;
 import com.github.fernthedev.fernapi.universal.data.database.RowData;
+import lombok.ToString;
 import org.panteleyev.mysqlapi.annotations.Column;
 import org.panteleyev.mysqlapi.annotations.PrimaryKey;
 
+@ToString(callSuper = true)
 public class RowDataTest extends RowData {
-    public RowDataTest(DbRow rowData) {
-        super(rowData);
-    }
 
     public RowDataTest(String s, String val) {
-        super(new DbRow());
+        super();
         thing = s;
         thing2 = val;
+        initiateRowData();
     }
+
+    public RowDataTest() {}
 
     @PrimaryKey
     @Column("thing")
@@ -22,4 +23,6 @@ public class RowDataTest extends RowData {
 
     @Column("thing2")
     private String thing2 = "test2";
+
+
 }

@@ -128,9 +128,9 @@ public class Universal {
 
 
 
-    public static void debug(String message) {
+    public static void debug(String message, Object... params) {
         if(debug) {
-            getMethods().getAbstractLogger().info("[DEBUG] " + message);
+            getMethods().getAbstractLogger().info("[DEBUG] " + message, params);
         }
     }
 

@@ -10,18 +10,28 @@ import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AikarFernDatabase {
     private static final List<Database> databases = new ArrayList<>();
 
     public static PooledDatabaseOptions getRecommendedOptions(FernAPIPlugin plugin, @NonNull String user, @NonNull String pass, @NonNull String db, @NonNull String hostAndPort) {
+        boolean optimizations = true;
+
+        try {
+            Class.forName("org.mariadb.jdbc.MariaDbDataSource");
+            optimizations = false;
+            Universal.debug("Disabling optimizations since MariaDB is used. Should this be done?");
+        } catch (ClassNotFoundException e) {
+            Universal.debug("Enabling optimizations");
+        }
+
         DatabaseOptions options = DatabaseOptions
                 .builder()
                 .poolName(plugin.getPluginData().getName() + " DB")
-                .logger(Logger.getLogger(Universal.getLogger().getName()))
+                .logger(Universal.getLogger())
                 .mysql(user, pass, db, hostAndPort)
+                .useOptimizations(optimizations)
                 .build();
         return PooledDatabaseOptions
                 .builder()
@@ -52,7 +62,7 @@ public class AikarFernDatabase {
     
     public static void shutdownDatabases() {
         for (Database database : databases) {
-            Universal.getScheduler().runAsync(database::close);
+            new Thread(database::close).start();
         }
     }
 }

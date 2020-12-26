@@ -1,22 +1,21 @@
 package com.github.fernthedev.fernapi.universal.examples.mysql;
 
 import com.github.fernthedev.fernapi.universal.Universal;
-import com.github.fernthedev.fernapi.universal.data.database.*;
+import com.github.fernthedev.fernapi.universal.data.database.DatabaseAuthInfo;
+import com.github.fernthedev.fernapi.universal.data.database.TableInfo;
+import com.github.fernthedev.fernapi.universal.mysql.AikarFernDatabase;
 import com.github.fernthedev.fernapi.universal.mysql.DatabaseListener;
 import lombok.SneakyThrows;
 
 public class DatabaseTest extends DatabaseListener {
-    private TableInfo<RowDataTest> tableInfo;
+    private final TableInfo<RowDataTest> tableInfo = new TableInfo<>("test_no", RowDataTest.class, RowDataTest::new);
 
-    public DatabaseTest(String username,String password,String port,String URLHost,String database) {
-        connect(new DatabaseAuthInfo(username,password,port,URLHost,database));
+    public DatabaseTest() {
+        super(AikarFernDatabase.createHikariDatabase(Universal.getPlugin(), new DatabaseAuthInfo("root","admin","3306","127.0.0.1","minecraft")));
+        connect();
     }
 
     public TableInfo<RowDataTest> getTableInfo() {
-        if(tableInfo == null) {
-            tableInfo = new TableInfo<>("test_no", RowDataTest.class);
-        }
-
         return tableInfo;
     }
 
@@ -25,7 +24,7 @@ public class DatabaseTest extends DatabaseListener {
      * This is called after you attempt a connection
      *
      * @param connected Returns true if successful
-     * @see DatabaseListener#connect(DatabaseAuthInfo)
+     * @see #connect()
      */
     @Override
     public void onConnectAttempt(boolean connected) {
@@ -38,8 +37,7 @@ public class DatabaseTest extends DatabaseListener {
 
     @SneakyThrows
     public void test() {
-
-        tableInfo = new TableInfo<>("test_no", RowDataTest.class);
+        createTable(tableInfo).get();
 
         RowDataTest rowData = new RowDataTest("row1","value1");
 
@@ -50,6 +48,6 @@ public class DatabaseTest extends DatabaseListener {
         insertIntoTable(tableInfo, rowData);
 
 
-        createTable(tableInfo);
+
     }
 }

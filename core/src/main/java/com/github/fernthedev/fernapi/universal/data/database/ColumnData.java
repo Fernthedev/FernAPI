@@ -5,6 +5,7 @@ import lombok.*;
 import org.panteleyev.mysqlapi.annotations.Column;
 import org.panteleyev.mysqlapi.annotations.PrimaryKey;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 
@@ -27,6 +28,7 @@ public class ColumnData implements Serializable {
      * Will return null if it is SQL NULL
      */
     @Getter
+    @Nullable
     private final String value;
 
     @Getter
