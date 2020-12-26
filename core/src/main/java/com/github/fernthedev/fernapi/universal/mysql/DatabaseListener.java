@@ -7,10 +7,7 @@ import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
 import com.github.fernthedev.fernapi.universal.data.database.*;
 import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseException;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 import org.intellij.lang.annotations.Language;
 import org.panteleyev.mysqlapi.MySqlProxy;
 import org.panteleyev.mysqlapi.annotations.Column;
@@ -144,7 +141,7 @@ public abstract class DatabaseListener {
         @Language("SQL") String sql = "SELECT * FROM " + name + ";";
         Universal.debug(ChatColor.GREEN + "Executing {}", sql);
 
-        return database.getResultsAsync(sql);
+        return database.getResultsAsync(sql).handle(this::handleException);
     }
 
     /**
@@ -167,7 +164,7 @@ public abstract class DatabaseListener {
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
-        });
+        }).handle(this::handleException);
 
     }
 
@@ -200,7 +197,7 @@ public abstract class DatabaseListener {
                     }
 
                     return dbStatement;
-                });
+                }).handle(this::handleException);
 
     }
 
@@ -224,7 +221,7 @@ public abstract class DatabaseListener {
                     Universal.debug(ChatColor.GREEN + "Fully Executed {} {} ({}) {} {}", sql, tableInfo.getTableName(), columnValues, conditionKey, conditionValue);
                     tableInfo.loadFromDB(DatabaseListener.this);
                     return integer;
-                });
+                }).handle(this::handleException);
 
 
     }
@@ -239,7 +236,7 @@ public abstract class DatabaseListener {
 
         Universal.debug("Executing {}", sql);
 
-        return database.executeUpdateAsync(sql);
+        return database.executeUpdateAsync(sql).handle(this::handleException);
     }
 
     /**
@@ -398,13 +395,23 @@ public abstract class DatabaseListener {
             }
 
             tableDataInfo.loadFromDB(DatabaseListener.this);
-        });
+        }).handle(this::handleException);
 
 
     }
 
     protected Logger getLogger() {
         return Universal.getMethods().getAbstractLogger();
+    }
+
+    @SneakyThrows
+    protected <T> T handleException(T t, Throwable throwable) {
+        if (throwable != null) {
+            Universal.getLogger().error(throwable.getMessage(), t);
+            throw throwable;
+        }
+
+        return t;
     }
 
 }
