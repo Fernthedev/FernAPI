@@ -5,7 +5,6 @@ import co.aikar.idb.DB;
 import com.github.fernthedev.fernapi.universal.api.*;
 import com.github.fernthedev.fernapi.universal.data.network.IPMessageHandler;
 import com.github.fernthedev.fernapi.universal.data.network.PluginMessageData;
-import com.github.fernthedev.fernapi.universal.examples.mysql.DBCommand;
 import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
 import com.github.fernthedev.fernapi.universal.exceptions.setup.IncorrectSetupException;
 import com.github.fernthedev.fernapi.universal.handlers.*;
@@ -101,9 +100,6 @@ public class Universal {
 //                                        player)
 //                        ).map(IFPlayer::getName)
 //                        .collect(Collectors.toList()));
-
-        // TODO: Remove!
-        comhand.registerCommand(new DBCommand());
 
         comhand.getCommandCompletions().setDefaultCompletion("players", IFPlayer.class, IFPlayer[].class, OfflineFPlayer.class, FernCommandIssuer.class);
 
