@@ -12,22 +12,23 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class ProxyAskPlaceHolder extends PluginMessageHandler {
 
     private final ProxyPlaceholderRunnable proxyPlaceholderRunnable;
+    private final CompletableFuture<PlaceHolderResponse> completableFuture;
     private IFPlayer<?> player;
     private String placeHolderValue;
 
     public static final String PLACEHOLDER_NOT_FOUND = "NoPlaceHolderFound";
     public static final String PLACEHOLDER_API_NOT_ENABLE = "PlaceHolderDisabled";
 
-    boolean checked;
-    boolean placeHolderReplaced;
+    private boolean responseReceived;
+    private boolean placeHolderReplaced;
     private String oldPlaceValue;
 
     private static final Map<UUID, ProxyAskPlaceHolder> instances = new HashMap<>();
-    private UUID uuid;
 
     /**
      * Internal use
@@ -42,6 +43,7 @@ public class ProxyAskPlaceHolder extends PluginMessageHandler {
     private ProxyAskPlaceHolder() {
         Universal.getMethods().getAbstractLogger().info("Registered PlaceHolderAPI Listener");
         proxyPlaceholderRunnable = (player, placeHolder, isReplaced) -> {};
+        completableFuture = null;
     }
 
     public String getPlaceHolderResult() {
@@ -52,13 +54,14 @@ public class ProxyAskPlaceHolder extends PluginMessageHandler {
     public ProxyAskPlaceHolder(IFPlayer<?> player, String placeHolderValue, ProxyPlaceholderRunnable proxyPlaceholderRunnable) {
         this.player = player;
         this.proxyPlaceholderRunnable = proxyPlaceholderRunnable;
+        completableFuture = new CompletableFuture<>();
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(stream);
 
         PluginMessageData data = new PluginMessageData(stream, player.getCurrentServerName(), FernAPIChannels.getPlaceHolderResult, FernAPIChannels.PlaceHolderBungeeChannel);
 
-        uuid = UUID.randomUUID();
+        UUID uuid = UUID.randomUUID();
         if (!instances.isEmpty()) {
             while (instances.containsKey(uuid)) {
                 uuid = UUID.randomUUID();
@@ -72,7 +75,7 @@ public class ProxyAskPlaceHolder extends PluginMessageHandler {
         oldPlaceValue = placeHolderValue;
         data.addData(uuid.toString()); //MESSAGE 2 (UUID)
 
-        checked = false;
+        responseReceived = false;
         Universal.getMessageHandler().sendPluginData(player, data);
         instances.put(uuid, this);
     }
@@ -81,7 +84,9 @@ public class ProxyAskPlaceHolder extends PluginMessageHandler {
         return placeHolderReplaced;
     }
 
-
+    public boolean isResponseReceived() {
+        return responseReceived;
+    }
 
     /**
      * This is the channel name that will be registered incoming and outgoing
@@ -131,7 +136,11 @@ public class ProxyAskPlaceHolder extends PluginMessageHandler {
                         instance.placeHolderReplaced = !instance.placeHolderValue.equals(instance.oldPlaceValue);
                     }
 
-                    instance.checked = true;
+                    instance.responseReceived = true;
+
+                    // Fire completable future complete.
+                    completableFuture.complete(new PlaceHolderResponse(instance.player, instance.placeHolderValue, instance.isPlaceHolderReplaced()));
+
                     instance.proxyPlaceholderRunnable.onFinish(instance.player, instance.placeHolderValue, instance.isPlaceHolderReplaced());
                     instances.remove(uuide);
 
@@ -162,5 +171,33 @@ public class ProxyAskPlaceHolder extends PluginMessageHandler {
 
         void onFinish(IFPlayer<?> player, String placeHolder, boolean isReplaced);
 
+    }
+
+    public CompletableFuture<PlaceHolderResponse> getCompletableFuture() {
+        return completableFuture;
+    }
+
+    public class PlaceHolderResponse {
+        private final IFPlayer<?> player;
+        private final String placeholder;
+        private final boolean isReplaced;
+
+        public PlaceHolderResponse(IFPlayer<?> player, String placeholder, boolean isReplaced) {
+            this.player = player;
+            this.placeholder = placeholder;
+            this.isReplaced = isReplaced;
+        }
+
+        public IFPlayer<?> getPlayer() {
+            return player;
+        }
+
+        public String getPlaceholder() {
+            return placeholder;
+        }
+
+        public boolean isReplaced() {
+            return isReplaced;
+        }
     }
 }

@@ -13,7 +13,7 @@ public class FernAPIChannels {
 
     public static final String PlaceHolderValue = "PlaceHolderValue";
 
-    public static final Channel PlaceHolderBungeeChannel = new Channel("ferncommands", "ph", Channel.ChannelAction.BOTH);
+    public static final Channel PlaceHolderBungeeChannel = new Channel("fernapi", "ph", Channel.ChannelAction.BOTH);
 
     public static final Channel VANISH_CHANNEL = new Channel("fernapi", "vanish", Channel.ChannelAction.BOTH);
 
