@@ -15,7 +15,7 @@ public class FernAPIChannels {
 
     public static final Channel PlaceHolderBungeeChannel = new Channel("fernapi", "ph", Channel.ChannelAction.BOTH);
 
-    public static final Channel VANISH_CHANNEL = new Channel("fernapi", "vanish", Channel.ChannelAction.BOTH);
+    public static final Channel VANISH_CHANNEL = new Channel("fernapi", "vanishv2", Channel.ChannelAction.BOTH);
 
     public static final String VANISH_SUBCHANNEL = "vanish";
 

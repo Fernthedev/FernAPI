@@ -120,9 +120,9 @@ public abstract class IFPlayer<T> implements FernCommandIssuer {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
 
         new VanishProxyCheck(this, (player, isVanished, timedOut) -> {
-            if (timedOut) throw new PluginTimeoutException("The vanish check timed out. The server must have FernAPI enabled and registered");
-
             completableFuture.complete(isVanished);
+
+            if (timedOut) throw new PluginTimeoutException("The vanish check timed out. The server must have AskPlaceHolderSpigot plugin enabled and registered");
         }).setTimeout(amount, timeUnit);
 
         return completableFuture;
