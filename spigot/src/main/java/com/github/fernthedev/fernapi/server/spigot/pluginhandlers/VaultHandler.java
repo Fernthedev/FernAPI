@@ -22,10 +22,12 @@ public class VaultHandler {
      * No need to manually call it.
      */
     public void hook() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return;
+        }
+
         if (!hooked) {
-            if (!setupEconomy()) {
-                return;
-            }
+            setupEconomy();
             setupPermissions();
             setupChat();
             hooked = true;
@@ -42,9 +44,6 @@ public class VaultHandler {
     private static Chat chat = null;
 
     private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
-        }
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             return false;
