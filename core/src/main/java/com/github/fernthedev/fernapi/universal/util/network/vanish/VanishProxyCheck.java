@@ -13,18 +13,20 @@ import lombok.NonNull;
 
 import java.io.ByteArrayOutputStream;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class VanishProxyCheck extends PluginMessageHandler {
 
     private static Object o;
 
-    private VanishFunction vanishFunction;
-    private IFPlayer<?> player;
+    private final CompletableFuture<VanishProxyResponse> completableFuture;
+    private final VanishFunction vanishFunction;
+    private final IFPlayer<?> player;
 
-    private static Map<UUID, VanishProxyCheck> instances = new HashMap<>();
+    private static final Map<UUID, VanishProxyCheck> instances = new HashMap<>();
 
-    private UUID uuid;
+    private final UUID uuid;
 
     /**
      * Internal use
@@ -38,16 +40,19 @@ public class VanishProxyCheck extends PluginMessageHandler {
      * @param timeout  The amount of time to wait
      * @param timeUnit The unit of time
      */
-    public void setTimeout(long timeout, TimeUnit timeUnit) {
+    public VanishProxyCheck setTimeout(long timeout, TimeUnit timeUnit) {
         VanishProxyCheck vanishProxyCheck = this;
 
         Universal.getScheduler().runSchedule(() -> {
             if (instances.containsKey(vanishProxyCheck.uuid)) {
+                completableFuture.complete(new VanishProxyResponse(player, false, true));
                 vanishFunction.run(player, false, true);
                 instances.remove(vanishProxyCheck.uuid);
 
             }
         }, timeout, timeUnit);
+
+        return this;
     }
 
 
@@ -60,6 +65,10 @@ public class VanishProxyCheck extends PluginMessageHandler {
 
         o = new Object();
         Universal.getMethods().getAbstractLogger().info("Registered VanishProxyCheck Listener");
+        completableFuture = null;
+        player = null;
+        vanishFunction = null;
+        uuid = null;
     }
 
     /**
@@ -72,6 +81,7 @@ public class VanishProxyCheck extends PluginMessageHandler {
         this.vanishFunction = vanishFunction;
         this.player = player;
         uuid = UUID.randomUUID();
+        completableFuture = new CompletableFuture<>();
 
         instances.put(uuid, this);
 
@@ -118,11 +128,12 @@ public class VanishProxyCheck extends PluginMessageHandler {
         if (Universal.getMethods().getServerType().isProxy()) {
             boolean vanished = Boolean.parseBoolean(dataQueue.remove());
 
-            System.out.println(vanished + " vanished");
+            Universal.debug(vanished + " vanished");
 
 
             VanishProxyCheck vanishProxyCheck = instances.get(uuidCheck);
             if (vanishProxyCheck != null) {
+                completableFuture.complete(new VanishProxyResponse(vanishProxyCheck.player, vanished, false));
                 Universal.getScheduler().runAsync(() -> vanishFunction.run(vanishProxyCheck.player, vanished, false));
 
                 instances.remove(vanishProxyCheck.uuid);
@@ -134,6 +145,9 @@ public class VanishProxyCheck extends PluginMessageHandler {
      * Synchronise to await message response
      *
      * @param millis The amount of time to wait
+     *               
+     * @deprecated Use {@link CompletableFuture#join()} with {@link #completableFuture}
+     *               
      * @throws InterruptedException
      */
     public void awaitVanishResponse(int millis) throws InterruptedException {
@@ -142,5 +156,7 @@ public class VanishProxyCheck extends PluginMessageHandler {
         }
     }
 
-
+    public CompletableFuture<VanishProxyResponse> getCompletableFuture() {
+        return completableFuture;
+    }
 }

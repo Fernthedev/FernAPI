@@ -9,6 +9,7 @@ import com.github.fernthedev.fernapi.universal.api.FernCommandIssuer;
 import com.github.fernthedev.fernapi.universal.api.IFConsole;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.api.OfflineFPlayer;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -292,13 +293,14 @@ public class UniversalContextResolvers {
         return Universal.getMethods().getPlayerFromName(name);
     }
 
+    @SneakyThrows
     private static void findMatches(String search, CommandIssuer requester, List<? extends IFPlayer<?>> matches, List<IFPlayer<?>> confirmList) {
         // Remove vanished players from smart matching.
         Iterator<? extends IFPlayer<?>> iter = matches.iterator();
         //noinspection Duplicates
         while (iter.hasNext()) {
             IFPlayer<?> player = iter.next();
-            if (requester instanceof IFPlayer<?> && !((IFPlayer<?>) requester).canSee(player)) {
+            if (requester instanceof IFPlayer<?> && !((IFPlayer<?>) requester).canSee(player).get()) {
                 if (requester.hasPermission("acf.seevanish")) {
                     if (!search.endsWith(":confirm")) {
                         confirmList.add(player);

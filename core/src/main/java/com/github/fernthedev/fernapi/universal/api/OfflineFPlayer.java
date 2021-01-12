@@ -9,6 +9,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.net.InetSocketAddress;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class OfflineFPlayer<P> extends IFPlayer<IFPlayer<P>> {
 
@@ -104,12 +105,12 @@ public class OfflineFPlayer<P> extends IFPlayer<IFPlayer<P>> {
     }
 
     @Override
-    public boolean isVanished() {
+    public CompletableFuture<Boolean> isVanished() {
         return player.isVanished();
     }
 
     @Override
-    public boolean canSee(IFPlayer<?> player) {
+    public CompletableFuture<Boolean> canSee(IFPlayer<?> player) {
         return player.canSee(player);
     }
 

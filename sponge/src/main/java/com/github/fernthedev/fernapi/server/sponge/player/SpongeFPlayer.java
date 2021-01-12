@@ -13,6 +13,7 @@ import org.spongepowered.api.text.Text;
 
 import java.net.InetSocketAddress;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class SpongeFPlayer extends IFPlayer<Player> {
 
@@ -88,7 +89,7 @@ public class SpongeFPlayer extends IFPlayer<Player> {
     }
 
     @Override
-    public boolean isVanished() {
+    public CompletableFuture<Boolean> isVanished() {
         throw new FernRuntimeException("This method does not work on Sponge yet. Use Universal.getMethods().getServerType() to check for Sponge");
     }
 

@@ -4,12 +4,10 @@ import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFPlayer;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
-import com.github.fernthedev.fernapi.universal.handlers.NetworkHandler;
 import net.kyori.adventure.audience.Audience;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.ChatColor;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.Nullable;
@@ -17,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class SpigotFPlayer extends IFPlayer<Player> {
 
@@ -66,7 +65,7 @@ public class SpigotFPlayer extends IFPlayer<Player> {
     public IServerInfo getServerInfo() {
         if (player == null) return null;
 
-        return ((NetworkHandler<Server>) Universal.getNetworkHandler()).toServer(player.getServer());
+        return Universal.getNetworkHandler().toServer(player.getServer());
     }
 
     private BaseComponent[] message(String text) {
@@ -74,16 +73,16 @@ public class SpigotFPlayer extends IFPlayer<Player> {
     }
 
     @Override
-    public boolean isVanished() {
+    public CompletableFuture<Boolean> isVanished() {
         for (MetadataValue meta : player.getMetadata("vanished")) {
-            if (meta.asBoolean()) return true;
+            if (meta.asBoolean()) return CompletableFuture.completedFuture(true);
         }
-        return false;
+        return CompletableFuture.completedFuture(false);
     }
 
 
     @Override
-    public boolean canSee(IFPlayer<?> player) {
-        return this.player.canSee((Player) player.getPlayer());
+    public CompletableFuture<Boolean> canSee(IFPlayer<?> player) {
+        return CompletableFuture.completedFuture(this.player.canSee((Player) player.getPlayer()));
     }
 }

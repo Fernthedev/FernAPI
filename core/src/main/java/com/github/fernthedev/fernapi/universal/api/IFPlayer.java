@@ -1,7 +1,6 @@
 package com.github.fernthedev.fernapi.universal.api;
 
 import com.github.fernthedev.fernapi.universal.data.network.IServerInfo;
-import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
 import com.github.fernthedev.fernapi.universal.exceptions.network.PluginTimeoutException;
 import com.github.fernthedev.fernapi.universal.util.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.util.network.vanish.VanishProxyCheck;
@@ -15,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @Getter
 public abstract class IFPlayer<T> implements FernCommandIssuer {
@@ -111,33 +112,40 @@ public abstract class IFPlayer<T> implements FernCommandIssuer {
         return isPlayer || isDataNull;
     }
 
-    public boolean isVanished() {
-        final boolean[] vanished = new boolean[1];
-        try {
-            new VanishProxyCheck(this, (player, isVanished, timedOut) -> {
-                if (timedOut) throw new PluginTimeoutException("The vanish check timed out. The server must have FernAPI enabled and registered");
-
-                vanished[0] = isVanished;
-            }).awaitVanishResponse(20);
-        } catch (InterruptedException e) {
-            throw new FernRuntimeException("Interrupted", e);
-        }
-
-        return vanished[0];
+    public CompletableFuture<Boolean> isVanished() {
+        return isVanished(10, TimeUnit.SECONDS);
     }
 
-    public boolean canSee(IFPlayer<?> player) {
-        return player.isVanished() && hasVanishPermission("acf.seevanish");
+    public CompletableFuture<Boolean> isVanished(int amount, TimeUnit timeUnit) {
+        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
+
+        new VanishProxyCheck(this, (player, isVanished, timedOut) -> {
+            if (timedOut) throw new PluginTimeoutException("The vanish check timed out. The server must have FernAPI enabled and registered");
+
+            completableFuture.complete(isVanished);
+        }).setTimeout(amount, timeUnit);
+
+        return completableFuture;
+    }
+
+    public CompletableFuture<Boolean> canSee(IFPlayer<?> player) {
+        if (hasVanishPermission()) return CompletableFuture.completedFuture(true);
+
+        return player.isVanished().thenApply(aBoolean -> !aBoolean || hasVanishPermission());
     }
 
 
 
-    public static boolean canSee(FernCommandIssuer commandIssuer, IFPlayer<?> player) {
-        if (!commandIssuer.isPlayer()) return true;
+    public static CompletableFuture<Boolean> canSee(FernCommandIssuer commandIssuer, IFPlayer<?> player) {
+        if (!commandIssuer.isPlayer()) return CompletableFuture.completedFuture(true);
+        if (commandIssuer.hasVanishPermission("acf.seevanish")) return CompletableFuture.completedFuture(true);
 
-        boolean vanished = player.isVanished();
 
-        return !vanished || commandIssuer.hasVanishPermission();
+        CompletableFuture<Boolean> vanished = player.isVanished();
+
+
+       // Invert to see if it can be seen
+        return vanished.thenApply(v -> !v);
     }
 
     /**
