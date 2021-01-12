@@ -9,7 +9,6 @@ import com.github.fernthedev.fernapi.server.spigot.pluginhandlers.VaultHandler;
 import com.github.fernthedev.fernapi.server.spigot.scheduler.SpigotScheduler;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.handlers.FernAPIPlugin;
-import com.github.fernthedev.fernapi.universal.util.network.vanish.VanishProxyCheck;
 import fr.minuskube.inv.InventoryManager;
 import lombok.Getter;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -58,8 +57,6 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
 
         inventoryManager = new InventoryManager(this);
         inventoryManager.init();
-
-        Universal.getMessageHandler().registerMessageHandler(VanishProxyCheck.LISTENER_INSTANCE);
     }
 
     @OverridingMethodsMustInvokeSuper
