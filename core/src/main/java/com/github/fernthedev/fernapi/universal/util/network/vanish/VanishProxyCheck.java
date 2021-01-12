@@ -133,8 +133,8 @@ public class VanishProxyCheck extends PluginMessageHandler {
 
             VanishProxyCheck vanishProxyCheck = instances.get(uuidCheck);
             if (vanishProxyCheck != null) {
-                completableFuture.complete(new VanishProxyResponse(vanishProxyCheck.player, vanished, false));
-                Universal.getScheduler().runAsync(() -> vanishFunction.run(vanishProxyCheck.player, vanished, false));
+                vanishProxyCheck.completableFuture.complete(new VanishProxyResponse(vanishProxyCheck.player, vanished, false));
+                Universal.getScheduler().runAsync(() -> vanishProxyCheck.vanishFunction.run(vanishProxyCheck.player, vanished, false));
 
                 instances.remove(vanishProxyCheck.uuid);
             }
