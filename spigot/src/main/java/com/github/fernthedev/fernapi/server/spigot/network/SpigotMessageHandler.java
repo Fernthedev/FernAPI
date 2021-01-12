@@ -107,7 +107,7 @@ public class SpigotMessageHandler extends IPMessageHandler implements PluginMess
             e.printStackTrace();
         }
 
-        System.out.println(data.getMessageChannel().getFullChannelName() + " " + data);
+        Universal.debug(data.getMessageChannel().getFullChannelName() + " " + data);
 
         player.sendPluginMessage(spigot, data.getMessageChannel().getFullChannelName(), stream.toByteArray());
     }

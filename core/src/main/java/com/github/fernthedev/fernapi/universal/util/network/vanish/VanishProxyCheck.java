@@ -123,7 +123,7 @@ public class VanishProxyCheck extends PluginMessageHandler {
         Queue<String> dataQueue = data.getExtraDataQueue();
         UUID uuidCheck = UUID.fromString(dataQueue.remove());
 
-        System.out.println(Universal.getMethods().getServerType().isProxy() + " proxy " + Universal.getMethods().getServerType().equals(ServerType.BUKKIT) + " bukkit");
+        Universal.debug(Universal.getMethods().getServerType().isProxy() + " proxy " + Universal.getMethods().getServerType().equals(ServerType.BUKKIT) + " bukkit");
 
         if (Universal.getMethods().getServerType().isProxy()) {
             boolean vanished = Boolean.parseBoolean(dataQueue.remove());
