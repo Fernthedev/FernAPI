@@ -1,14 +1,14 @@
 package com.github.fernthedev.fernapi.universal;
 
 import co.aikar.commands.CommandManager;
+import co.aikar.idb.DB;
 import com.github.fernthedev.fernapi.universal.api.*;
 import com.github.fernthedev.fernapi.universal.data.network.IPMessageHandler;
 import com.github.fernthedev.fernapi.universal.data.network.PluginMessageData;
 import com.github.fernthedev.fernapi.universal.exceptions.FernRuntimeException;
 import com.github.fernthedev.fernapi.universal.exceptions.setup.IncorrectSetupException;
 import com.github.fernthedev.fernapi.universal.handlers.*;
-import com.github.fernthedev.fernapi.universal.mysql.HikariDatabaseHandler;
-import com.github.fernthedev.fernapi.universal.mysql.HikariSQLDriver;
+import com.github.fernthedev.fernapi.universal.mysql.AikarFernDatabase;
 import com.github.fernthedev.fernapi.universal.util.UUIDFetcher;
 import com.github.fernthedev.fernapi.universal.util.UniversalContextResolvers;
 import com.github.fernthedev.fernapi.universal.util.VersionUtil;
@@ -43,9 +43,6 @@ public class Universal {
     private static MethodInterface<?, ?> mi;
     private static IChatHandler<?> ch;
     private static IPMessageHandler mh;
-
-    @Setter
-    private static HikariDatabaseHandler databaseHandler = new HikariDatabaseHandler();
 
     private static CommandManager comhand;
     private static NetworkHandler<? extends Object> nh;
@@ -93,8 +90,7 @@ public class Universal {
         comhand.getCommandContexts().registerContext(OfflineFPlayer.class, new UniversalContextResolvers.SingularIFPlayerContextResolver());
         comhand.getCommandContexts().registerContext(IFPlayer[].class, new UniversalContextResolvers.OnlineIFPlayerArrayCommandResolver());
 
-        HikariDatabaseHandler.registerSQLDriver(HikariSQLDriver.MARIADB_DRIVER);
-        HikariDatabaseHandler.registerSQLDriver(HikariSQLDriver.MYSQL_DRIVER);
+
 //        comhand.getCommandCompletions().registerAsyncCompletion("fernPlayers", context ->
 //                mi.getPlayers().parallelStream()
 //                        .filter(player -> !context.getIssuer().isPlayer() ||
@@ -128,9 +124,9 @@ public class Universal {
 
 
 
-    public static void debug(String message) {
+    public static void debug(String message, Object... params) {
         if(debug) {
-            getMethods().getAbstractLogger().info("[DEBUG] " + message);
+            getMethods().getAbstractLogger().info("[DEBUG] " + message, params);
         }
     }
 
@@ -147,11 +143,6 @@ public class Universal {
     public static IPMessageHandler getMessageHandler() {
         checkNull();
         return mh;
-    }
-
-    public static HikariDatabaseHandler getDatabaseHandler() {
-        checkNull();
-        return databaseHandler;
     }
 
     public static NetworkHandler<? extends Object> getNetworkHandler() {
@@ -174,10 +165,9 @@ public class Universal {
         return plugin;
     }
 
+
     public void onDisable() {
-        new Thread(() -> {
-            getDatabaseHandler().stopSchedule();
-            getDatabaseHandler().closeConnection();
-        }).start();
+        new Thread(DB::close).start();
+        new Thread(AikarFernDatabase::shutdownDatabases).start();
     }
 }

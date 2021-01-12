@@ -1,27 +1,21 @@
 package com.github.fernthedev.fernapi.universal.examples.mysql;
 
 import com.github.fernthedev.fernapi.universal.Universal;
-import com.github.fernthedev.fernapi.universal.data.database.*;
+import com.github.fernthedev.fernapi.universal.data.database.DatabaseAuthInfo;
+import com.github.fernthedev.fernapi.universal.data.database.TableInfo;
+import com.github.fernthedev.fernapi.universal.mysql.AikarFernDatabase;
 import com.github.fernthedev.fernapi.universal.mysql.DatabaseListener;
 import lombok.SneakyThrows;
 
 public class DatabaseTest extends DatabaseListener {
-    private TableInfo tableInfo;
+    private final TableInfo<RowDataTest> tableInfo = new TableInfo<>("test_no", RowDataTest.class, RowDataTest::new);
 
-    private static RowDataTemplate rowDataTemplate = new RowDataTemplate(
-            new ColumnData("thing", "test"),
-            new ColumnData("thing2", "testthing")
-    );
-
-    public DatabaseTest(String username,String password,String port,String URLHost,String database) {
-        connect(new DatabaseAuthInfo(username,password,port,URLHost,database));
+    public DatabaseTest() {
+        super(AikarFernDatabase.createHikariDatabase(Universal.getPlugin(), new DatabaseAuthInfo("root","admin","3306","127.0.0.1","minecraft")));
+        connect();
     }
 
-    public TableInfo getTableInfo() {
-        if(tableInfo == null) {
-            tableInfo = new TableInfo("test_no", rowDataTemplate);
-        }
-
+    public TableInfo<RowDataTest> getTableInfo() {
         return tableInfo;
     }
 
@@ -30,7 +24,7 @@ public class DatabaseTest extends DatabaseListener {
      * This is called after you attempt a connection
      *
      * @param connected Returns true if successful
-     * @see DatabaseListener#connect(DatabaseAuthInfo)
+     * @see #connect()
      */
     @Override
     public void onConnectAttempt(boolean connected) {
@@ -43,18 +37,17 @@ public class DatabaseTest extends DatabaseListener {
 
     @SneakyThrows
     public void test() {
+        createTable(tableInfo).get();
 
-        tableInfo = new TableInfo("test_no", rowDataTemplate);
-
-        RowData rowData = new RowData(new ColumnData("row1","value1"), new ColumnData("row2", "value2"));
-
-        insertIntoTable(tableInfo, rowData);
-
-        rowData = new RowData(new ColumnData("row1","value1nou"), new ColumnData("row2","value2nou"));
+        RowDataTest rowData = new RowDataTest("row1","value1");
 
         insertIntoTable(tableInfo, rowData);
 
+        rowData = new RowDataTest("row1fern","value1nou");
 
-        createTable(tableInfo);
+        insertIntoTable(tableInfo, rowData);
+
+
+
     }
 }

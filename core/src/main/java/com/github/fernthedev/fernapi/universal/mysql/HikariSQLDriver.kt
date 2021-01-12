@@ -1,5 +1,6 @@
 package com.github.fernthedev.fernapi.universal.mysql
 
+import org.mariadb.jdbc.Driver
 import org.mariadb.jdbc.MariaDbDataSource
 import javax.sql.DataSource
 
@@ -28,7 +29,7 @@ class HikariSQLDriver : AbstractSQLDriver {
 
     companion object {
         @JvmField
-        val MARIADB_DRIVER = HikariSQLDriver("mysql", "com.mysql.jdbc.Driver","jdbc:%sql%://%host%:%port%/%database%", dataSourceClass = MariaDbDataSource()).setPreferJDBC(true).setSqlName("mariadb") as HikariSQLDriver
+        val MARIADB_DRIVER = HikariSQLDriver("mysql", Driver::class.java.name,"jdbc:%sql%://%host%:%port%/%database%", dataSourceClass = MariaDbDataSource()).setPreferJDBC(true).setSqlName("mariadb") as HikariSQLDriver
         @JvmField
         val MYSQL_DRIVER = HikariSQLDriver("mysql", "com.mysql.jdbc.Driver","jdbc:%sql%://%host%:%port%/%database%", dataSourceClass = "com.mysql.jdbc.jdbc2.optional.MysqlDataSource()").setPreferJDBC(true).setSqlName("mysql") as HikariSQLDriver
     }

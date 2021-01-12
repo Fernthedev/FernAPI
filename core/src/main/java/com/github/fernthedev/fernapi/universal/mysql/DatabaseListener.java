@@ -1,25 +1,37 @@
 package com.github.fernthedev.fernapi.universal.mysql;
 
+import co.aikar.idb.Database;
+import co.aikar.idb.DbRow;
+import co.aikar.idb.DbStatement;
 import com.github.fernthedev.fernapi.universal.Universal;
+import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
 import com.github.fernthedev.fernapi.universal.data.database.*;
 import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseException;
-import com.github.fernthedev.fernapi.universal.exceptions.database.DatabaseNotConnectedException;
 import lombok.*;
-import org.jetbrains.annotations.Nullable;
+import org.intellij.lang.annotations.Language;
+import org.panteleyev.mysqlapi.DataTypes;
+import org.panteleyev.mysqlapi.MySqlProxy;
+import org.panteleyev.mysqlapi.annotations.Column;
+import org.panteleyev.mysqlapi.annotations.ForeignKey;
+import org.panteleyev.mysqlapi.annotations.Index;
+import org.panteleyev.mysqlapi.annotations.PrimaryKey;
 import org.slf4j.Logger;
 
-import java.sql.*;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
+import static org.panteleyev.mysqlapi.DataTypes.TYPE_ENUM;
 
 public abstract class DatabaseListener {
 
     @Setter(AccessLevel.PACKAGE)
     protected boolean firstConnect = false;
 
-    @Getter
-    @Setter
-    private boolean isSetup;
+    private static final MySqlProxy mysqlProxy = new MySqlProxy();
 
     @Setter
     @Getter
@@ -27,53 +39,35 @@ public abstract class DatabaseListener {
 
     @Getter
     @Setter
-    private HikariDatabaseHandler databaseHandler = Universal.getDatabaseHandler();
+    @NonNull
+    protected Database database;
 
-    private Connection connection;
-    private Queue<Runnable> runOnConnectQueue = new LinkedList<>();
-    private Queue<Runnable> runOnConnectAsync = new LinkedList<>();
+    public DatabaseListener(@NonNull Database database) {
+        this.database = database;
+    }
 
-    @Nullable
-    private static ResultSet sqlRun(@NonNull PreparedStatement stmt, @NonNull String sql) throws SQLException {
-        HikariDatabaseHandler.validateNonMainThread();
-        if (sql.startsWith("SELECT ")) {
-            return stmt.executeQuery();
-        } else {
-            stmt.executeUpdate();
-            return null;
-        }
+    private final Queue<Runnable> runOnConnectQueue = new LinkedList<>();
+    private final Queue<Runnable> runOnConnectAsync = new LinkedList<>();
+
+    protected static void validateNonMainThread() {
+        if (Universal.getMethods().isMainThread()) throw new IllegalStateException("Cannot run SQL methods on main thread. Use Universal.getScheduler() and Universal.getMethods().isMainThread()");
     }
 
     public boolean isConnected() throws SQLException {
-        return !getConnection().isClosed();
-    }
-
-    public Statement statement() {
-        try {
-            return getConnection().createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Connection connection = getConnection()) {
+            return !connection.isClosed();
         }
-        return null;
     }
 
     public Connection getConnection() throws SQLException {
-        HikariDatabaseHandler.validateNonMainThread();
+        validateNonMainThread();
 
-        if(!firstConnect) {
-            throw new DatabaseNotConnectedException("You must call the connect(); method before calling any methods affecting the database.", new NullPointerException());
-        }
-
-        if(connection == null) {
-            return createConnection(databaseAuthInfo);
-        }
-
-        return connection;
+        return database.getConnection();
     }
 
     /**
      * This is called after you attempt a connection
-     * @see DatabaseListener#connect(DatabaseAuthInfo)
+     * @see #connect()
      * @param connected Returns true if successful
      */
     public abstract void onConnectAttempt(boolean connected);
@@ -104,28 +98,27 @@ public abstract class DatabaseListener {
 
     /**
      * Attempts to make a connection to the database
-     * @param data The data required for login
      * @see DatabaseListener#onConnectAttempt(boolean) Called after attempted
      */
-    public void connect(DatabaseAuthInfo data) {
+    public void connect() {
         Runnable runnable = () -> {
-            databaseHandler.registerDatabase(data,DatabaseListener.this);
-            try {
-                firstConnect = databaseHandler.openConnection(data);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
 
-            if (firstConnect) {
-                Universal.getScheduler().runAsync(() -> {
-                    while(!runOnConnectAsync.isEmpty()) {
-                        Universal.getScheduler().runAsync(() -> runOnConnectAsync.remove().run());
+            try (Connection connection = database.getConnection()) {
+                firstConnect = connection != null;
+
+                if (firstConnect) {
+                    Universal.getScheduler().runAsync(() -> {
+                        while (!runOnConnectAsync.isEmpty()) {
+                            Universal.getScheduler().runAsync(() -> runOnConnectAsync.remove().run());
+                        }
+                    });
+
+                    while (!runOnConnectQueue.isEmpty()) {
+                        runOnConnectQueue.remove().run();
                     }
-                });
-
-                while(!runOnConnectQueue.isEmpty()) {
-                    runOnConnectQueue.remove().run();
                 }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
         };
 
@@ -143,66 +136,13 @@ public abstract class DatabaseListener {
      * Note: This won't give you all the information given from the instance it was created from
      * Use this to get data, not to create tables exactly as the first instance.
      * @param name The name of the table
-     * @param rowDataTemplate The row data template. Used to define table parameters when creating.
      * @return The table
      */
-    public TableInfo getTable(String name, RowDataTemplate rowDataTemplate) throws DatabaseException {
-        String sql = "SELECT * FROM " + name + ";";
+    public CompletableFuture<List<DbRow>> getTableRows(String name) {
+        @Language("SQL") String sql = "SELECT * FROM " + name + ";";
+        Universal.debug(ChatColor.GREEN + "Executing {}", sql);
 
-        @NonNull ResultSet result = runSqlStatement(sql);
-
-        TableInfo tableInfo = new TableInfo(name, rowDataTemplate);
-
-        ColumnData columnData2 = null;
-
-        try {
-            while (result.next()) {
-                RowData rowData = null;
-
-                ResultSetMetaData rsMetaData = result.getMetaData();
-                int count = rsMetaData.getColumnCount();
-
-                int time = 0;
-
-                for(int i = 0; i < count; i++) {
-                    time++;
-
-                    ColumnData columnData = new ColumnData(
-                            rsMetaData.getColumnName(time),
-                            result.getString(time),
-                            rsMetaData.getColumnDisplaySize(time)
-                    );
-
-                    columnData.setType(rsMetaData.getColumnTypeName(time));
-                    columnData.setAutoIncrement(rsMetaData.isAutoIncrement(time));
-
-
-                    if(rowData == null) {
-                        if(columnData2 != null) {
-                            rowData = new RowData(columnData, columnData2);
-                        }
-                    } else {
-                        rowData.addData(columnData);
-                    }
-
-                    if(columnData2 == null) {
-                        columnData2 = columnData;
-                    }
-                }
-
-                tableInfo.addTableInfo(rowData);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            result.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return tableInfo;
+        return database.getResultsAsync(sql).handle(this::handleException);
     }
 
     /**
@@ -210,29 +150,56 @@ public abstract class DatabaseListener {
      * @param tableInfo The table
      * @param columnName The columnName
      * @param value The value needed to remove from the columnName to be true to remove row
+     * @return
      */
-    public void removeRowIfColumnContainsValue(TableInfo tableInfo,String columnName,String value) throws DatabaseException {
-        String sql = "DELETE FROM " + tableInfo.getTableName() + " WHERE " + columnName + "='" + value + "';";
+    public <T extends RowData> CompletableFuture<Void> removeRowIfColumnContainsValue(TableInfo<T> tableInfo, String columnName, String value) {
+        @Language("SQL") String sql = "DELETE FROM " + tableInfo.getTableName() + " WHERE " + columnName + " = ?;";
 
-        runSqlStatement(sql);
 
-        tableInfo.getFromDatabase(this);
+
+        return database.queryAsync(sql).thenAccept(dbStatement -> {
+            try (DbStatement statement = dbStatement) {
+                statement.execute(value);
+                Universal.debug("Executing {} {}  ",sql, value);
+                tableInfo.loadFromDB(this);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }).handle(this::handleException);
+
     }
 
     /**
      * Insert new rows into table
      * @param tableInfo The table
      * @param rowData The row
+     * @return
      */
-    public void insertIntoTable(TableInfo tableInfo, RowData rowData) throws DatabaseException {
-        tableInfo.addTableInfo(rowData);
+    public <T extends RowData> CompletableFuture<Integer> insertIntoTable(TableInfo<T> tableInfo, T rowData) {
 
-        //INSERT INTO test_no(row1,row2) VALUES (value1test,value2test);
-        String sql = "INSERT INTO " + tableInfo.getTableName() + "(" + getColumnName(tableInfo) + ") VALUES (" + getColumnValues(rowData) + ");";
 
-        runSqlStatement(sql);
+        String columnName = getColumnName(tableInfo);
+        String columnValues = getColumnValues(rowData);
 
-        tableInfo.getFromDatabase(this);
+        @Language("SQL") String sql = "INSERT INTO " + tableInfo.getTableName() + "(" + columnName + ") VALUES (" + columnValues + ");";
+
+        Universal.debug("Executing {}", sql);
+
+        return database.executeUpdateAsync(sql)
+                .thenApply(dbStatement -> {
+                    Universal.debug(ChatColor.GREEN + "Fully Executed {}", sql);
+                    try {
+                        tableInfo.loadFromDB(this).get();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+
+                    return dbStatement;
+                }).handle(this::handleException);
+
     }
 
     /**
@@ -241,31 +208,36 @@ public abstract class DatabaseListener {
      * @param newRow The new row replacing the old
      * @param conditionKey What column
      * @param conditionValue What value is required from the column to update
+     * @return
      */
-    public void updateRow(TableInfo tableInfo,RowData newRow,String conditionKey,String conditionValue) throws DatabaseException {
-        //UPDATE table_name
-        //SET column1 = value1, column2 = value2, ...
-        //WHERE condition;
+    public <T extends RowData> CompletableFuture<Integer> updateRow(TableInfo<T> tableInfo, T newRow, String conditionKey, String conditionValue) {
+        @Language("SQL") String sql = "UPDATE " + tableInfo + " SET ? WHERE ?=?;";
 
-        // "UPDATE fern_nicks SET PLAYERUUID='" + player.getUniqueId().toString().replaceAll("-", "") + "NICK='" + args[0] + "' WHERE PLAYERUUID='" + player.getUniqueId().toString().replaceAll("-", "") + "';";
+        String columnValues = getColumnValues(newRow);
 
-        // UPDATE fern_nicks SET 'f99a5767-0aae-48ca-a8a8-6b56e6a8c470','&cF&ee&ar&bn' WHERE PLAYERUUID=f99a57670aae48caa8a86b56e6a8c470;
+        Universal.debug("Executing {} ({}) {} {}", sql, columnValues, conditionKey, conditionValue);
 
-        String sql = "UPDATE " + tableInfo.getTableName() + " SET " + getColumnValues(newRow) + " WHERE " + conditionKey + "='" + conditionValue + "';";
+        return database.executeUpdateAsync(sql, columnValues, conditionKey, conditionValue)
+                .thenApply(integer -> {
+                    Universal.debug(ChatColor.GREEN + "Fully Executed {} {} ({}) {} {}", sql, tableInfo.getTableName(), columnValues, conditionKey, conditionValue);
+                    tableInfo.loadFromDB(DatabaseListener.this);
+                    return integer;
+                }).handle(this::handleException);
 
-        runSqlStatement(sql);
 
-        tableInfo.getFromDatabase(this);
     }
 
     /**
      * Deletes the table
      * @param tableInfo The table info
+     * @return
      */
-    public void removeTable(TableInfo tableInfo) throws DatabaseException {
-        String sql = "DROP TABLE IF EXISTS " + tableInfo.getTableName() + ";";
+    public <T extends RowData> CompletableFuture<Integer> removeTable(TableInfo<T> tableInfo) throws DatabaseException {
+        @Language("SQL") String sql = "DROP TABLE IF EXISTS " + tableInfo.getTableName() + ";";
 
-        runSqlStatement(sql);
+        Universal.debug("Executing {}", sql);
+
+        return database.executeUpdateAsync(sql).handle(this::handleException);
     }
 
     /**
@@ -274,157 +246,177 @@ public abstract class DatabaseListener {
      * @return the values
      */
     public String getColumnValues(RowData rowData) {
-        StringBuilder sql = new StringBuilder();
-        String append;
+//        StringBuilder sql = new StringBuilder();
+//        StringBuilder append = new StringBuilder();
+//
+//        int index = 0;
+//
+        Map<Field, ColumnData> dataCopy = rowData.getDataCopy();
 
-        int times = 0;
+//        Collection<ColumnData> values = dataCopy.values();
+//        for(ColumnData columnData : values) {
+//            index++;
+//
+//
+//            append.append("'")
+//                    .append(columnData.getValue())
+//                    .append("'");
+//
+//            if(index > 0 && index <= values.size() - 1) {
+//                append.append(',');
+//            }
+//
+//
+//            sql.append(append);
+//        }
 
-        for(ColumnData columnData : rowData.getColumnDataList()) {
-            times++;
 
 
-//            append = columnData.getColumnName() + "='" + columnData.getValue();
+        int fCount = 0;
 
-            append = "'" + columnData.getValue() + "'";
-
-            if(times > 0 && times <= rowData.getColumnDataList().size() - 1) {
-                append += ',';
-            }
-
-
-            sql.append(append);
-        }
-
-        return sql.toString();
-    }
-
-    public String getColumnName(@NonNull TableInfo tableDataInfo) {
-        StringBuilder sql = new StringBuilder();
-
-        //CREATE TABLE IF NOT EXISTS fern_nicks(PLAYERUUID varchar(200), NICK varchar(40));
-        //CREATE TABLE IF NOT EXISTS test_no(row1 TEXTrow2 TEXT);
-
-        String append;
-
-        if(!tableDataInfo.getRowDataList().isEmpty()) {
-            RowData rd = tableDataInfo.getRowDataTemplate();
-            int time = 0;
-            for (ColumnData object : rd.getColumnDataList()) {
-                time++;
-
-                append = object.getColumnName();
-
-                if (time > 0 && time <= rd.getColumnDataList().size() - 1) {
-                    append += ',';
-                }
-
-                sql.append(append);
-            }
-        }
-
-        return sql.toString();
-    }
-
-    /**
-     * Runs a sql statement
-     * @param sql The statement
-     * @return The result
-     */
-    @Synchronized
-    public ResultSet runSqlStatement(String sql) throws DatabaseException {
-
-        Universal.debug("Running {" + sql + "}");
-
+        Set<Field> keySet = dataCopy.keySet();
+        StringBuilder valueString = new StringBuilder();
         try {
-            try {
-                return sqlRun(sql);
-            } catch (SQLException e) {
+            for (Field field : keySet) {
+                Column column = field.getAnnotation(Column.class);
+                if (column != null) {
+                    if (fCount != 0) {
+                        valueString.append(",");
+                    }
+                    String value = dataCopy.get(field).getValue();
 
-                if (isConnected()) connection.close();
+                    if (value == null) value = "null";
 
-                // Attempt reconnection if broken pipe
-                connection = createConnection(databaseAuthInfo);
-
-                return sqlRun(sql);
+                    valueString.append(mysqlProxy.getInsertColumnPattern(field)
+                            .replace("?", "'" + value + "'" )
+                    );
+                    fCount++;
+                }
             }
-        } catch (SQLException e) {
-            throw new DatabaseException("Unable to create statement", e);
+        } catch (SecurityException ex) {
+            throw new RuntimeException(ex);
         }
+
+        if (fCount == 0) {
+            throw new IllegalStateException("No fields");
+        }
+
+        return valueString.toString();
     }
 
-    /**
-     * Shortcut
-     * @param sql
-     * @return
-     * @throws SQLException
-     */
-    private ResultSet sqlRun(@NonNull String sql) throws SQLException {
-        try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
-            return sqlRun(stmt, sql);
+    public <T extends RowData> String getColumnName(@NonNull TableInfo<T> tableDataInfo) {
+        StringBuilder append = new StringBuilder();
+
+        RowDataTemplate<T> rd = tableDataInfo.getRowDataTemplate();
+        int index = 0;
+        Collection<ColumnData> values = rd.getDataStrCopy().values();
+
+        for (ColumnData object : values) {
+            index++;
+
+            append.append(object.getColumnName());
+
+            if (index > 0 && index <= values.size() - 1) {
+                append.append(',');
+            }
+
         }
+
+
+        return append.toString();
     }
+
 
     /**
      * Creates the table
      * @param tableDataInfo The table with the data
+     * @return
      */
-    public void createTable(@NonNull TableInfo tableDataInfo) throws DatabaseException {
-        StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS " + tableDataInfo.getTableName() + "(");
+    public <T extends RowData> CompletableFuture<Void> createTable(@NonNull TableInfo<T> tableDataInfo) {
+        @Language("SQL") String q = "CREATE TABLE IF NOT EXISTS " + tableDataInfo.getTableName() + " (";
+
+        StringBuilder sql = new StringBuilder(q);
 
         //CREATE TABLE IF NOT EXISTS fern_nicks(PLAYERUUID varchar(200), NICK varchar(40));
         //CREATE TABLE IF NOT EXISTS test_no(row1 TEXTrow2 TEXT);
 
-        StringBuilder append;
+        RowDataTemplate<T> rd = tableDataInfo.getRowDataTemplate();
 
-        RowDataTemplate rd = tableDataInfo.getRowDataTemplate();
+        Set<Field> keySet = rd.getDataCopy().keySet();
 
-        int time = 0;
-        for (ColumnData object : rd.getColumnDataList()) {
-            time++;
+        List<String> constraints = new ArrayList<>();
+        Set<Field> indexed = new HashSet<>();
 
-            String type = "varchar(" + object.getLength() + ")";
+        boolean first = true;
+        for (Field field : keySet) {
 
-            if (object.getLength() <= 0) {
-                type = "TEXT";
+            Column column = field.getAnnotation(Column.class);
+            String fName = column.value();
+
+            Class<?> getterType = field.getType();
+            String typeName = getterType.isEnum() ?
+                    TYPE_ENUM : getterType.getTypeName();
+
+            if (!first) {
+                sql.append(",");
             }
-            if (object.isPrimaryKey()) {
-                type = "INT PRIMARY KEY";
+            first = false;
+
+
+            if (MySQLData.hasEncoder(getterType) && !mysqlProxy.getReaderMap().containsKey(typeName))
+                typeName = DataTypes.TYPE_STRING;
+
+            sql.append(fName).append(" ")
+                    .append(mysqlProxy.getColumnString(column, field.getAnnotation(PrimaryKey.class),
+                            field.getAnnotation(ForeignKey.class), typeName, constraints));
+
+            if (field.isAnnotationPresent(Index.class)) {
+                indexed.add(field);
             }
-
-            append = new StringBuilder(object.getColumnName() + " " + type);
-
-            if (object.isAutoIncrement()) {
-                append.append(" AUTO_INCREMENT");
-            }
-
-            if (!object.isNullable() && !object.isPrimaryKey()) {
-                append.append(" NOT NULL");
-            }
-
-            if (time > 0 && time <= rd.getColumnDataList().size() - 1) {
-                append.append(',');
-            }
-
-            sql.append(append);
         }
 
+        if (!constraints.isEmpty()) {
+            sql.append(",");
+            sql.append(String.join(",", constraints));
+        }
 
         sql.append(");");
 
-        runSqlStatement(sql.toString());
-        tableDataInfo.getFromDatabase(this);
+        Universal.debug("Executing {}", sql.toString());
+
+        return database.executeUpdateAsync(sql.toString()).thenRun(() -> {
+            Universal.debug(ChatColor.GREEN + "Fully Executed {} {}", sql, tableDataInfo.getTableName());
+            // Create indexes
+            for (Field field : indexed) {
+                try {
+                    @Language("SQL") String indexSql = mysqlProxy.buildIndex(tableDataInfo.getTableName(), field);
+
+                    Universal.debug("Executing {}", indexSql);
+
+                    database.executeUpdate(indexSql);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+
+            tableDataInfo.loadFromDB(DatabaseListener.this);
+        }).handle(this::handleException);
+
+
     }
 
     protected Logger getLogger() {
         return Universal.getMethods().getAbstractLogger();
     }
 
-    @Synchronized
-    public Connection createConnection(DatabaseAuthInfo dataInfo) throws SQLException {
-        this.databaseAuthInfo = dataInfo;
+    @SneakyThrows
+    protected <T> T handleException(T t, Throwable throwable) {
+        if (throwable != null) {
+            Universal.getLogger().error(throwable.getMessage(), t);
+            throw throwable;
+        }
 
-        connection = databaseHandler.createConnection(dataInfo);
-
-        return connection;
+        return t;
     }
+
 }

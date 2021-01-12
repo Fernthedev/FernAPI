@@ -41,7 +41,8 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
                 new PaperCommandManager(this),
                 new SpigotNetworkHandler(),
                 new SpigotScheduler(this),
-                new SpigotPluginData(getDescription()));
+                new SpigotPluginData(getDescription())
+        );
 //        UUIDFetcher.setFetchManager(new UUIDSpigot());
 
         Universal.getMessageHandler().registerMessageHandler(new PlaceHolderAPIResponder(this));
