@@ -16,7 +16,7 @@ buildscript {
 
 plugins {
     id 'java' apply true
-    id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.32'
     id 'net.nemerosa.versioning' version '2.14.0'
     id "io.freefair.lombok" version "5.2.1"
     id 'signing'
