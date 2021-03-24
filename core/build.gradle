@@ -12,7 +12,7 @@ dependencies {
 
     implementation ('com.google.code.gson:gson:2.8.6')
 
-    api 'com.zaxxer:HikariCP:3.4.5'
+    api 'com.zaxxer:HikariCP:4.0.3'
     //    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.1'
 
