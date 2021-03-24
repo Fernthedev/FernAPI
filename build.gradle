@@ -50,7 +50,7 @@ allprojects {
 //    version = versioning.info.full
     ext.buildVer = "1.9.0"
     ext.aikarVer = "0.5.0-SNAPSHOT"
-    ext.adventureAPI = "4.1.1"
+    ext.adventureAPI = "4.7.0"
     ext.adventureAPIPlatform = "4.0.0-SNAPSHOT"
     ext.slf4j_ver = "1.7.30"
     project.ext.beta_version = '4' // Only modify when beta
