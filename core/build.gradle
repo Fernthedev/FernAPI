@@ -14,7 +14,7 @@ dependencies {
 
     api 'com.zaxxer:HikariCP:4.0.3'
     //    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
-    implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.1'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.2'
 
 //    api "co.aikar:idb-core:1.0.0-SNAPSHOT"
     api 'com.github.Fernthedev:db:292c0bb'
