@@ -17,7 +17,7 @@ dependencies {
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.1'
 
 //    api "co.aikar:idb-core:1.0.0-SNAPSHOT"
-    api 'com.github.Fernthedev:db:292c0bb'
+    api 'com.github.Fernthedev:db:1c2118c7f7'
     api 'com.github.Fernthedev:java-api-for-mysql:4c51dbe' // For MySQL annotations
 
 

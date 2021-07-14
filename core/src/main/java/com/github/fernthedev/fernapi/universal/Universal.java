@@ -19,6 +19,7 @@ import lombok.Setter;
 import org.slf4j.Logger;
 
 import java.util.Locale;
+import java.util.function.Supplier;
 
 /**
  * Holds most of the core api
@@ -90,17 +91,6 @@ public class Universal {
         comhand.getCommandContexts().registerContext(OfflineFPlayer.class, new UniversalContextResolvers.SingularIFPlayerContextResolver());
         comhand.getCommandContexts().registerContext(IFPlayer[].class, new UniversalContextResolvers.OnlineIFPlayerArrayCommandResolver());
 
-
-//        comhand.getCommandCompletions().registerAsyncCompletion("fernPlayers", context ->
-//                mi.getPlayers().parallelStream()
-//                        .filter(player -> !context.getIssuer().isPlayer() ||
-//                                IFPlayer.canSee(
-//                                        Universal.getMethods()
-//                                                .convertCommandSenderToAPISender(context.getIssuer().getIssuer()),
-//                                        player)
-//                        ).map(IFPlayer::getName)
-//                        .collect(Collectors.toList()));
-
         comhand.getCommandCompletions().setDefaultCompletion("players", IFPlayer.class, IFPlayer[].class, OfflineFPlayer.class, FernCommandIssuer.class);
 
         messageHandler.registerPacketParser("fernapi", json -> new Gson().fromJson(json, PluginMessageData.class));
@@ -122,8 +112,36 @@ public class Universal {
         }
     }
 
+    /**
+     * Logs as debug info lazily. Does not construct string unless needed
+     * @param message Lazy string
+     * @param params
+     */
+    public static void debug(Supplier<String> message, Object... params) {
+        if(debug) {
+            getMethods().getAbstractLogger().info("[DEBUG] " + message.get(), params);
+        }
+    }
 
+    /**
+     * Logs as debug info lazily. Does not construct string unless needed
+     * @param message Lazy string
+     * @param params
+     */
+    public static void debug(Supplier<String> message, Supplier<Object[]> params) {
+        if(debug) {
+            getMethods().getAbstractLogger().info("[DEBUG] " + message.get(), params.get());
+        }
+    }
 
+    /**
+     *
+     * @param message
+     * @param params
+     * @deprecated Use {@link #debug(Supplier, Object...)} or {@link #debug(Supplier, Supplier)}
+     *
+     */
+    @Deprecated
     public static void debug(String message, Object... params) {
         if(debug) {
             getMethods().getAbstractLogger().info("[DEBUG] " + message, params);

@@ -21,9 +21,9 @@ public class AikarFernDatabase {
         try {
             Class.forName("org.mariadb.jdbc.MariaDbDataSource");
             optimizations = false;
-            Universal.debug("Disabling optimizations since MariaDB is used. Should this be done?");
+            Universal.debug(() -> "Disabling optimizations since MariaDB is used. Should this be done?");
         } catch (ClassNotFoundException e) {
-            Universal.debug("Enabling optimizations");
+            Universal.debug(() -> "Enabling optimizations");
         }
 
         DatabaseOptions options = DatabaseOptions

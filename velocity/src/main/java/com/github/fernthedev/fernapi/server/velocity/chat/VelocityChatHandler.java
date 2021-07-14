@@ -5,51 +5,53 @@ import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
 import com.github.fernthedev.fernapi.universal.data.chat.ClickData;
 import com.github.fernthedev.fernapi.universal.data.chat.HoverData;
 import com.github.fernthedev.fernapi.universal.handlers.IChatHandler;
-import net.kyori.text.TextComponent;
-import net.kyori.text.event.ClickEvent;
-import net.kyori.text.event.HoverEvent;
-import net.kyori.text.format.TextColor;
-import net.kyori.text.format.TextDecoration;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public class VelocityChatHandler implements IChatHandler<TextComponent> {
     @Override
     public TextComponent parseComponent(BaseMessage baseMessage) {
-        TextComponent builder = TextComponent.of(ChatColor.translateAlternateColorCodes('&', baseMessage.selfPlainText()));
+        TextComponent builder = LegacyComponentSerializer.legacyAmpersand().deserialize(baseMessage.selfPlainText());
 
         if (baseMessage.getColor() != null) {
-            builder.color(getTextColor(baseMessage.getColor()));
+            builder = builder.color(getTextColor(baseMessage.getColor()));
         }
 
         if (baseMessage.getColor() != null) {
             TextColor color = getTextColor(baseMessage.getColor());
             TextDecoration style = getStyle(baseMessage.getColor());
-            if(color != null) builder.color(color);
+            if(color != null) builder = builder.color(color);
             if(style != null) builder.decoration(style);
         }
 
         if (baseMessage.getClickData() != null) {
-            builder.clickEvent(parseAction(baseMessage.getClickData()));
+            builder = builder.clickEvent(parseAction(baseMessage.getClickData()));
         }
 
         if (baseMessage.getHoverData() != null) {
-            builder.hoverEvent(parseHover(baseMessage.getHoverData()));
+            builder = builder.hoverEvent(parseHover(baseMessage.getHoverData()));
         }
 
         if (baseMessage.getExtra() != null)
             for (BaseMessage extra : baseMessage.getExtra()) {
-                builder.append(parseComponent(extra));
+                builder = builder.append(parseComponent(extra));
             }
 
         return builder;
     }
 
-    private HoverEvent parseHover(HoverData hoverData) throws UnsupportedOperationException {
+    private HoverEvent<?> parseHover(HoverData hoverData) throws UnsupportedOperationException {
         TextComponent hoverMessage = parseComponent(hoverData.getHoverValue());
 
         if (hoverData.getAction() == HoverData.Action.SHOW_TEXT) {
             return HoverEvent.showText(hoverMessage);
         }
-        throw new UnsupportedOperationException("The hover action you attempted to use is currently not possible to use with Sponge side, it is recommended to use Sponge-Specific code for this checking for the ServerType from Universal.getMethods()");
+        throw new UnsupportedOperationException("The hover action you attempted to use is currently not possible to use with Velocity side, it is recommended to use Velocity-Specific code for this checking for the ServerType from Universal.getMethods()");
 
 //        builder.event(new HoverEvent(
 //                        HoverEvent.Action.valueOf(baseMessage.getHoverData().getAction().toString()),
@@ -85,37 +87,37 @@ public class VelocityChatHandler implements IChatHandler<TextComponent> {
     public static TextColor getTextColor(ChatColor chatColor) {
         switch (chatColor) {
             case RED:
-                return TextColor.RED;
+                return NamedTextColor.RED;
             case DARK_RED:
-                return TextColor.DARK_RED;
+                return NamedTextColor.DARK_RED;
             case GOLD:
-                return TextColor.GOLD;
+                return NamedTextColor.GOLD;
             case YELLOW:
-                return TextColor.YELLOW;
+                return NamedTextColor.YELLOW;
             case GREEN:
-                return TextColor.GREEN;
+                return NamedTextColor.GREEN;
             case DARK_GREEN:
-                return TextColor.DARK_GREEN;
+                return NamedTextColor.DARK_GREEN;
             case BLUE:
-                return TextColor.BLUE;
+                return NamedTextColor.BLUE;
             case AQUA:
-                return TextColor.AQUA;
+                return NamedTextColor.AQUA;
             case DARK_AQUA:
-                return TextColor.DARK_AQUA;
+                return NamedTextColor.DARK_AQUA;
             case DARK_BLUE:
-                return TextColor.DARK_BLUE;
+                return NamedTextColor.DARK_BLUE;
             case LIGHT_PURPLE:
-                return TextColor.LIGHT_PURPLE;
+                return NamedTextColor.LIGHT_PURPLE;
             case DARK_PURPLE:
-                return TextColor.DARK_PURPLE;
+                return NamedTextColor.DARK_PURPLE;
             case GRAY:
-                return TextColor.GRAY;
+                return NamedTextColor.GRAY;
             case DARK_GRAY:
-                return TextColor.DARK_GRAY;
+                return NamedTextColor.DARK_GRAY;
             case BLACK:
-                return TextColor.BLACK;
+                return NamedTextColor.BLACK;
             case WHITE:
-                return TextColor.WHITE;
+                return NamedTextColor.WHITE;
             default:
                 return null;
         }

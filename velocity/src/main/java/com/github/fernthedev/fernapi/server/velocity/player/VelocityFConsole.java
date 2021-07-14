@@ -4,9 +4,8 @@ import com.github.fernthedev.fernapi.server.velocity.FernVelocityAPI;
 import com.github.fernthedev.fernapi.universal.Universal;
 import com.github.fernthedev.fernapi.universal.api.IFConsole;
 import com.github.fernthedev.fernapi.universal.data.chat.BaseMessage;
-import com.github.fernthedev.fernapi.universal.data.chat.ChatColor;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.TextComponent;
 
 public class VelocityFConsole extends IFConsole<ConsoleCommandSource> {
 
@@ -31,10 +30,5 @@ public class VelocityFConsole extends IFConsole<ConsoleCommandSource> {
         TextComponent fullMessage = (TextComponent) Universal.getChatHandler().parseComponent(baseMessage);
         FernVelocityAPI api = (FernVelocityAPI) Universal.getMethods().getInstance();
         api.getServer().getConsoleCommandSource().sendMessage(fullMessage);
-    }
-
-
-    private TextComponent message(String text) {
-        return TextComponent.of(ChatColor.translateAlternateColorCodes('&',text));
     }
 }

@@ -64,19 +64,19 @@ public class UniversalContextResolvers {
 
             UUID uuid;
 
-            Universal.debug("Flags for parsing player: " + c.getFlags());
+            Universal.debug(() -> "Flags for parsing player: " + c.getFlags());
 
             String name = null;
 
             if(c.hasFlag("other")) {
                 String arg = c.popFirstArg();
 
-                Universal.debug("The arg is " + arg);
+                Universal.debug(() -> "The arg is " + arg);
 
                 if (arg == null || arg.isEmpty()) {
 
                     if (c.hasFlag("defaultself")) {
-                        Universal.debug("Default self is on");
+                        Universal.debug(() -> "Default self is on");
 
                         if (!sender.isPlayer() && !isOptional)
                             throw new InvalidCommandArgument(MessageKeys.NOT_ALLOWED_ON_CONSOLE);
@@ -93,12 +93,12 @@ public class UniversalContextResolvers {
                     }
 
                 } else {
-                    Universal.debug("Checking player arg " + arg);
+                    Universal.debug(() -> "Checking player arg " + arg);
                     if (c.hasFlag("uuid")) {
-                        Universal.debug("Checking player uuid arg " + arg);
+                        Universal.debug(() -> "Checking player uuid arg " + arg);
                         uuid = UUID.fromString(Objects.requireNonNull(arg));
                     } else {
-                        Universal.debug("Checking player name arg " + arg);
+                        Universal.debug(() -> "Checking player name arg " + arg);
                         uuid = UUIDFetcher.getUUID(arg);
                     }
                 }

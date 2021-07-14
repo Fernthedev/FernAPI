@@ -180,7 +180,7 @@ public class VelocityMessageHandler extends IPMessageHandler {
 
             out.writeBoolean(data.isUseGson());
             out.writeUTF(data.getGsonName());
-            Universal.debug("Use gson status: " + data.isUseGson());
+            Universal.debug(() -> "Use gson status: {}", data.isUseGson());
 
 
             if (data.isUseGson()) {

@@ -123,7 +123,7 @@ public class BungeeInterface implements MethodInterface<ProxiedPlayer, CommandSe
     public OfflineFPlayer<ProxiedPlayer> getPlayerFromUUID(UUID uuid) {
         ProxiedPlayer player = fernBungeeAPI.getProxy().getPlayer(uuid);
 
-        Universal.debug("Player uuid " + uuid + " for player " + player);
+        Universal.debug(() ->"Player uuid " + uuid + " for player " + player);
 
         if (player == null) {
             return new OfflineFPlayer<>(uuid);

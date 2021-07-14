@@ -107,7 +107,7 @@ public class SpigotMessageHandler extends IPMessageHandler implements PluginMess
             e.printStackTrace();
         }
 
-        Universal.debug(data.getMessageChannel().getFullChannelName() + " " + data);
+        Universal.debug(() -> "{} {}",() -> new Object[]{data.getMessageChannel().getFullChannelName(), data});
 
         player.sendPluginMessage(spigot, data.getMessageChannel().getFullChannelName(), stream.toByteArray());
     }
@@ -174,14 +174,14 @@ public class SpigotMessageHandler extends IPMessageHandler implements PluginMess
                                 data.setPlayer(Universal.getMethods().getPlayerFromUUID(player1.getUniqueId()));
                             }
 
-                            Universal.debug("Received player info");
+                            Universal.debug(() -> "Received player info");
                         }else {
                             throw new NotEnoughDataException("The player information dataInfo was not sent");
                         }
 
                         if (in.available() > 0) {
                             useGson = in.readBoolean();
-                            Universal.debug("Gson status is: " + useGson);
+                            Universal.debug(() -> "Gson status is: " + useGson);
                         } else {
                             throw new NotEnoughDataException("The use gson boolean dataInfo was not sent");
                         }

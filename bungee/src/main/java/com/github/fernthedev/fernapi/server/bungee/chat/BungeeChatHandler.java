@@ -32,12 +32,12 @@ public class BungeeChatHandler implements IChatHandler<BaseComponent> {
 
         if (baseMessage.getExtra() != null)
             for (BaseMessage extra : baseMessage.getExtra()) {
-                Universal.debug("Adding message " + extra.toPlainText());
+                Universal.debug(() ->"Adding message " + extra.toPlainText());
                 builder.addExtra(parseComponent(extra));
             }
 
 
-        Universal.debug("Parsed " + builder.toPlainText());
+        Universal.debug(() ->"Parsed " + builder.toPlainText());
 
 //        new RuntimeException(builder.toString(), new RuntimeException(baseMessage.toString())).printStackTrace();
 

@@ -140,7 +140,7 @@ public abstract class DatabaseListener {
      */
     public CompletableFuture<List<DbRow>> getTableRows(String name) {
         @Language("SQL") String sql = "SELECT * FROM " + name + ";";
-        Universal.debug(ChatColor.GREEN + "Executing {}", sql);
+        Universal.debug(() -> ChatColor.GREEN + "Executing {}", sql);
 
         return database.getResultsAsync(sql).handle(this::handleException);
     }
@@ -160,7 +160,7 @@ public abstract class DatabaseListener {
         return database.queryAsync(sql).thenAccept(dbStatement -> {
             try (DbStatement statement = dbStatement) {
                 statement.execute(value);
-                Universal.debug("Executing {} {}  ",sql, value);
+                Universal.debug(() -> "Executing {} {}  ",sql, value);
                 tableInfo.loadFromDB(this);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -183,11 +183,11 @@ public abstract class DatabaseListener {
 
         @Language("SQL") String sql = "INSERT INTO " + tableInfo.getTableName() + "(" + columnName + ") VALUES (" + columnValues + ");";
 
-        Universal.debug("Executing {}", sql);
+        Universal.debug(() ->"Executing {}", sql);
 
         return database.executeUpdateAsync(sql)
                 .thenApply(dbStatement -> {
-                    Universal.debug(ChatColor.GREEN + "Fully Executed {}", sql);
+                    Universal.debug(() ->ChatColor.GREEN + "Fully Executed {}", sql);
                     try {
                         tableInfo.loadFromDB(this).get();
                     } catch (InterruptedException e) {
@@ -215,11 +215,11 @@ public abstract class DatabaseListener {
 
         String columnValues = getColumnValues(newRow);
 
-        Universal.debug("Executing {} ({}) {} {}", sql, columnValues, conditionKey, conditionValue);
+        Universal.debug(() ->"Executing {} ({}) {} {}", sql, columnValues, conditionKey, conditionValue);
 
         return database.executeUpdateAsync(sql, columnValues, conditionKey, conditionValue)
                 .thenApply(integer -> {
-                    Universal.debug(ChatColor.GREEN + "Fully Executed {} {} ({}) {} {}", sql, tableInfo.getTableName(), columnValues, conditionKey, conditionValue);
+                    Universal.debug(() ->ChatColor.GREEN + "Fully Executed {} {} ({}) {} {}", sql, tableInfo.getTableName(), columnValues, conditionKey, conditionValue);
                     tableInfo.loadFromDB(DatabaseListener.this);
                     return integer;
                 }).handle(this::handleException);
@@ -235,7 +235,7 @@ public abstract class DatabaseListener {
     public <T extends RowData> CompletableFuture<Integer> removeTable(TableInfo<T> tableInfo) throws DatabaseException {
         @Language("SQL") String sql = "DROP TABLE IF EXISTS " + tableInfo.getTableName() + ";";
 
-        Universal.debug("Executing {}", sql);
+        Universal.debug(() -> "Executing {}", sql);
 
         return database.executeUpdateAsync(sql).handle(this::handleException);
     }
@@ -382,16 +382,16 @@ public abstract class DatabaseListener {
 
         sql.append(");");
 
-        Universal.debug("Executing {}", sql.toString());
+        Universal.debug(() ->"Executing {}", sql.toString());
 
         return database.executeUpdateAsync(sql.toString()).thenRun(() -> {
-            Universal.debug(ChatColor.GREEN + "Fully Executed {} {}", sql, tableDataInfo.getTableName());
+            Universal.debug(() ->ChatColor.GREEN + "Fully Executed {} {}", sql, tableDataInfo.getTableName());
             // Create indexes
             for (Field field : indexed) {
                 try {
                     @Language("SQL") String indexSql = mysqlProxy.buildIndex(tableDataInfo.getTableName(), field);
 
-                    Universal.debug("Executing {}", indexSql);
+                    Universal.debug(() ->"Executing {}", indexSql);
 
                     database.executeUpdate(indexSql);
                 } catch (SQLException throwables) {

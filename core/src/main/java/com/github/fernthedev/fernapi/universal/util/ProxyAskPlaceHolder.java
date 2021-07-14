@@ -69,7 +69,7 @@ public class ProxyAskPlaceHolder extends PluginMessageHandler {
         }
 
 
-        Universal.debug("Current uuid is " + uuid);
+        Universal.debug(() -> "Current uuid is {}", uuid);
 
         data.addData(placeHolderValue); //MESSAGE 1 (placeholder requested)
         oldPlaceValue = placeHolderValue;
@@ -122,7 +122,7 @@ public class ProxyAskPlaceHolder extends PluginMessageHandler {
 
                 ProxyAskPlaceHolder instance = instances.get(uuide);
                 if (instance == null) {
-                    Universal.debug("There were no instances");
+                    Universal.debug(() -> "There were no instances");
                 }
 
 
@@ -145,7 +145,7 @@ public class ProxyAskPlaceHolder extends PluginMessageHandler {
                     instances.remove(uuide);
 
                 } else {
-                    Universal.debug(ChatColor.RED + "The incoming message was not expected. From an attacker?");
+                    Universal.debug(() -> ChatColor.RED + "The incoming message was not expected. From an attacker?");
                 }
             }
 

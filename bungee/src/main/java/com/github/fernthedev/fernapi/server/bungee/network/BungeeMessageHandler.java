@@ -191,7 +191,7 @@ public class BungeeMessageHandler extends IPMessageHandler implements Listener {
             }
             out.writeBoolean(data.isUseGson());
             out.writeUTF(data.getGsonName());
-            Universal.debug("Use gson status: " + data.isUseGson());
+            Universal.debug(() -> "Use gson status: " + data.isUseGson());
 
 
             if (data.isUseGson()) {
@@ -212,10 +212,10 @@ public class BungeeMessageHandler extends IPMessageHandler implements Listener {
         if (data.getServer().equalsIgnoreCase("all")) {
             for (ServerInfo server : ProxyServer.getInstance().getServers().values()) {
                 server.sendData(data.getMessageChannel().getFullChannelName(), stream.toByteArray());
-                Universal.debug(server.getName() + " " + server);
+                Universal.debug(() ->server.getName() + " " + server);
             }
         } else {
-            Universal.debug("fplayer == null" + (fplayer == null));
+            Universal.debug(() -> "fplayer == null" + (fplayer == null));
             if (fplayer == null) {
                 ServerInfo serverInfo = ProxyServer.getInstance().getServerInfo(data.getServer());
                 if(serverInfo == null) {
@@ -224,12 +224,12 @@ public class BungeeMessageHandler extends IPMessageHandler implements Listener {
 
                 ProxyServer.getInstance().getScheduler().runAsync(bungee, () -> serverInfo.sendData(data.getMessageChannel().getFullChannelName(), stream.toByteArray(), true));
 
-                Universal.debug(serverInfo.getName() + " " + serverInfo + " sent");
+                Universal.debug(() -> serverInfo.getName() + " " + serverInfo + " sent");
             } else {
                 Server serverInfo = player.getServer();
                 ProxyServer.getInstance().getScheduler().runAsync(bungee, () -> serverInfo.sendData(data.getMessageChannel().getFullChannelName(), stream.toByteArray()));
 
-                Universal.debug(serverInfo.getInfo().getName() + " " + serverInfo.getInfo() + " sent");
+                Universal.debug(() ->serverInfo.getInfo().getName() + " " + serverInfo.getInfo() + " sent");
             }
         }
     }

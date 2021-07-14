@@ -68,6 +68,6 @@ public class UUIDFetchManager {
     }
 
     private static void debug(Object log) {
-        Universal.debug("[" + Universal.getMethods().getServerType() + "] [UUIDFetcher] " + log);
+        Universal.debug(() -> "[" + Universal.getMethods().getServerType() + "] [UUIDFetcher] " + log);
     }
 }

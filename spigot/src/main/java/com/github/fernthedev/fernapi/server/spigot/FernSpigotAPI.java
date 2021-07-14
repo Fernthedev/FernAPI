@@ -44,13 +44,13 @@ public class FernSpigotAPI extends JavaPlugin implements FernAPIPlugin {
 //        UUIDFetcher.setFetchManager(new UUIDSpigot());
 
 //        if (Bukkit.getPluginManager().isPluginEnabled(VaultHandler.VAULT_PLUGIN_NAME) && (!ListUtil.containsString(getDescription().getSoftDepend(), VaultHandler.VAULT_PLUGIN_NAME) && !ListUtil.containsString(getDescription().getDepend(), VaultHandler.VAULT_PLUGIN_NAME))) {
-//            Universal.debug("[WARNING/CAN BE IGNORED] Vault has been enabled though not added to soft dependencies or dependencies in plugin.yml. If you want to use VaultHandler which is included in the FernSpigotAPI you must add it to your dependencies/soft dependencies. Dependencies list: " + getDescription().getDepend() + " Soft Dependencies: " + getDescription().getSoftDepend());
+//            Universal.debug(() -> "[WARNING/CAN BE IGNORED] Vault has been enabled though not added to soft dependencies or dependencies in plugin.yml. If you want to use VaultHandler which is included in the FernSpigotAPI you must add it to your dependencies/soft dependencies. Dependencies list: " + getDescription().getDepend() + " Soft Dependencies: " + getDescription().getSoftDepend());
 //        }
 
         if(Bukkit.getPluginManager().isPluginEnabled(VaultHandler.VAULT_PLUGIN_NAME) /*&& (ListUtil.containsString(getDescription().getSoftDepend(), VaultHandler.VAULT_PLUGIN_NAME) || ListUtil.containsString(getDescription().getDepend(), VaultHandler.VAULT_PLUGIN_NAME))*/) {
             vaultHandler = new VaultHandler();
 
-            Universal.debug("Initializing Vault API");
+            Universal.debug(() -> "Initializing Vault API");
 
             vaultHandler.hook();
         }

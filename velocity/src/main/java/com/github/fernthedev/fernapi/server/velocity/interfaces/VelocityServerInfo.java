@@ -69,7 +69,7 @@ public class VelocityServerInfo implements RegisteredServer, IServerInfo {
     @Override
     public String getMotd() {
         try {
-            return serverInfo.ping().get().getDescription().toString();
+            return serverInfo.ping().get().getDescriptionComponent().toString();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }

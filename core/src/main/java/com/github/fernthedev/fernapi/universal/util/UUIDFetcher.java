@@ -105,12 +105,6 @@ public class UUIDFetcher {
 
             if (fileData == null) {
                 if (playerUUIDCache.containsKey(name)) {
-//                    String hexStringWithoutHyphens = playerUUIDCache.get(name).id;
-//// Use regex to format the hex string by inserting hyphens in the canonical format: 8-4-4-4-12
-////                    String hexStringWithInsertedHyphens =  hexStringWithoutHyphens.replaceFirst( "([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]+)", "$1-$2-$3-$4-$5" );
-//
-//                    String hexStringWithInsertedHyphens = pattern.matcher(hexStringWithoutHyphens).replaceAll("$1-$2-$3-$4-$5");
-
                     return uuidFromString ( playerUUIDCache.get(name).id );
                 } else return null;
             } else {
@@ -121,15 +115,9 @@ public class UUIDFetcher {
                     return null;
                 }
 
-                Universal.debug("The uuid for " + name + " is " + uuidResponse.getId());
+                Universal.debug(() -> "The uuid for " + name + " is " + uuidResponse.getId());
 
                 playerUUIDCache.put(name, uuidResponse);
-
-//                String hexStringWithoutHyphens = uuidResponse.getId();
-//// Use regex to format the hex string by inserting hyphens in the canonical format: 8-4-4-4-12
-////                String hexStringWithInsertedHyphens =  hexStringWithoutHyphens.replaceFirst( "([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]+)", "$1-$2-$3-$4-$5" );
-//
-//                String hexStringWithInsertedHyphens = pattern.matcher(hexStringWithoutHyphens).replaceAll("$1-$2-$3-$4-$5");
 
                 return uuidFromString( uuidResponse.getId() );
             }
@@ -165,19 +153,19 @@ public class UUIDFetcher {
                 else return null;
             } else {
 
-                Universal.debug("The url of name is " + NAME_URL.replace("%uuid%", uuidStr));
+                Universal.debug(() ->"The url of name is " + NAME_URL.replace("%uuid%", uuidStr));
 
                 PlayerName[] uuidResponse = gson.fromJson(fileData, PlayerName[].class);
 
                 if (uuidResponse != null) {
 
-                    Universal.debug("The max length of response is " + uuidResponse.length);
+                    Universal.debug(() -> "The max length of response is " + uuidResponse.length);
 
                     if (uuidResponse.length > 0) {
 
                         PlayerName currentName = uuidResponse[uuidResponse.length - 1];
 
-                        Universal.debug("The current name is " + currentName.name);
+                        Universal.debug(() -> "The current name is " + currentName.name);
 
 //                        if (playerNameCache.get(uuid) != currentName) playerHistoryCache.remove(uuid);
                         playerNameCache.put(uuid, currentName);
@@ -187,8 +175,8 @@ public class UUIDFetcher {
                         return null;
                     }
                 } else {
-                    Universal.debug("The response was empty");
-                    Universal.debug("The response received is " + fileData);
+                    Universal.debug(() -> "The response was empty");
+                    Universal.debug(() -> "The response received is " + fileData);
 
 
                 }
@@ -225,16 +213,16 @@ public class UUIDFetcher {
                 }
 
             } else {
-                Universal.debug("The url of namehistory is " + NAME_URL.replace("%uuid%", uuidStr));
+                Universal.debug(() -> "The url of namehistory is " + NAME_URL.replace("%uuid%", uuidStr));
 
                 PlayerName[] uuidResponse = gson.fromJson(fileData, PlayerName[].class);
 
                 if (uuidResponse != null) {
 
-                    Universal.debug("The max length of response is " + uuidResponse.length);
+                    Universal.debug(() -> "The max length of response is " + uuidResponse.length);
                     for (int i = 0; i < uuidResponse.length; i++) {
                         PlayerName playerUUID = uuidResponse[i];
-                        Universal.debug("A name from uuid " + uuid + " is " + playerUUID.name + " at length " + i);
+                        Universal.debug(() -> "A name from uuid {} is {} at length {}", uuid, playerUUID.name, i);
                     }
 
                     if (uuidResponse.length > 0) {
@@ -252,8 +240,8 @@ public class UUIDFetcher {
                         return null;
                     }
                 } else {
-                    Universal.debug("The response was empty");
-                    Universal.debug("The response received is " + fileData);
+                    Universal.debug(() -> "The response was empty");
+                    Universal.debug(() -> "The response received is " + fileData);
                 }
             }
         } catch (Exception e) {
@@ -357,7 +345,7 @@ public class UUIDFetcher {
     }
 
     protected static void debug(Object log) {
-        Universal.debug("[UUIDFetcher/FernAPI] " + log);
+        Universal.debug(() -> "[UUIDFetcher/FernAPI] " + log);
     }
 
     public static UUID uuidFromString(String str) {

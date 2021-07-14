@@ -24,7 +24,7 @@ public class SpongeNetworkHandler implements NetworkHandler<Server> {
 
     @Override
     public IServerInfo getServer(String name) {
-        Universal.debug("NetworkHandler.getServer() does not apply to Bukkit \n");
+        Universal.debug(() -> "NetworkHandler.getServer() does not apply to Bukkit \n");
 
         if (Universal.isDebug()) new RuntimeException().printStackTrace();
 
