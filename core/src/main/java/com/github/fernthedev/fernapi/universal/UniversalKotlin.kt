@@ -15,9 +15,8 @@ fun debugLog(supplier: () -> String) {
  * Lazy debug logger to improve performance
  */
 @JvmName("debugLog1")
-fun debugLog(supplier: () -> Pair<String, Array<Any>>) {
+fun debugLog(supplier: () -> String, objects: () -> Array<Any>) {
     if (Universal.isDebug()) {
-        val (str, obj) = supplier()
-        Universal.debug(str, obj)
+        Universal.debug(supplier(), objects())
     }
 }
