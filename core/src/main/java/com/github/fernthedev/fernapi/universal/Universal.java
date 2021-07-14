@@ -37,7 +37,6 @@ public class Universal {
     @NonNull
     private static ILocale locale = new Locale_EN_US();
 
-    @Getter
     @Setter
     private static boolean debug = false;
 
@@ -187,5 +186,9 @@ public class Universal {
     public void onDisable() {
         new Thread(DB::close).start();
         new Thread(AikarFernDatabase::shutdownDatabases).start();
+    }
+
+    public static boolean isDebug() {
+        return debug;
     }
 }
